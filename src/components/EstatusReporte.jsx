@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { DataGrid } from '@mui/x-data-grid';
-import { useState,useEffect } from 'react';
+// import { useState,useEffect } from 'react';
 
 const columns = [
   { field: 'id', headerName: '# Orden', width: 70 },
@@ -27,16 +27,16 @@ const rows = [
   { id: 1, a: 'Snow', b: 'Jon', c: 35 },
 ];
 
-export default function Tablareporte(props) {
-  const [rows3, setRows3] = useState([]);
-  const obtner = (props)=>{
+export default function Tablareporte() {
+//   const [rows3, setRows3] = useState([]);
+//   const obtner = (props)=>{
     
-    console.log("los datos a mapear", rows2);
-  }
+//     console.log("los datos a mapear", rows2);
+//   }
 
-  useEffect(() => {
-    obtner();
-}, [])
+//   useEffect(() => {
+//     obtner();
+// }, [])
 
   return (
     <div style={{ height: 400, width: '100%' }}>

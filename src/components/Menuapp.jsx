@@ -266,12 +266,20 @@ export default function MenuApp2(props) {
                                 <ListItemText primary="Estatus Ordenes de Trabajo" />
                             </ListItemButton>
 
+                            <ListItemButton onClick={() =>Changeview('/home/mantenimiento/mantenimiento')} sx={{ pl: 4 }}>
+                                <ListItemIcon>
+                                    <StarBorder />
+                                </ListItemIcon>
+                                <ListItemText primary="Plan de Mantenimiento" />
+                            </ListItemButton>
+                            
                             <ListItemButton onClick={() =>Changeview('/home/mantenimiento/contactos')} sx={{ pl: 4 }}>
                                 <ListItemIcon>
                                     <StarBorder />
                                 </ListItemIcon>
                                 <ListItemText primary="Contactos Empresas" />
                             </ListItemButton>
+
                         </List>
                     </Collapse>
                     {/* Fin Boton Gestion de Mantenimiento  */}
@@ -291,21 +299,21 @@ export default function MenuApp2(props) {
                                 <ListItemIcon>
                                     <StarBorder />
                                 </ListItemIcon>
-                                <ListItemText primary="Reportes Mantenimiento" />
+                                <ListItemText primary="Estátus R. Internos" />
                             </ListItemButton>
 
-                            <ListItemButton onClick={() =>Changeview('/home/reportes/fallas')} sx={{ pl: 4 }}>
+                            <ListItemButton onClick={() =>Changeview('/home/reportes/externos')} sx={{ pl: 4 }}>
                                 <ListItemIcon>
                                     <StarBorder />
                                 </ListItemIcon>
-                                <ListItemText primary="Reporte Fallas" />
+                                <ListItemText primary="Estátus R. Externos" />
                             </ListItemButton>
 
                             <ListItemButton onClick={() =>Changeview('/home/reportes/agregar')} sx={{ pl: 4 }}>
                                 <ListItemIcon>
                                     <StarBorder />
                                 </ListItemIcon>
-                                <ListItemText primary="Nuevo Reporte" />
+                                <ListItemText primary="Formulario Reporte" />
                             </ListItemButton>
                         </List>
                     </Collapse>
@@ -327,7 +335,7 @@ export default function MenuApp2(props) {
                                 <ListItemIcon>
                                     <StarBorder />
                                 </ListItemIcon>
-                                <ListItemText primary="Empresa 1" />
+                                <ListItemText primary="Reporte de Mantenimiento" />
                             </ListItemButton>
                         </List>
                     </Collapse>

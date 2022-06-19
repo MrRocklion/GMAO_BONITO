@@ -1,10 +1,13 @@
 import React from "react";
-import Fechacomponent from "../components/Fecha";
+import Tablav2 from "../components/tablav2";
+
 export default function Personal(){
 
     return(
         <>
-            <Fechacomponent/>
+        <div className="container-fluid">
+        <Tablav2/>
+        </div>
         </>
     );
 }

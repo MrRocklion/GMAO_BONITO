@@ -8,9 +8,11 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import SendIcon from '@mui/icons-material/Send';
 import Stack from '@mui/material/Stack';
 import Fechacomponent from "../components/Fecha";
+import Tiempocomponent from "../components/Hora";
 import { collection, addDoc } from "firebase/firestore";
 import { db } from "../firebase/firebase-config";
 import { v4 as uuidv4 } from 'uuid';
+
 
 
 export default function Ordentrabajoview(){
@@ -56,11 +58,17 @@ export default function Ordentrabajoview(){
        
         <h1>Orden de Trabajo</h1>
         <p> El formulario en línea constará de 4 secciones que permitirán determinar los problemas y atender adecuadamente la solicitud. Por favor, responda todos los campos de manera específica. </p>
-        
-        <legend> 1. Indicar la fecha y hora en la que emite la solicitud</legend>
-        <div className="Fecha">
+        <legend> 1. Indicar la fecha y hora en la que emite la solicitud</legend> 
+        <Stack direction="row" spacing={2} alignitems="center" justifyContent="center" color="secondary" >
+        <div className="Fecha Solicitud">
         <Fechacomponent/>
         </div>
+
+        <div className="Fecha Solicitud">
+        <Tiempocomponent/>
+        </div>
+        </Stack>
+        
         <legend> 2. Completar con el número de identificación de la persona que envía la solicitud.</legend>
         <Box
                 component="form"
@@ -163,17 +171,16 @@ const departamentos = [
 ]
 
 const prioridad=[
-    { label: 'Baja (Prorrogable)'},
-    { label: 'Media (Menor a 30 días)'},
+    { label: 'Media (Menor a 15 días)'},
     { label: 'Alta (Menor a 7 días)'},
     { label: 'Crítica (EMERGENCIA)'},
 ]
 
 const tipos=[
     { label: 'Equipo Médico'},
+    { label: 'Infraestructura'},
     { label: 'Sistema de Cómputo'},
     { label: 'Sistema Eléctrico'},
-    { label: 'Sistema Mecánico'},
     { label: 'Civil / Plomería'},
     { label: 'Carpintería / Mobiliario'},
 ]

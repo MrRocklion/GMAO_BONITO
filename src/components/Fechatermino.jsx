@@ -5,7 +5,7 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 
-export default function Fechacomponent() {
+export default function Fechacomponent2() {
   const [value, setValue] = React.useState(new Date('2014-08-18T21:11:54'));
 
   const handleChange = (newValue) => {
@@ -16,7 +16,7 @@ export default function Fechacomponent() {
     <LocalizationProvider dateAdapter={AdapterDateFns}>
       <Stack spacing={3}>
         <DesktopDatePicker
-          label="Fecha Inicio"
+          label="Fecha Termino"
           inputFormat="MM/dd/yyyy"
           value={value}
           onChange={handleChange}

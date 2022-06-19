@@ -39,7 +39,7 @@ export default function Mantenimientoview() {
     }
     console.log(elementosfb);
     const agregarformulario = () => {
-        navigate('/home/OTS')
+        navigate('/home/reportes/agregar')
     }
 
 
@@ -94,7 +94,7 @@ export default function Mantenimientoview() {
                 </div>
             </div>
 
-            {<Button variant="contained" color='success' className="boton" onClick={agregarformulario}>Agregar Orden de Trabajo</Button>}
+            {<Button variant="contained" color='success' className="boton" onClick={agregarformulario}>Agregar Reporte</Button>}
         </>
 
     );

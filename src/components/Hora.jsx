@@ -3,9 +3,9 @@ import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
+import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 
-export default function Fechacomponent() {
+export default function Tiempocomponent() {
   const [value, setValue] = React.useState(new Date('2014-08-18T21:11:54'));
 
   const handleChange = (newValue) => {
@@ -15,9 +15,8 @@ export default function Fechacomponent() {
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>
       <Stack spacing={3}>
-        <DesktopDatePicker
-          label="Fecha Inicio"
-          inputFormat="MM/dd/yyyy"
+      <TimePicker
+          label="Time"
           value={value}
           onChange={handleChange}
           renderInput={(params) => <TextField {...params} />}
