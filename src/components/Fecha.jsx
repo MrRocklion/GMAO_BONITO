@@ -8,7 +8,7 @@ import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 export default function Fechacomponent() {
   const [value, setValue] = React.useState(new Date('2014-08-18T21:11:54'));
 
-  const handleChange = (newValue) => {
+  const handleChange2 = (newValue) => {
     setValue(newValue);
   };
 
@@ -19,7 +19,7 @@ export default function Fechacomponent() {
           label="Fecha Inicio"
           inputFormat="MM/dd/yyyy"
           value={value}
-          onChange={handleChange}
+          onChange={handleChange2}
           renderInput={(params) => <TextField {...params} />}
         />
       </Stack>
