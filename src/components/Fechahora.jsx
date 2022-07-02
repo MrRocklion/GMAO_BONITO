@@ -16,7 +16,7 @@ export default function Fechacomponent3() {
     <LocalizationProvider dateAdapter={AdapterDateFns}>
       <Stack spacing={3}>
       <DateTimePicker
-          label="Date&Time picker"
+          label="Fecha"
           value={value}
           onChange={handleChange}
           renderInput={(params) => <TextField {...params} />}

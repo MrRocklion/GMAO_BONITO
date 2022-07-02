@@ -1,0 +1,26 @@
+.modal-footer{
+    justify-content: center !important;
+}
+
+.fila{
+    display: flex;
+    flex-direction: row;
+    justify-content: center !important;
+}
+
+.archivo{
+    margin-right: 10px;
+}
+
+.modal-header{
+    justify-content: center !important;
+}
+
+.form-control{
+    border: 1px solid #a9cce3 !important;
+    color:#212529 !important ;
+}
+
+.form-label{
+ color: #4f8cb5;
+}

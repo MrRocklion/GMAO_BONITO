@@ -14,8 +14,10 @@ import Cuestionario from "./Empresas";
 import Formularioscompras from "./Iniciocompras";
 import Reportexterno from "./Tablarexternos";
 import Intervencionesview from "./Intervenciones";
+import Contratosview from "./Contratos";
 // import Formularioview from "./formulario";
 import { Routes, Route } from "react-router-dom";
+import Vistacontratos from "./Vistacontratos";
 
 
 
@@ -26,8 +28,10 @@ return(
     <>
         <MenuApp2 />
         <Routes>
-        <Route path="/activos" element={<Activosview />} />
-        <Route path="/inventario" element={<Inventarioview />} />
+        <Route path="/activos/equipos" element={<Activosview />} />
+        <Route path="/activos/contrato" element={<Vistacontratos />} />
+        <Route path="/inventario/invequipos" element={<Inventarioview />} />
+        <Route path="/inventario/contratos" element={<Contratosview />} />
         <Route path="/inventario/solicitudcompra" element={<Formularioscompras/>} />
         <Route path="/mantenimiento/estatus" element={<Mantenimientoview />} />
         <Route path="/mantenimiento/contactos" element={<Contactosempresas />} />

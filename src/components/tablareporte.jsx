@@ -1,4 +1,7 @@
 import React, { useEffect, useState } from "react";
+import InfoIcon from '@mui/icons-material/Info';
+import IconButton from '@mui/material/IconButton';
+import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { collection, setDoc, query, doc, updateDoc, deleteDoc, onSnapshot } from "firebase/firestore";
 import Grid from "@mui/material/Grid"
 import { db } from "../firebase/firebase-config"
@@ -17,14 +20,14 @@ import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 
 export default function Tablareporte() {
     const [data, setData] = useState([]);
     const [modalActualizar, setModalactualizar] = useState(false);
     const [modalInsertar, setModalinsertar] = useState(false);
-    const [value, setValue] = React.useState(new Date('2014-08-18T21:11:54'));
-    const [value2, setValue2] = React.useState(new Date('2015-08-18T21:11:54'));
+    const [modalInformacion, setModalinformacion] = useState(false);
+    const [value, setValue] = React.useState(new Date('2022-08-01T21:11:54'));
+    const [value2, setValue2] = React.useState(new Date('2022-08-02T21:11:54'));
     const [form, setForm] = useState({
         fechainicio: "",
         fechatermino: "",
@@ -53,7 +56,6 @@ export default function Tablareporte() {
                 querySnapshot.docs.map((doc) => ({ ...doc.data() }))
             );
         });
-
     }
 
 
@@ -78,6 +80,7 @@ export default function Tablareporte() {
             observaciones1: informacion.observaciones1,
             verificador: informacion.verificador,
             id: uuidv4(),
+            indice: Date.now(),
         }
 
 
@@ -89,13 +92,19 @@ export default function Tablareporte() {
         }
     }
 
-
-
-
-
     const mostrarModalActualizar = (dato) => {
         setForm(dato);
         setModalactualizar(true);
+    };
+
+    const mostrarModalInformacion = (dato) => {
+        setForm(dato);
+        setModalinformacion(true);
+    };
+
+    const cerrarModalInformacion = () => {
+        // this.setState({ modalActualizar: false });
+        setModalinformacion(false);
     };
 
     const cerrarModalActualizar = () => {
@@ -189,13 +198,34 @@ export default function Tablareporte() {
             },
         )
     };
+
     const handleChange2 = (newValue) => {
         setValue(newValue);
-      };
-      const handleChange3 = (newValue) => {
+    };
+    const handleChange3 = (newValue) => {
         setValue2(newValue);
-      };
+    };
 
+    const selecMantenimiento = (e)=>{
+        console.log(e.target.value);
+        var newForm2 = form;
+        newForm2.tipomant = e.target.value;
+        setForm(newForm2);
+    };
+
+    const selecEstado = (e)=>{
+        console.log(e.target.value);
+        var newForm2 = form;
+        newForm2.estadoequipo = e.target.value;
+        setForm(newForm2);
+    };
+
+    const selecAlerta = (e)=>{
+        console.log(e.target.value);
+        var newForm2 = form;
+        newForm2.nivelalerta = e.target.value;
+        setForm(newForm2);
+    };
 
 
     useEffect(() => {
@@ -208,7 +238,7 @@ export default function Tablareporte() {
         <>
             <Container>
                 <br />
-                <Button color="success" onClick={() => mostrarModalInsertar()}>Crear</Button>
+                <Button color="success" onClick={() => mostrarModalInsertar()}>Agregar Reporte</Button>
                 <br />
                 <br />
                 <Table>
@@ -218,20 +248,11 @@ export default function Tablareporte() {
                             <th>ID</th>
                             <th>Fecha Inicio</th>
                             <th>Fecha Culminacion</th>
-                            <th>Codigo O/T</th>
-                            <th>CI Tecnico</th>
-                            <th>Codigo Equipo</th>
+                            <th>Código O/T</th>
                             <th>Estado Equipo</th>
-                            <th>Tipo Mantenimiento</th>
-                            <th>Nivel Alerta</th>
                             <th>Falla</th>
-                            <th>Causas</th>
-                            <th>Actividades</th>
                             <th>H.Perdidas</th>
-                            <th>Repuestos</th>
                             <th>Costo</th>
-                            <th>Observaciones</th>
-                            <th>Verificador</th>
                             <th>Acciones</th>
                             <th>Información</th>
 
@@ -239,44 +260,196 @@ export default function Tablareporte() {
                     </thead>
 
                     <tbody>
-                        {data.map((dato, index) => (
-
-                            <tr key={dato.id} >
-                                <td>{index}</td>
+                        {data.sort((a, b) => (a.indice - b.indice)).map((dato, index) => (
+                            <tr key={dato.indice} >
+                                <td>{index + 1}</td>
                                 <td>{dato.id}</td>
                                 <td>{dato.fechainicio}</td>
                                 <td>{dato.fechatermino}</td>
                                 <td>{dato.codigoot}</td>
-                                <td>{dato.cedulat}</td>
-                                <td>{dato.codigoe}</td>
                                 <td>{dato.estadoequipo}</td>
-                                <td>{dato.tipomant}</td>
-                                <td>{dato.nivelalerta}</td>
                                 <td>{dato.falla}</td>
-                                <td>{dato.causas}</td>
-                                <td>{dato.actividades}</td>
                                 <td>{dato.hperdidas}</td>
-                                <td>{dato.repuestos}</td>
                                 <td>{dato.costo}</td>
-                                <td>{dato.observaciones1}</td>
-                                <td>{dato.verificador}</td>
                                 <td>
-                                    <Button
-                                        color="primary"
-                                        onClick={() => mostrarModalActualizar(dato)}
-                                    >
-                                        Editar
-                                    </Button>{" "}
-                                    <Button color="danger" onClick={() => eliminar(dato)}>Eliminar</Button>
+                                    <Stack direction="row" spacing={2} alignitems="center" justifyContent="center" >
+                                        <Button
+                                            color="primary"
+                                            onClick={() => mostrarModalActualizar(dato)}
+                                        >
+                                            Editar
+                                        </Button>{" "}
+                                        <Button color="danger" onClick={() => eliminar(dato)}>Eliminar</Button>
+                                    </Stack>
                                 </td>
                                 <td>
-                                    <Button color="info" onClick={() => eliminar(dato)}>Información</Button>
+                                    <IconButton aria-label="delete" color="success" onClick={() => mostrarModalInformacion(dato)}><InfoIcon /></IconButton>
+
                                 </td>
                             </tr>
                         ))}
                     </tbody>
                 </Table>
             </Container>
+
+            <Modal isOpen={modalInformacion}>
+                <ModalHeader>
+                    <div><h1>Informacion Reporte</h1></div>
+                </ModalHeader>
+                <ModalBody>
+                <FormGroup>
+                    <Grid container spacing={4}>
+                    <Grid item xs={1.5}>
+                    </Grid>
+                    <Grid item xs={9}>
+                    <label>
+                            Código Reporte:
+                        </label>
+
+                        <input
+                            className="form-control"
+                            readOnly
+                            type="text"
+                            value={form.id}
+                        />
+                    </Grid>
+                    <Grid item xs={1.5}>
+                    </Grid>
+                    </Grid>
+                    </FormGroup>
+                    
+                    <FormGroup>
+                    <Grid container spacing={4}>
+                        <Grid item xs={6}>
+                        <label>
+                            CedulaT:
+                        </label>
+
+                        <input
+                            className="form-control"
+                            readOnly
+                            type="text"
+                            value={form.cedulat}
+                        />
+                        </Grid>
+                        <Grid item xs={6}>
+                        <label>
+                            Código Equipo:
+                        </label>
+
+                        <input
+                            className="form-control"
+                            readOnly
+                            type="text"
+                            value={form.codigoe}
+                        />
+                        </Grid>
+                        <Grid item xs={6}>
+                        <label>
+                            Tipo Mantenimiento:
+                        </label>
+
+                        <input
+                            className="form-control"
+                            readOnly
+                            type="text"
+                            value={form.tipomant}
+                        /> 
+                        </Grid>
+                        <Grid item xs={6}>
+                        <label>
+                            Nivel Alerta:
+                        </label>
+
+                        <input
+                            className="form-control"
+                            readOnly
+                            type="text"
+                            value={form.nivelalerta}
+                        /> 
+                        </Grid>
+                        
+                    </Grid>
+                    </FormGroup>
+                    <FormGroup>
+                        <label>
+                            Causas:
+                        </label>
+
+                        <input
+                            className="form-control"
+                            readOnly
+                            type="text"
+                            value={form.causas}
+                        />
+                    </FormGroup>
+                    <FormGroup>
+                        <label>
+                            Actividades:
+                        </label>
+
+                        <input
+                            className="form-control"
+                            readOnly
+                            type="text"
+                            value={form.actividades}
+                        />
+                    </FormGroup>
+                    <FormGroup>
+                        <label>
+                            Repuestos:
+                        </label>
+
+                        <input
+                            className="form-control"
+                            readOnly
+                            type="text"
+                            value={form.repuestos}
+                        />
+                    </FormGroup>
+                    <FormGroup>
+                        <label>
+                            Observaciones:
+                        </label>
+
+                        <input
+                            className="form-control"
+                            readOnly
+                            type="text"
+                            value={form.observaciones1}
+                        />
+                    </FormGroup>
+                    <FormGroup>
+                    <Grid container spacing={4}>
+                    <Grid item xs={3}>
+                    </Grid>
+                    <Grid item xs={6}>
+                    <label>
+                            Verificador:
+                        </label>
+
+                        <input
+                            className="form-control"
+                            readOnly
+                            type="text"
+                            value={form.verificador}
+                        />
+                    </Grid>
+                    <Grid item xs={3}>
+                    </Grid>
+                    </Grid>
+                    </FormGroup>
+
+                </ModalBody>
+                <ModalFooter>
+                    <Button
+                        color="danger"
+                        onClick={() => cerrarModalInformacion()}
+                    >
+                        Cancelar
+                    </Button>
+                </ModalFooter>
+            </Modal>
 
             <Modal isOpen={modalActualizar}>
                 <ModalHeader>
@@ -325,7 +498,7 @@ export default function Tablareporte() {
 
                     <FormGroup>
                         <label>
-                            Codigo OT
+                            Código OT
                         </label>
                         <input
                             className="form-control"
@@ -351,7 +524,7 @@ export default function Tablareporte() {
 
                     <FormGroup>
                         <label>
-                            Codigo Equipo:
+                            Código Equipo:
                         </label>
                         <input
                             className="form-control"
@@ -366,38 +539,31 @@ export default function Tablareporte() {
                         <label>
                             Estado:
                         </label>
-                        <input
-                            className="form-control"
-                            name="estadoequipo"
-                            type="text"
-                            onChange={handleChange}
-                            value={form.estadoequipo}
-                        />
+                        <select  onChange={selecEstado} className="form-select" aria-label="Default select tipo">
+                                    <option value="Reparado Completamente" >Reparado Completamente</option>
+                                    <option value="Reparado Parcialmente">Reparado Parcialmente</option>
+                                    <option value="En espera de repuestos">En espera de repuestos</option>
+                                    <option value="Baja">Baja</option>
+                        </select>
                     </FormGroup>
 
                     <FormGroup>
                         <label>
                             Tipo:
                         </label>
-                        <input
-                            className="form-control"
-                            name="tipomant"
-                            type="text"
-                            onChange={handleChange}
-                            value={form.tipomant}
-                        />
+                        <select  onChange={selecMantenimiento} className="form-select" aria-label="Default select tipo">
+                                    <option value="Preventivo" >Preventivo</option>
+                                    <option value="Correctivo">Correctivo</option>
+                        </select>
                     </FormGroup>
                     <FormGroup>
                         <label>
-                            Alerta:
+                            Nivel de Alerta:
                         </label>
-                        <input
-                            className="form-control"
-                            name="nivelalerta"
-                            type="text"
-                            onChange={handleChange}
-                            value={form.nivelalerta}
-                        />
+                        <select  onChange={selecAlerta} className="form-select" aria-label="Default select tipo">
+                                    <option value="Funcional" >Funcional</option>
+                                    <option value="Catastrófico">Catastrófico</option>
+                        </select>
                     </FormGroup>
                     <FormGroup>
                         <label>
@@ -523,109 +689,124 @@ export default function Tablareporte() {
                 <ModalBody>
                     <FormGroup>
                         <Grid container spacing={4}>
-                            
+
 
                             <Grid item xs={6}>
                                 <LocalizationProvider dateAdapter={AdapterDateFns}>
                                     <Stack spacing={3}>
-                                        <DesktopDatePicker
-                                        label="Fecha Inicio"
-                                        inputFormat="MM/dd/yyyy"
-                                        value={value}
-                                        onChange={handleChange2}
-                                        renderInput={(params) => <TextField {...params} />}
+                                        <DateTimePicker
+                                            label="Fecha Inicio"
+                                            value={value}
+                                            onChange={handleChange2}
+                                            renderInput={(params) => <TextField {...params} />}
                                         />
                                     </Stack>
-                                    </LocalizationProvider>
+                                </LocalizationProvider>
                             </Grid>
 
                             <Grid item xs={6}>
-                            <LocalizationProvider dateAdapter={AdapterDateFns}>
-                                <Stack spacing={3}>
-                                    <DesktopDatePicker
-                                    label="Fecha Termino"
-                                    inputFormat="MM/dd/yyyy"
-                                    value={value2}
-                                    onChange={handleChange3}
-                                    renderInput={(params) => <TextField {...params} />}
-                                    />
-                                </Stack>
+                                <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                    <Stack spacing={3}>
+                                        <DateTimePicker
+                                            label="Fecha Termino"
+                                            value={value2}
+                                            onChange={handleChange3}
+                                            renderInput={(params) => <TextField {...params} />}
+                                        />
+                                    </Stack>
                                 </LocalizationProvider>
                             </Grid>
                             <Grid item xs={6}>
-                            <label>
-                            Codigo O/T:
-                        </label>
-                        <input
-                            className="form-control"
-                            name="codigoot"
-                            type="text"
-                            onChange={handleChange}
-                        />
+                                <label>
+                                    Código O/T:
+                                </label>
+                                <input
+                                    className="form-control"
+                                    name="codigoot"
+                                    type="text"
+                                    onChange={handleChange}
+                                />
                             </Grid>
                             <Grid item xs={6}>
-                            <label>
-                            CI Tecnico:
-                        </label>
-                        <input
-                            className="form-control"
-                            name="cedulat"
-                            type="text"
-                            onChange={handleChange}
-                            />
+                                <label>
+                                    CI Tecnico:
+                                </label>
+                                <input
+                                    className="form-control"
+                                    name="cedulat"
+                                    type="text"
+                                    onChange={handleChange}
+                                />
 
                             </Grid>
                             <Grid item xs={6}>
-                            <label>
-                            Codigo Equipo:
-                        </label>
-                        <input
-                            className="form-control"
-                            name="codigoe"
-                            type="text"
-                            onChange={handleChange}
-                        />
+                                <label>
+                                    Código Equipo:
+                                </label>
+                                <input
+                                    className="form-control"
+                                    name="codigoe"
+                                    type="text"
+                                    onChange={handleChange}
+                                />
+                            </Grid >
+                            <Grid item xs={6}>
+                                <label>
+                                    Tipo de Mantenimiento:
+                                </label>
+                                <select  onChange={selecMantenimiento} className="form-select" aria-label="Default select tipo">
+                                    <option value="Preventivo" >Preventivo</option>
+                                    <option value="Correctivo">Correctivo</option>
+                                </select>
+                                
                             </Grid>
-
+                            <Grid item xs={6}>
+                                <label>
+                                    Estado:
+                                </label>
+                                <select  onChange={selecEstado} className="form-select" aria-label="Default select tipo">
+                                    <option value="Reparado Completamente" >Reparado Completamente</option>
+                                    <option value="Reparado Parcialmente">Reparado Parcialmente</option>
+                                    <option value="En espera de repuestos">En espera de repuestos</option>
+                                    <option value="Baja">Baja</option>
+                        </select>
+                            </Grid>
+                            <Grid item xs={6}>
+                                <label>
+                                    Nivel Alerta:
+                                </label>
+                                <select  onChange={selecAlerta} className="form-select" aria-label="Default select tipo">
+                                    <option value="Funcional" >Funcional</option>
+                                    <option value="Catastrófico">Catastrófico</option>
+                                </select>
+                            </Grid>
+                            <Grid item xs={6}>
+                                <label>
+                                    H.Perdidas:
+                                </label>
+                                <input
+                                    className="form-control"
+                                    name="hperdidas"
+                                    type="text"
+                                    onChange={handleChange}
+                                />
+                            </Grid>
+                            <Grid item xs={6}>
+                                <label>
+                                    Costo:
+                                </label>
+                                <input
+                                    className="form-control"
+                                    name="costo"
+                                    type="text"
+                                    onChange={handleChange}
+                                />
+                            </Grid>
 
                         </Grid>
                     </FormGroup>
                     {/* aqui termina el grid */}
-                    
 
-                    <FormGroup>
-                        <label>
-                            Estado:
-                        </label>
-                        <input
-                            className="form-control"
-                            name="estadoequipo"
-                            type="text"
-                            onChange={handleChange}
-                        />
-                    </FormGroup>
-                    <FormGroup>
-                        <label>
-                            Tipo:
-                        </label>
-                        <input
-                            className="form-control"
-                            name="tipomant"
-                            type="text"
-                            onChange={handleChange}
-                        />
-                    </FormGroup>
-                    <FormGroup>
-                        <label>
-                            Alerta:
-                        </label>
-                        <input
-                            className="form-control"
-                            name="nivelalerta"
-                            type="text"
-                            onChange={handleChange}
-                        />
-                    </FormGroup>
                     <FormGroup>
                         <label>
                             Falla:
@@ -661,17 +842,6 @@ export default function Tablareporte() {
                     </FormGroup>
                     <FormGroup>
                         <label>
-                            H.Perdidas:
-                        </label>
-                        <input
-                            className="form-control"
-                            name="hperdidas"
-                            type="text"
-                            onChange={handleChange}
-                        />
-                    </FormGroup>
-                    <FormGroup>
-                        <label>
                             Repuestos:
                         </label>
                         <input
@@ -680,17 +850,7 @@ export default function Tablareporte() {
                             type="text"
                             onChange={handleChange}
                         />
-                    </FormGroup>
-                    <FormGroup>
-                        <label>
-                            Costo:
-                        </label>
-                        <input
-                            className="form-control"
-                            name="costo"
-                            type="text"
-                            onChange={handleChange}
-                        />
+
                     </FormGroup>
                     <FormGroup>
                         <label>

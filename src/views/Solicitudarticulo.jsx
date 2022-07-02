@@ -132,8 +132,12 @@ export default function Articuloview(){
                 <TextField label="Proveedor" color="secondary" focused type="int" onChange={(e) =>setProveedorcom(e.target.value)} />
             </Box> 
             </Stack>  
-            <legend> Documento Proforma</legend>    
+            <legend> Documento Proforma</legend>   
+
+            
+
                         <Stack direction="row" spacing={2} alignitems="center" justifyContent="center" >
+                        <Button variant="contained">Cargar</Button>
                         <Button variant="outlined" startIcon={<DeleteIcon />}className="boton" onClick={cancelar}>
                     Cancelar</Button>
                 <Button variant="contained" endIcon={<SendIcon />} onClick={enviardatos4}>

@@ -309,12 +309,12 @@ export default function MenuApp2(props) {
                                 <ListItemText primary="Estátus R. Externos" />
                             </ListItemButton>
 
-                            <ListItemButton onClick={() =>Changeview('/home/reportes/agregar')} sx={{ pl: 4 }}>
+                            {/* <ListItemButton onClick={() =>Changeview('/home/reportes/agregar')} sx={{ pl: 4 }}>
                                 <ListItemIcon>
                                     <StarBorder />
                                 </ListItemIcon>
                                 <ListItemText primary="Formulario Reporte" />
-                            </ListItemButton>
+                            </ListItemButton> */}
                         </List>
                     </Collapse>
                     {/* Fin Boton Gestion de Reportes  */}

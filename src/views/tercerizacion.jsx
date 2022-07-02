@@ -1,21 +1,26 @@
 import React, { useState } from "react";
 import Box from '@mui/material/Box';
 import Autocomplete from '@mui/material/Autocomplete';
-import TextField from '@mui/material/TextField';
 // import { useNavigate } from 'react-router-dom'
 import Button from '@mui/material/Button';
 // import DeleteIcon from '@mui/icons-material/Delete';
 import SendIcon from '@mui/icons-material/Send';
 import Stack from '@mui/material/Stack';
-import Fechacomponent from "../components/Fecha";
-import Tiempocomponent from "../components/Hora";
-import { collection, addDoc } from "firebase/firestore";
+import { setDoc, doc} from "firebase/firestore";
 import { db } from "../firebase/firebase-config";
 import { v4 as uuidv4 } from 'uuid';
+import TextField from '@mui/material/TextField';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
+import {Container} from "reactstrap";
+import Grid from "@mui/material/Grid"
 
 export default function Tercerizacion(){
 
     // const navigate = useNavigate();
+    const [value6, setValue6] = React.useState(new Date('2022-08-01T21:11:54'));
+    const [value7, setValue7] = React.useState(new Date('2022-08-02T21:11:54'));
     const [empresaext,setEmpresaext] = useState('');
     const [numeroreportefisico,setNumeroreportefisico] = useState('');
     const [equipoter,setEquipoter] = useState('');
@@ -25,73 +30,111 @@ export default function Tercerizacion(){
     // }
 
 
-    const enviardatoster= async(orden) => {
-        try {
-          const docRef = await addDoc(collection(db, "reportes externos"), {
-           fechaext: "Hola",
-           empresaext: empresaext,
-           numeroreportefisico: numeroreportefisico,
-           equipoter: equipoter,
-           estadoext:"Pendiente",
+    const enviardatoster= () => {
+
+        var externos = {
+            feinicio: "",
+            fetermino: "",
+            empresaext: empresaext,
+            numeroreportefisico: numeroreportefisico,
+            equipoter: equipoter,
+            estadoext:"Pendiente",
             id: uuidv4(),
-
-
-          });
-          console.log("Holiss");
-          console.log("Document written with ID: ", docRef.id);
-        } catch (e) {
-          console.error("Error adding document: ", e);
-        }
+        };
+        sendFirestore(externos);
     }
+    const sendFirestore = (externos) => {
+        try {
+            setDoc(doc(db, "reportes externos",`${externos.id}` ),externos);
+              console.log("Reporte agregado")
+        } catch (e) {
+            console.error("Error adding document: ", e);
+        } 
+    }
+
+
+    const handleChange6 = (newValue) => {
+        setValue6(newValue);
+    };
+    const handleChange7 = (newValue) => {
+        setValue7(newValue);
+    };
 
     return(
         <>
         <h1> Módulo Tercerizacion</h1>
-        <legend> 1. Indicar la fecha y hora en la que emitio la solicitud</legend> 
-        <Stack direction="row" spacing={2} alignitems="center" justifyContent="center" color="secondary" >
-        <div className="Fecha Solicitud">
-        <Fechacomponent/>
-        </div>
+        <Container>
+        <Grid container spacing={4}> 
+        <Grid item xs={2}></Grid>
+        <Grid item xs={4}>
+        <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                    <Stack spacing={3}>
+                                        <DateTimePicker
+                                            label="Fecha Inicio Actividad"
+                                            value={value6}
+                                            onChange={handleChange6}
+                                            renderInput={(params) => <TextField {...params} />}
+                                        />
+                                    </Stack>
+            </LocalizationProvider>
+            </Grid>
+        <Grid item xs={4}>
+        <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                    <Stack spacing={3}>
+                                        <DateTimePicker
+                                            label="Fecha Culminacion Actividad"
+                                            value={value7}
+                                            onChange={handleChange7}
+                                            renderInput={(params) => <TextField {...params} />}
+                                        />
+                                    </Stack>
+                                </LocalizationProvider>
+        </Grid>
+        <Grid item xs={2}></Grid>
+       
 
-        <div className="Fecha Solicitud">
-        <Tiempocomponent/>
-        </div>
-        </Stack>
-
-        <legend> 2. Seleccionar la empresa a la que corresponde.</legend>
+        <Grid item xs={12}>
+        {/* <legend> Seleccionar la empresa a la que corresponde.</legend> */}
         <Autocomplete
             disablePortal
             id="combo-box-demo"
             options={empresaexterna}
             onChange={(event,newvalue) =>setEmpresaext(newvalue.label)}
-            sx={{ '& > :not(style)': { m: 3, width: '100ch' },}}
-            renderInput={(params) => <TextField {...params} label="Empresa" color="secondary" type="text"   focused />}
+            sx={{ '& > :not(style)': { m: 3, width: '60ch' },}}
+            renderInput={(params) => <TextField {...params} label="Seleccionar la empresa a la que corresponde" color="secondary" type="text"   focused />}
         />
+        </Grid>
 
-        <legend> 3. Completar con el número de identificación del reporte.</legend>
+        <Grid item xs={12}>
+        {/* <legend> Completar con el número de identificación del reporte.</legend> */}
         <Box
                 component="form"
                 sx={{
-                '& > :not(style)': { m: 3, width: '100ch' },
+                '& > :not(style)': { m: 3, width: '60ch' },
                 }}
                 noValidate
                 autoComplete="off">
-                <TextField label="Número de Reporte" color="secondary" focused type="int"  onChange={(e) =>setNumeroreportefisico(e.target.value)}  />      
+                <TextField label="Completar con el número de identificación del reporte" color="secondary" focused type="int"  onChange={(e) =>setNumeroreportefisico(e.target.value)}  />      
             </Box>
-
-            <legend> 4. Indicar equipo o equipos manipulados. </legend>
+            </Grid>
+            <Grid item xs={12}>
+            {/* <legend> Indicar equipo o equipos manipulados. </legend> */}
         <Box
                 component="form"
                 sx={{
-                '& > :not(style)': { m: 3, width: '100ch' },
+                '& > :not(style)': { m: 3, width: '70ch' },
                 }}
                 noValidate
                 autoComplete="off">
-                <TextField label="Equipos" color="secondary" focused type="int"  onChange={(e) =>setEquipoter(e.target.value)}  />      
+                <TextField label="Indicar equipo o equipos manipulados" color="secondary" focused type="int"  onChange={(e) =>setEquipoter(e.target.value)}  />      
             </Box>
-
-            <legend> Cargar imagen o documento del reporte físico </legend>
-
+            </Grid>
+            <Grid item xs={3}></Grid>
+            <Grid item xs={6}>
+            <div className="mb-3">
+            <label className="form-label">Cargar Reporte Físico</label>
+            <input className="form-control form-control-sm" id="formFileSm" type="file"/>
+            </div>
 
             <Stack direction="row" spacing={2} alignitems="center" justifyContent="center" >
             
@@ -101,6 +144,10 @@ export default function Tercerizacion(){
                  Enviar</Button>
             
         </Stack>
+        </Grid>
+        <Grid item xs={3}></Grid>
+        </Grid>
+        </Container>
         </>
     );
 }

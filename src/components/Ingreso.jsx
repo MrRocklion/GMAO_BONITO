@@ -18,26 +18,27 @@ import { v4 as uuidv4 } from 'uuid';
 import Stack from '@mui/material/Stack';
 
 
-export default function Contactosempresas() {
+export default function Ingresoequipos() {
     const [data, setData] = useState([]);
     const [modalActualizar, setModalactualizar] = useState(false);
     const [modalInsertar, setModalinsertar] = useState(false);
     const [modalInformacion, setModalinformacion] = useState(false);
     const [form, setForm] = useState({
         codigo: "",
-        empresa:"",
-        representante:"",
-        direccion:"",
-        ruc:"",
-        correo:"",
-        telefono:"",
-        producto:"",
-        evaluacion:"",
-
+        equipo: "",
+        propietario: "",
+        marca: "",
+        modelo: "",
+        serie: "",
+        accesorios: "",
+        area: "",
+        tipo: "",
+        seguro: "",
     });
 
+
     const getData = async () => {
-        const reference = query(collection(db, "empresas"));
+        const reference = query(collection(db, "ingreso"));
         onSnapshot(reference, (querySnapshot) => {
             console.log(querySnapshot.docs)
             setData(
@@ -45,25 +46,30 @@ export default function Contactosempresas() {
             );
         });
     }
+
+
+
     const agregardatos = async (informacion) => {
 
         const newperson = {
+
             codigo: informacion.codigo,
-            empresa: informacion.empresa,
-            representante: informacion.representante,
-            direccion: informacion.direccion,
-            ruc: informacion.ruc,
-            correo: informacion.correo,
-            telefono: informacion.telefono,
-            producto: informacion.producto,
-            evaluacion: informacion.evaluacion,
+            equipo: informacion.equipo,
+            propietario: informacion.propietario,
+            marca: informacion.marca,
+            modelo: informacion.modelo,
+            serie: informacion.serie,
+            accesorios: informacion.accesorios,
+            area: informacion.area,
+            tipo: informacion.tipo,
+            seguro: informacion.seguro,
             id: uuidv4(),
             indice: Date.now(),
         }
 
 
         try {
-            await setDoc(doc(db, "empresas", `${newperson.id}`), newperson);
+            await setDoc(doc(db, "ingreso", `${newperson.id}`), newperson);
 
         } catch (e) {
             console.error("Error adding document: ", e);
@@ -106,18 +112,20 @@ export default function Contactosempresas() {
 
         var arreglo = data;
         console.log(data);
-        const database = doc(db, "empresas", dato.id);
+        const database = doc(db, "ingreso", dato.id);
         arreglo.map((registro) => {
             if (dato.id === registro.id) {
-                registro.codigo= dato.codigo;
-                registro.empresa= dato.empresa;
-                registro.representante= dato.representante;
-                registro.direccion= dato.direccion;
-                registro.ruc= dato.ruc;
-                registro.correo= dato.correo;
-                registro.telefono= dato.telefono;
-                registro.producto= dato.producto;
-                registro.evaluacion= dato.evaluacion;
+                registro.codigo = dato.codigo;
+                registro.equipo = dato.equipo;
+                registro.propietario = dato.propietario;
+                registro.marca = dato.marca;
+                registro.modelo = dato.modelo;
+                registro.serie = dato.serie;
+                registro.accesorios = dato.accesorios;
+                registro.area = dato.area;
+                registro.tipo = dato.tipo;
+                registro.seguro = dato.seguro;
+
                 return 0;
             }
             return 0;
@@ -125,22 +133,24 @@ export default function Contactosempresas() {
         setData(arreglo);
         await updateDoc(database, {
             codigo: dato.codigo,
-            empresa: dato.empresa,
-            representante: dato.representante,
-            direccion: dato.direccion,
-            ruc: dato.ruc,
-            correo: dato.correo,
-            telefono: dato.telefono,
-            producto: dato.producto,
-            evaluacion: dato.evaluacion,
+            equipo: dato.equipo,
+            propietario: dato.propietario,
+            marca: dato.marca,
+            modelo: dato.modelo,
+            serie: dato.serie,
+            accesorios: dato.accesorios,
+            area: dato.area,
+            tipo: dato.tipo,
+            seguro: dato.seguro,
         });
 
         setModalactualizar(false);
     };
+
     const eliminar = async (dato) => {
         var opcion = window.confirm("Estás Seguro que deseas Eliminar el elemento " + dato.id);
         if (opcion === true) {
-            await deleteDoc(doc(db, "empresas", `${dato.id}`));
+            await deleteDoc(doc(db, "ingreso", `${dato.id}`));
             setModalactualizar(false);
         }
     };
@@ -161,13 +171,35 @@ export default function Contactosempresas() {
         )
         console.log(form);
     };
+    const selecSeguro = (e)=>{
+        console.log(e.target.value);
+        var newForm = form;
+        newForm.seguro = e.target.value;
+        setForm(newForm);
+    };
+    const selecTipo = (e)=>{
+        console.log(e.target.value);
+        var newForm = form;
+        newForm.tipo = e.target.value;
+        setForm(newForm);
+    };
+    const selecDepartamento = (e)=>{
+        console.log(e.target.value);
+        var newForm = form;
+        newForm.area = e.target.value;
+        setForm(newForm);
+    };
+
+
     useEffect(() => {
         getData();
     }, [])
 
+
+
     return (
         <>
-        <Container>
+            <Container>
                 <br />
                 <Button color="success" onClick={() => mostrarModalInsertar()}>Agregar Equipo</Button>
                 <br />
@@ -175,11 +207,12 @@ export default function Contactosempresas() {
                 <Table>
                     <thead>
                         <tr>
-                            <th>Empresa</th>
-                            <th>Representante</th>
-                            <th>Ruc</th>
-                            <th>Contacto</th>
-                            <th>Correo</th>
+                            <th>#</th>
+                            <th>Codigo</th>
+                            <th>Equipo</th>
+                            <th>Departamento</th>
+                            <th>Propietario</th>
+                            <th>Seguro</th>
                             <th>Acciones</th>
                             <th>Información</th>
 
@@ -189,11 +222,12 @@ export default function Contactosempresas() {
                     <tbody>
                         {data.sort((a, b) => (a.indice - b.indice)).map((dato, index) => (
                             <tr key={dato.indice} >
-                                <td>{dato.empresa}</td>
-                                <td>{dato.representante}</td>
-                                <td>{dato.ruc}</td>
-                                <td>{dato.telefono}</td>
-                                <td>{dato.correo}</td>
+                                <td>{index + 1}</td>
+                                <td>{dato.codigo}</td>
+                                <td>{dato.equipo}</td>
+                                <td>{dato.area}</td>
+                                <td>{dato.propietario}</td>
+                                <td>{dato.seguro}</td>
                                 <td>
                                     <Stack direction="row" spacing={2} alignitems="center" justifyContent="center" >
                                         <Button
@@ -222,44 +256,67 @@ export default function Contactosempresas() {
                 <ModalBody>
                     <FormGroup>
                         <Grid container spacing={4}>
-                        <Grid item xs={12}>
-                                <label>
-                                    Direccion:
-                                </label>
-
-                                <input
-                                    className="form-control"
-                                    readOnly
-                                    type="text"
-                                    value={form.direccion}
-                                />
-                            </Grid>
-                            <Grid item xs={12}>
-                                <label>
-                                    Producto/Servicio:
-                                </label>
-
-                                <input
-                                    className="form-control"
-                                    readOnly
-                                    type="text"
-                                    value={form.producto}
-                                />
-                            </Grid>
-                            <Grid item xs={3}></Grid>
                             <Grid item xs={6}>
                                 <label>
-                                    Evaluacion:
+                                    Tipo de Equipo:
                                 </label>
 
                                 <input
                                     className="form-control"
                                     readOnly
                                     type="text"
-                                    value={form.evaluacion}
+                                    value={form.tipo}
                                 />
                             </Grid>
-                            <Grid item xs={3}></Grid>
+                            <Grid item xs={6}>
+                                <label>
+                                    Marca:
+                                </label>
+
+                                <input
+                                    className="form-control"
+                                    readOnly
+                                    type="text"
+                                    value={form.marca}
+                                />
+                            </Grid>
+                            <Grid item xs={6}>
+                                <label>
+                                    Modelo:
+                                </label>
+
+                                <input
+                                    className="form-control"
+                                    readOnly
+                                    type="text"
+                                    value={form.modelo}
+                                />
+                            </Grid>
+                            <Grid item xs={6}>
+                                <label>
+                                    Serie:
+                                </label>
+
+                                <input
+                                    className="form-control"
+                                    readOnly
+                                    type="text"
+                                    value={form.serie}
+                                />
+                            </Grid>
+
+                            <Grid item xs={12}>
+                                <label>
+                                    Accesorios:
+                                </label>
+
+                                <input
+                                    className="form-control"
+                                    readOnly
+                                    type="text"
+                                    value={form.accesorios}
+                                />
+                            </Grid>
                         </Grid>
                     </FormGroup>
 
@@ -281,113 +338,130 @@ export default function Contactosempresas() {
                 <ModalBody>
                     <FormGroup>
                         <Grid container spacing={4}>
-                        <Grid item xs={12}>
-                                <label>
-                                    Empresa:
-                                </label>
-
-                                <input
-                                    className="form-control"
-                                    name="empresa"
-                                    type="text"
-                                    onChange={handleChange}
-                                    value={form.empresa}
-                                />
-                            </Grid>
                             <Grid item xs={12}>
                                 <label>
-                                    Representante Legal:
+                                    Código Equipo:
                                 </label>
 
                                 <input
                                     className="form-control"
-                                    name="representante"
+                                    name="codigo"
                                     type="text"
                                     onChange={handleChange}
-                                    value={form.representante}
+                                    value={form.codigo}
                                 />
                             </Grid>
                             <Grid item xs={6}>
                                 <label>
-                                    RUC:
+                                    Tipo Equipo:
+                                </label>
+                                <select  onChange={selecTipo} className="form-select" aria-label="Default select tipo">
+                                    <option value="Medico" >Médico</option>
+                                    <option value="Industrial">Industrial</option>
+                                </select>
+                            </Grid>
+                            <Grid item xs={6}>
+                                <label>
+                                    Equipo:
                                 </label>
 
                                 <input
                                     className="form-control"
-                                    name="ruc"
+                                    name="equipo"
                                     type="text"
                                     onChange={handleChange}
-                                    value={form.ruc}
+                                    value={form.equipo}
                                 />
                             </Grid>
                             <Grid item xs={6}>
                                 <label>
-                                    Contacto:
+                                    Departamento:
                                 </label>
-
-                                <input
-                                    className="form-control"
-                                    name="telefono"
-                                    type="text"
-                                    onChange={handleChange}
-                                    value={form.telefono}
-                                />
+                                <select onChange={selecDepartamento} className="form-select" aria-label="Default select departamento">
+                                    <option value="Imágenes">Imágenes</option>
+                                    <option value="Cedicardio">Cedicardio</option>
+                                    <option value="Emergencia">Emergencia</option>
+                                    <option value="Endoscopia">Endoscopia</option>
+                                    <option value="Clínico">Lab. Clínico</option>
+                                    <option value="Covid">Lab. Covid</option>
+                                    <option value="Neonatología">Neonatología</option>
+                                    <option value="Quirófano">Quirófano</option>
+                                </select>
                             </Grid>
-                            <Grid item xs={12}>
-                                <label>
-                                    Correo:
-                                </label>
-
-                                <input
-                                    className="form-control"
-                                    name="correo"
-                                    type="text"
-                                    onChange={handleChange}
-                                    value={form.correo}
-                                />
-                            </Grid>
-                            <Grid item xs={12}>
-                                <label>
-                                    Direccion:
-                                </label>
-
-                                <input
-                                    className="form-control"
-                                    name="direccion"
-                                    type="text"
-                                    onChange={handleChange}
-                                    value={form.direccion}
-                                />
-                            </Grid>
-                            <Grid item xs={12}>
-                                <label>
-                                    Producto/Servicio:
-                                </label>
-
-                                <input
-                                    className="form-control"
-                                    name="producto"
-                                    type="text"
-                                    onChange={handleChange}
-                                    value={form.producto}
-                                />
-                            </Grid>
-                            <Grid item xs={3}></Grid>
                             <Grid item xs={6}>
                                 <label>
-                                    Evaluacion:
+                                    Marca:
                                 </label>
 
                                 <input
                                     className="form-control"
-                                    name="evaluacion"
+                                    name="marca"
                                     type="text"
                                     onChange={handleChange}
-                                    value={form.evaluacion}
+                                    value={form.marca}
                                 />
                             </Grid>
-                            <Grid item xs={3}></Grid>
-                            
+                            <Grid item xs={6}>
+                                <label>
+                                    Modelo:
+                                </label>
+
+                                <input
+                                    className="form-control"
+                                    name="modelo"
+                                    type="text"
+                                    onChange={handleChange}
+                                    value={form.modelo}
+                                />
+                            </Grid>
+                            <Grid item xs={6}>
+                                <label>
+                                    Serie:
+                                </label>
+
+                                <input
+                                    className="form-control"
+                                    name="serie"
+                                    type="text"
+                                    onChange={handleChange}
+                                    value={form.serie}
+                                />
+                            </Grid>
+                            <Grid item xs={6}>
+                                <label>
+                                    Propietario:
+                                </label>
+
+                                <input
+                                    className="form-control"
+                                    name="propietario"
+                                    type="text"
+                                    onChange={handleChange}
+                                    value={form.propietario}
+                                />
+                            </Grid>
+                            <Grid item xs={6}>
+                                <label>
+                                    Seguro:
+                                </label>
+
+                                <select  onChange={selecSeguro}  className="form-select" aria-label="Default select seguro">
+                                    <option value="Asegurado" >Asegurado</option>
+                                    <option value="Sin seguro" >Sin seguro</option>
+                                </select>
+                            </Grid>
+                            <Grid item xs={12}>
+                                <label>
+                                    Accesorios:
+                                </label>
+                                <input
+                                    className="form-control"
+                                    name="accesorios"
+                                    type="text"
+                                    onChange={handleChange}
+                                    value={form.accesorios}
+                                />
+                            </Grid>
                         </Grid>
                     </FormGroup>
                 </ModalBody>
@@ -418,98 +492,119 @@ export default function Contactosempresas() {
                         <Grid container spacing={4}>
                             <Grid item xs={12}>
                                 <label>
-                                    Empresa:
+                                    Código Equipo:
                                 </label>
                                 <input
                                     className="form-control"
-                                    name="empresa"
-                                    type="text"
-                                    onChange={handleChange}
-                                />
-                            </Grid> 
-                            <Grid item xs={12}>
-                                <label>
-                                    Representante Legal:
-                                </label>
-                                <input
-                                    className="form-control"
-                                    name="representante"
+                                    name="codigo"
                                     type="text"
                                     onChange={handleChange}
                                 />
                             </Grid>
                             <Grid item xs={6}>
                                 <label>
-                                    RUC:
+                                    Tipo de Equipo:
+                                </label>
+                                <select  onChange={selecTipo} className="form-select" aria-label="Default select tipo">
+                                    <option value="Medico" >Médico</option>
+                                    <option value="Industrial">Industrial</option>
+                                </select>
+                            </Grid>
+                            <Grid item xs={6}>
+                                <label>
+                                    Equipo:
                                 </label>
                                 <input
                                     className="form-control"
-                                    name="ruc"
+                                    name="equipo"
                                     type="text"
                                     onChange={handleChange}
                                 />
                             </Grid>
                             <Grid item xs={6}>
                                 <label>
-                                    Contacto:
+                                    Departamento:
                                 </label>
-                                <input
-                                    className="form-control"
-                                    name="contacto"
-                                    type="text"
-                                    onChange={handleChange}
-                                />
+                                <select onChange={selecDepartamento} className="form-select" aria-label="Default select departamento">
+                                    <option value="Imágenes">Imágenes</option>
+                                    <option value="Cedicardio">Cedicardio</option>
+                                    <option value="Emergencia">Emergencia</option>
+                                    <option value="Endoscopia">Endoscopia</option>
+                                    <option value="Clínico">Lab. Clínico</option>
+                                    <option value="Covid">Lab. Covid</option>
+                                    <option value="Neonatología">Neonatología</option>
+                                    <option value="Quirófano">Quirófano</option>
+                                </select>
                             </Grid>
-                            <Grid item xs={12}>
-                                <label>
-                                    Correo:
-                                </label>
-                                <input
-                                    className="form-control"
-                                    name="correo"
-                                    type="text"
-                                    onChange={handleChange}
-                                />
-                            </Grid>
-                            <Grid item xs={12}>
-                                <label>
-                                    Direccion:
-                                </label>
-                                <input
-                                    className="form-control"
-                                    name="direccion"
-                                    type="text"
-                                    onChange={handleChange}
-                                />
-                            </Grid>
-                            <Grid item xs={12}>
-                                <label>
-                                    Producto/Servicio:
-                                </label>
-                                <input
-                                    className="form-control"
-                                    name="producto"
-                                    type="text"
-                                    onChange={handleChange}
-                                />
-                            </Grid>
-                            <Grid item xs={3}></Grid>
                             <Grid item xs={6}>
                                 <label>
-                                    Evaluacion:
+                                    Marca:
                                 </label>
-
                                 <input
                                     className="form-control"
-                                    name="evaluacion"
+                                    name="marca"
                                     type="text"
                                     onChange={handleChange}
                                 />
                             </Grid>
-                            <Grid item xs={3}></Grid>
-                            
+                            <Grid item xs={6}>
+                                <label>
+                                    Modelo:
+                                </label>
+                                <input
+                                    className="form-control"
+                                    name="modelo"
+                                    type="text"
+                                    onChange={handleChange}
+                                />
+                            </Grid>
+                            <Grid item xs={6}>
+                                <label>
+                                    Serie:
+                                </label>
+                                <input
+                                    className="form-control"
+                                    name="serie"
+                                    type="text"
+                                    onChange={handleChange}
+                                />
+                            </Grid>
+                            <Grid item xs={6}>
+                                <label>
+                                    Propietario:
+                                </label>
+                                <input
+                                    className="form-control"
+                                    name="propietario"
+                                    type="text"
+                                    onChange={handleChange}
+                                />
+                            </Grid>
+                            <Grid item xs={6}>
+                                <label>
+                                    Seguro:
+                                </label>
+                                <select   onChange={selecSeguro}  className="form-select" aria-label="Default select seguro">
+                                    <option value="Asegurado" selected >Asegurado</option>
+                                    <option value="Sin seguro" >Sin seguro</option>
+                                </select>
+                            </Grid>
+                            <Grid item xs={12}>
+                                <label>
+                                    Accesorios:
+                                </label>
+                                <input
+                                    className="form-control"
+                                    name="accesorios"
+                                    type="text"
+                                    onChange={handleChange}
+                                />
+                            </Grid>
                         </Grid>
                     </FormGroup>
+                    {/* aqui termina el grid */}
+
+
                 </ModalBody>
 
                 <ModalFooter>
@@ -529,5 +624,8 @@ export default function Contactosempresas() {
             </Modal>
         </>
     );
+
 }
+
+
 

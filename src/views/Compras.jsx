@@ -1,74 +1,142 @@
 import React, { useEffect, useState } from "react";
-import { query, collection, getDocs } from "firebase/firestore";
+import { query, collection, doc, updateDoc, onSnapshot } from "firebase/firestore";
 import { db } from "../firebase/firebase-config";
-import Autocomplete from '@mui/material/Autocomplete';
-import TextField from '@mui/material/TextField';
+import IconButton from '@mui/material/IconButton';
+import InfoIcon from '@mui/icons-material/Info';
+import { storage } from "../firebase/firebase-config";
+import { ref, getDownloadURL } from "firebase/storage";
+import '../hoja-de-estilos/Compras.css'
+import Grid from "@mui/material/Grid"
+import {
+    Container,
+    Modal,
+    ModalHeader,
+    ModalBody,
+    FormGroup,
+    ModalFooter,
+} from "reactstrap";
 
-
-export default function Comprasview(){
-
-
+export default function Comprasview() {
+    const [modalActualizar, setModalactualizar] = useState(false);
+    const [modalInformacion, setModalinformacion] = useState(false);
+    //arreglo, lugar donde se puede guardar de todo tipo de datos
     const [elementoscom, setElementoscom] = useState([]);
+    //
+    const [cambioes, setCambioes] = useState("");
+    //objeto
+    const [currentform, setCurrentform] = useState({});
+    //
+    const [changecom, setChangecom]=useState("");
+    const [url, setUrl] = useState("");
+    function fechaFormat(fechacom) {
+        var fecha = new Date(fechacom).getFullYear();
+        
+        console.log(fecha);
+    }
+    // const [url, setUrl] = useState("");
 
     const getData3 = async () => {
         const reference = query(collection(db, "compras"));
-        const data = await getDocs(reference);
-        setElementoscom(
-            data.docs.map((doc) => ({ ...doc.data() }))
-        );
+        onSnapshot(reference, (querySnapshot) => {
+            console.log(querySnapshot.docs)
+            setElementoscom(
+                querySnapshot.docs.map((doc) => ({ ...doc.data() }))
+            );
+        });
     }
+
+    const actcom = (e) => {
+        setChangecom(e.target.value);
+    }
+
+    //actualizar los datos de firebase
+    const cambiarestado = async (id) => {
+        console.log("Se cambio el estado");
+
+        setModalactualizar(false);
+        const ref = doc(db, "compras", `${id}`);
+        await updateDoc(ref, { estadocom: cambioes, comentariocom:changecom });
+        console.log("Se actualizaron los datos");
+    }
+
+    const selecState = (e) => {
+        console.log(e.target.value);
+        setCambioes(e.target.value);
+    };
+
+    const vistainformacion = (data) => {
+        // Almacena toda la informacion, llega como parametro y me permite llamar los campos
+        setCurrentform(data);  
+        //
+        descargararchivo(data.nameImg);
+        setModalinformacion(true);
+        // descargararchivo(data.archivoUrl);
+    }
+
+    const cerrarvistainformacion = () => {
+        setModalinformacion(false);
+    }
+
+    const vistaeditar = (data) => {
+        setCurrentform(data);
+        setCambioes("En proceso");
+        fechaFormat(currentform.fechacom);
+        setModalactualizar(true);
+    }
+
+    const cerrarvistaeditar =() => {
+        setModalactualizar(false);
+    }
+
+    const descargararchivo = (nombre) => {
+        getDownloadURL(ref(storage, `${nombre}`)).then((url) => {
+            console.log(url);
+            setUrl(url);
+        })
+
+    }
+
+
     console.log(elementoscom);
 
     useEffect(() => {
         getData3();
     }, [])
-    return(
+    return (
         <>
-        <h1> Solicitud de Compras </h1>
-        <Autocomplete
-            multiple
-            id="combo-box-demo"
-            options={estado}
-            sx={{ '& > :not(style)': { m: 2, width: '60ch'},}}
-            renderInput={(params) => <TextField {...params} label="Tipo" color="secondary" focused />}
-        />
-        <div style={{ height: 800, width: '100%' }}>
-                <div className='container.fluid'>
+            <h1> Solicitud de Compras</h1>
+            <div style={{ height: 800, width: '100%' }}>
+                <div className='container'>
                     <div className='row'>
                         <div className='col'>
                             <table className='table table-light table-hover'>
                                 <thead>
                                     <tr>
-                                        <th>ID</th>
+                                        <th>#</th>
                                         <th>Fecha</th>
                                         <th>CI Solicitante</th>
-                                        <th>Codigo Equipo</th>
                                         <th>Equipo</th>
                                         <th>Artículo</th>
-                                        <th>Cantidad</th>
-                                        <th>Precio</th>
-                                        <th>Proveedor</th>
                                         <th>Estado</th>
                                         <th>Acciones</th>
-                                        
+                                        <th>Información</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {elementoscom.map((compras) => (
-                                        <tr key={compras.id}>
-                                            <td>{compras.id}</td>
+                                    {elementoscom.sort((a, b) => (a.indice - b.indice)).map((compras, index) => (
+                                            <tr key={compras.indice} >
+                                            <td>{index + 1}</td>
                                             <td>{compras.fechacom}</td>
                                             <td>{compras.cedulacom}</td>
-                                            <td>{compras.codigoeqcom}</td>
                                             <td>{compras.equipocom}</td>
                                             <td>{compras.articulocom}</td>
-                                            <td>{compras.cantidadcom}</td>
-                                            <td>{compras.preciocom}</td>
-                                            <td>{compras.proveedorcom}</td>
                                             <td>{compras.estadocom}</td>
                                             <td>
-                                                <button className="btn btn-danger mx-2">Cambiar Estado</button>
-                                                <button className="btn btn-success">Comentarios</button>
+                                                <button className="btn btn-danger mx-2" onClick={() => { vistaeditar(compras) }}>Cambiar Estado</button>
+                                            </td>
+                                            <td>
+                                                <IconButton aria-label="delete" onClick={() => { vistainformacion(compras) }} color="success"><InfoIcon /></IconButton>
+
                                             </td>
                                         </tr>
                                     ))}
@@ -78,13 +146,147 @@ export default function Comprasview(){
                     </div>
                 </div>
             </div>
-        
+            <Modal isOpen={modalInformacion}>
+                <Container>
+                    <ModalHeader>
+                        <div><h1>Informacion Solicitud</h1></div>
+                    </ModalHeader>
+                    <ModalBody>
+                        <FormGroup>
+                            <Grid container spacing={4}>
+                                <Grid item xs={12}>
+                                    <label>
+                                        Id:
+                                    </label>
+                                    <input
+                                        className="form-control"
+                                        readOnly
+                                        type="text"
+                                        value={currentform.id}
+                                    />
+                                </Grid >
+                                <Grid item xs={6}>
+                                    <label>
+                                        Código Equipo:
+                                    </label>
+                                    <input
+                                        className="form-control"
+                                        readOnly
+                                        type="text"
+                                        value={currentform.codigoeqcom}
+                                    />
+                                </Grid >
+                                <Grid item xs={6}>
+                                    <label>
+                                        Proveedor:
+                                    </label>
+                                    <input
+                                        className="form-control"
+                                        readOnly
+                                        type="text"
+                                        value={currentform.proveedorcom}
+                                    />
+                                </Grid >
+                                <Grid item xs={6}>
+                                    <label>
+                                        Cantidad:
+                                    </label>
+                                    <input
+                                        className="form-control"
+                                        readOnly
+                                        type="text"
+                                        value={currentform.cantidadcom}
+                                    />
+                                </Grid >
+                                <Grid item xs={6}>
+                                    <label>
+                                        Precio:
+                                    </label>
+                                    <input
+                                        className="form-control"
+                                        readOnly
+                                        type="text"
+                                        value={currentform.preciocom}
+                                    />
+                                </Grid >
+                                <Grid item xs={12}>
+                                    <label>
+                                        Comentario:
+                                    </label>
+                                    <input
+                                        className="form-control"
+                                        readOnly
+                                        type="text"
+                                        value={currentform.comentariocom}
+                                    />
+                                </Grid >
+
+                                <Grid className="fila" item xs={12}>
+                                    <label className="archivo">
+                                        Archivo:
+                                    </label>
+                                    <a
+                                        component="button"
+                                        variant="body2"
+                                        href={url}
+                                        target="_blank"
+                                    >
+                                        Visualizar Proforma
+                                    </a>
+                                </Grid >
+
+                            </Grid>
+                        </FormGroup>
+                    </ModalBody>
+                    <ModalFooter className="modal-footer">
+                        <button className="btn btn-success" onClick={cerrarvistainformacion}>Cerrar</button>
+                    </ModalFooter>
+
+                </Container>
+            </Modal>
+
+            <Modal isOpen={modalActualizar}>
+                <Container>
+                    <ModalHeader>
+                        <div><h1>Editar Informacion</h1></div>
+                    </ModalHeader>
+                    <ModalBody>
+                        <FormGroup>
+                            <Grid container spacing={4}>
+                                <Grid item xs={12}>
+                                    <label>
+                                        Estado
+                                    </label>
+                                    <select onChange={selecState} className="form-select" aria-label="Default select tipo">
+                                        {/* <option selected>Estado solicitud:</option> */}
+                                        <option value="En proceso">En proceso</option>
+                                        <option value="Aprobada" >Aprobada</option>
+                                        <option value="Rechazada">Rechazada</option>
+sele
+                                    </select>
+                                </Grid >
+                                <Grid item xs={12}>
+                                    <label>
+                                        Comentario
+                                    </label>
+                                    <input
+                                    className="form-control"
+                                    name="comentario"
+                                    type="text"
+                                    onChange={actcom}
+                                />
+
+                                </Grid>
+                            </Grid>
+                        </FormGroup>
+                    </ModalBody>
+
+                    <ModalFooter className="modal-footer">
+                        <button className="btn btn-warning" onClick={() => { cambiarestado(currentform.id) }}>Aceptar</button>
+                        <button className="btn btn-success" onClick={cerrarvistaeditar}>Cerrar</button>
+                    </ModalFooter>
+                </Container>
+            </Modal>
         </>
     );
 }
-
- const estado = [ 
-     { label: 'Aprobada'},
-     { label: 'Rechazada'},
-    { label: 'En Proceso'},  
- ]
