@@ -160,7 +160,8 @@ export default function MenuApp2(props) {
                     aria-labelledby="nested-list-subheader"
                     subheader={
                         <ListSubheader component="div" id="nested-list-subheader">
-                            Nested List Items
+                            GMAO
+                            "HOSPITAL SANTA INES"
                         </ListSubheader>
                     }
                 >
@@ -175,7 +176,7 @@ export default function MenuApp2(props) {
                         <ListItemIcon>
                             <BusinessCenterIcon />
                         </ListItemIcon>
-                        <ListItemText primary="Solicitud de Compra" />
+                        <ListItemText primary="Estátus Compras" />
                     </ListItemButton>
 
                     {/* Boton Gestion de Activos  */}
@@ -263,7 +264,7 @@ export default function MenuApp2(props) {
                                 <ListItemIcon>
                                     <StarBorder />
                                 </ListItemIcon>
-                                <ListItemText primary="Estatus Ordenes de Trabajo" />
+                                <ListItemText primary="Estátus Ordenes de Trabajo" />
                             </ListItemButton>
 
                             <ListItemButton onClick={() =>Changeview('/home/mantenimiento/mantenimiento')} sx={{ pl: 4 }}>

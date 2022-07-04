@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { query, collection,doc, deleteDoc,updateDoc,onSnapshot } from "firebase/firestore";
 import { db } from "../firebase/firebase-config";
 import Stack from '@mui/material/Stack';
+import { storage } from "../firebase/firebase-config";
+import { ref, getDownloadURL } from "firebase/storage";
 import {
     Container,
     Modal,
@@ -12,13 +14,18 @@ import {
     ModalFooter,
 } from "reactstrap";
 import Grid from "@mui/material/Grid";
+import IconButton from '@mui/material/IconButton';
+import InfoIcon from '@mui/icons-material/Info';
+
 
 export default function Reportexterno() {
 
     const [elementosext, setElementosext] = useState([]);
     const [modalActualizar, setModalactualizar] = useState(false);
+    const [modalInformacion, setModalinformacion] = useState(false);
     const [cambioex,setCambioex]=useState("");
     const [currentform, setCurrentform]= useState({});
+    const [url, setUrl] = useState("");
 
     const getData13 = async () => {
         const reference = query(collection(db, "reportes externos"));
@@ -36,11 +43,21 @@ export default function Reportexterno() {
         setCurrentform(data);
         setCambioex("Reparado Completamente");
         setModalactualizar(true);
-    }
+    };
 
     const cerrarvistaedi =()=>{
         setModalactualizar(false);
-    }
+    };
+
+    const vistainformacion = (data) => {
+        setCurrentform(data);
+        descargararchivo(data.nameImg);
+        setModalinformacion(true);
+    };
+
+    const cerrarvistainformacion = () => {
+        setModalinformacion(false);
+    };
 
     const cambiarestado = async (id) => {
         console.log("Se cambio el estado");
@@ -48,11 +65,18 @@ export default function Reportexterno() {
         const ref= doc(db, "reportes externos", `${id}`);
         await updateDoc(ref, {estadoext:cambioex});
         console.log("Se actualizaron los datos");
-    }
+    };
 
     const selecEst = (e)=>{
         console.log(e.target.value);
         setCambioex(e.target.value);
+    };
+
+    const descargararchivo = (nombre) => {
+        getDownloadURL(ref(storage, `externos/${nombre}`)).then((url) => {
+            console.log(url);
+            setUrl(url);
+        })
     };
 
     const eliminar = async (id) => {
@@ -62,7 +86,7 @@ export default function Reportexterno() {
             setModalactualizar(false);
         }
     };
-
+ 
     useEffect(() => {
         getData13();
     }, [])
@@ -77,18 +101,19 @@ export default function Reportexterno() {
                             <table className='table table-light table-hover'>
                                 <thead>
                                     <tr>
-                                        <th>Fecha</th>
+                                        <th>#</th>
                                         <th>Empresa</th>
                                         <th>N.Reporte</th>
                                         <th>Equipo</th>
                                         <th>Estado</th>
                                         <th>Acciones</th>
+                                        <th>Información</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {elementosext.map((rexterno) => (
-                                        <tr key={rexterno.id}>
-                                            <td>{rexterno.fechaext}</td>
+                                {elementosext.sort((a, b) => (a.indice - b.indice)).map((rexterno, index) => (
+                                        <tr key={rexterno.indice}>
+                                            <td>{index + 1}</td>
                                             <td>{rexterno.empresaext}</td>
                                             <td>{rexterno.numeroreportefisico}</td>
                                             <td>{rexterno.equipoter}</td>
@@ -100,6 +125,9 @@ export default function Reportexterno() {
                                                 <Button color="danger" onClick={() => eliminar(rexterno.id)}>Eliminar</Button>
                                                 </Stack>
                                             </td>
+                                            <td>
+                                            <IconButton aria-label="delete" onClick={() => { vistainformacion(rexterno) }} color="success"><InfoIcon /></IconButton>
+                                            </td>
                                         </tr>
                                     ))}
                                 </tbody>
@@ -108,6 +136,62 @@ export default function Reportexterno() {
                     </div>
                 </div>
             </div>
+            <Modal isOpen={modalInformacion}>
+            <Container>
+            <ModalHeader>
+                        <div><h1>Informacion Reporte</h1></div>
+                    </ModalHeader>
+                    <ModalBody>
+                    <FormGroup>
+                    <Grid container spacing={4}>
+                    <Grid item xs={6}>
+                    <label>
+                                    Inicio Mantenimiento:
+                                </label>
+
+                                <input
+                                    className="form-control"
+                                    readOnly
+                                    type="text"
+                                    value={currentform.feinicio}
+                                    />
+                    </Grid>
+
+                    <Grid item xs={6}>
+                    <label>
+                                        Final Mantenimiento:
+                                </label>
+
+                                <input
+                                    className="form-control"
+                                    readOnly
+                                    type="text"
+                                    value={currentform.fetermino}
+                                    />
+                    </Grid>
+                    
+                    <Grid className="fila" item xs={12}>
+                                    <label className="archivo">
+                                        Archivo:
+                                    </label>
+                                    <a
+                                        component="button"
+                                        variant="body2"
+                                        href={url}
+                                        target="_blank"
+                                        rel="noreferrer"
+                                    >
+                                        Visualizar Proforma
+                                    </a>
+                                </Grid >
+                    </Grid>
+                        </FormGroup> 
+                    </ModalBody>
+                    <ModalFooter className="modal-footer">
+                        <button className="btn btn-success" onClick={cerrarvistainformacion}>Cerrar</button>
+                    </ModalFooter>
+            </Container>
+            </Modal>
             <Modal isOpen={modalActualizar}>
                 <Container>
                     <ModalHeader>

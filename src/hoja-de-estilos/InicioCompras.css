@@ -1,0 +1,42 @@
+
+.titulos{
+    margin-top: 40px;
+    margin-bottom: 30px;
+}
+
+.orden{
+    margin-top: 10px;
+    margin-bottom: 0px;
+}
+
+.subtitulo{
+    margin-top: 40px;
+    margin-bottom: 30px;
+}
+
+.texto{
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.texto{
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+
+.pregunta{
+    margin-top: -10px;
+}
+
+.pregunta1{
+    margin-top: 0px;
+}
+
+.pregunta2{
+    margin-top: 0px;
+}
+
+.form-select{
+    border: 1px solid #a9cce3 !important;
+    margin-top: 10px;
+}

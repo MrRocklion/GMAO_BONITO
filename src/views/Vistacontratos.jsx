@@ -3,13 +3,16 @@ import { query, collection, getDocs } from "firebase/firestore";
 import { db } from "../firebase/firebase-config";
 import InfoIcon from '@mui/icons-material/Info';
 import IconButton from '@mui/material/IconButton';
-import Grid from "@mui/material/Grid"
+import Grid from "@mui/material/Grid";
+import { storage } from "../firebase/firebase-config";
+import { ref, getDownloadURL } from "firebase/storage";
 import { Container, Modal, ModalHeader, ModalBody, FormGroup, ModalFooter } from "reactstrap";
 
 export default function Vistacontratos() {
 const [elementoscon, setElementoscon] = useState([]);
   const [currentform,setCurrenform]= useState({});
   const [modalInfor, setModalinfor] = useState(false);
+  const [url, setUrl] = useState("");
 
   const getData12 = async () => {
     const reference = query(collection(db, "contratos"));
@@ -23,12 +26,22 @@ const [elementoscon, setElementoscon] = useState([]);
   const vistainfor = (data) => {
     setCurrenform(data);
     console.log(currentform);
+    descargararchivo(data.nameImg);
     setModalinfor(true);
-  }
+  };
 
   const cerrarmodalinfor =()=>{
     setModalinfor(false);
-  }
+  };
+
+  const descargararchivo = (nombre) => {
+    getDownloadURL(ref(storage, `contratos/${nombre}`)).then((url) => {
+        console.log(url);
+        setUrl(url);
+    })
+
+};
+
   useEffect(() => {
     getData12();
   }, [])
@@ -43,6 +56,7 @@ const [elementoscon, setElementoscon] = useState([]);
               <table className='table table-light table-hover'>
                 <thead>
                   <tr>
+                    <th>#</th>
                     <th>N.Contrato</th>
                     <th>Empresa</th>
                     <th>Descripción</th>
@@ -53,6 +67,7 @@ const [elementoscon, setElementoscon] = useState([]);
                 <tbody>
                   {elementoscon.sort((a, b) => (a.indice - b.indice)).map((contratos, index) => (
                     <tr key={contratos.indice} >
+                      <td>{index + 1}</td>
                       <td>{contratos.contrato}</td>
                       <td>{contratos.empresa}</td>
                       <td>{contratos.descripcion}</td>
@@ -109,6 +124,21 @@ const [elementoscon, setElementoscon] = useState([]);
                     value={currentform.equipos}
                   />
                 </Grid >
+
+                <Grid className="fila" item xs={12}>
+                                    <label className="archivo">
+                                        Archivo:
+                                    </label>
+                                    <a
+                                        component="button"
+                                        variant="body2" 
+                                        href={url}
+                                        target="_blank" 
+                                        rel="noreferrer"
+                                    >
+                                        Visualizar Contrato
+                                    </a>
+                                </Grid >
                
               </Grid>
             </FormGroup>

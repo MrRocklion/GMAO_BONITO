@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import '../hoja-de-estilos/Mantenimiento.css';
 import { useNavigate } from 'react-router-dom';
-import { query, collection,doc, deleteDoc,updateDoc,onSnapshot  } from "firebase/firestore";
+import { query, collection, doc, deleteDoc, updateDoc, onSnapshot } from "firebase/firestore";
 import { db } from "../firebase/firebase-config";
 import IconButton from '@mui/material/IconButton';
 import InfoIcon from '@mui/icons-material/Info';
@@ -22,9 +22,9 @@ export default function Mantenimientoview() {
     const navigate = useNavigate();
     const [modalActualizar, setModalactualizar] = useState(false);
     const [modalInformacion, setModalinformacion] = useState(false);
-    const [cambioe,setCambioe]=useState("");
+    const [cambioe, setCambioe] = useState("");
     const [elementosfb, setElementosfb] = useState([]);
-    const [currentform, setCurrentform]= useState({});
+    const [currentform, setCurrentform] = useState({});
 
     const getData = async () => {
         const reference = query(collection(db, "ordenes"));
@@ -38,9 +38,9 @@ export default function Mantenimientoview() {
     console.log(elementosfb);
 
     const eliminar = async (id) => {
-        var opcion = window.confirm("Estás Seguro que deseas Eliminar el elemento " );
+        var opcion = window.confirm("Estás Seguro que deseas Eliminar el elemento ");
         if (opcion === true) {
-            await deleteDoc(doc(db, "ordenes",`${id}` ));
+            await deleteDoc(doc(db, "ordenes", `${id}`));
             setModalactualizar(false);
         }
     };
@@ -56,6 +56,7 @@ export default function Mantenimientoview() {
 
     const vistaedi = (data) => {
         setCurrentform(data);
+        setCambioe("Solventado");
         setModalactualizar(true);
     };
 
@@ -65,18 +66,18 @@ export default function Mantenimientoview() {
 
 
     const agregarformulario = () => {
-        navigate('/home/reportes/agregar');
+        navigate('/home/reportes/reportes');
     };
 
     const cambiarestado = async (id) => {
         console.log("Se cambio el estado");
         setModalactualizar(false);
-        const ref= doc(db, "ordenes", `${id}`);
-        await updateDoc(ref, {estado:cambioe});
+        const ref = doc(db, "ordenes", `${id}`);
+        await updateDoc(ref, { estado: cambioe });
         console.log("Se actualizaron los datos");
     };
 
-    const selecEstado = (e)=>{
+    const selecEstado = (e) => {
         console.log(e.target.value);
         setCambioe(e.target.value);
     };
@@ -88,8 +89,8 @@ export default function Mantenimientoview() {
     return (
         <>
             <h1> Módulo Gestión de Mantenimiento </h1>
-            {<Button variant="contained" color='success' className="boton" onClick={agregarformulario}>Agregar Reporte</Button>}
-            <div style={{ height: 800, width: '100%' }}>
+            {<Button variant="contained" color='success' className="boton" onClick={agregarformulario}>Visualizar Reporte</Button>}
+            <div style={{ height: 800, width: '100%',marginTop:20 }}>
                 <div className='container'>
                     <div className='row'>
                         <div className='col'>
@@ -118,10 +119,10 @@ export default function Mantenimientoview() {
                                             <td>{orden.asunto}</td>
                                             <td>{orden.estado}</td>
                                             <td>
-                                            <Stack direction="row" spacing={2} alignitems="center" justifyContent="center" >
-                                            <Button
-                                            color="primary" onClick={() => { vistaedi(orden) }}>Cambiar Estado </Button>{" "}
-                                                <Button color="danger" onClick={() => eliminar(orden.id)}>Eliminar</Button>
+                                                <Stack direction="row" spacing={2} alignitems="center" justifyContent="center" >
+                                                    <Button
+                                                        color="primary" onClick={() => { vistaedi(orden) }}>Cambiar Estado </Button>{" "}
+                                                    <Button color="danger" onClick={() => eliminar(orden.id)}>Eliminar</Button>
                                                 </Stack>
                                             </td>
                                             <td>
@@ -209,21 +210,21 @@ export default function Mantenimientoview() {
                                     <label>
                                         Estado
                                     </label>
-                                    <select  onChange={selecEstado} className="form-select" aria-label="Default select tipo">
-                                    <option value="Solventado" >Solventado</option>
-                                    <option value="Compras">Compras</option>
-                                    <option value="ICH Proceso">ICH Proceso</option>
-                                    <option value="Disp. Área">Disp. Área</option>
-                                    <option value="Externo">Externo</option>
-                                    <option value="Constructivo">Constructivo</option>
-                        </select>
+                                    <select onChange={selecEstado} className="form-select" aria-label="Default select tipo">
+                                        <option value="Solventado" >Solventado</option>
+                                        <option value="Compras">Compras</option>
+                                        <option value="ICH Proceso">ICH Proceso</option>
+                                        <option value="Disp. Área">Disp. Área</option>
+                                        <option value="Externo">Externo</option>
+                                        <option value="Constructivo">Constructivo</option>
+                                    </select>
                                 </Grid >
                             </Grid>
                         </FormGroup>
                     </ModalBody>
 
                     <ModalFooter className="modal-footer">
-                        <button className="btn btn-warning" onClick={() => {cambiarestado(currentform.id)}}>Aceptar</button>
+                        <button className="btn btn-warning" onClick={() => { cambiarestado(currentform.id) }}>Aceptar</button>
                         <button className="btn btn-success" onClick={cerrarvistaedi}>Cerrar</button>
                     </ModalFooter>
                 </Container>

@@ -19,6 +19,8 @@
 .form-control{
     border: 1px solid #a9cce3 !important;
     color:#212529 !important ;
+    background-color: #fff !important;
+    margin-top: 10px;
 }
 
 .form-label{

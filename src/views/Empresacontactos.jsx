@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import InfoIcon from '@mui/icons-material/Info';
 import IconButton from '@mui/material/IconButton';
-import { collection, setDoc, query, doc, updateDoc, deleteDoc, onSnapshot } from "firebase/firestore";
+import { uploadBytes,ref,getDownloadURL } from "firebase/storage";
+import { collection, setDoc, query, doc, deleteDoc, onSnapshot,updateDoc, } from "firebase/firestore";
 import Grid from "@mui/material/Grid"
-import { db } from "../firebase/firebase-config"
+import { db,storage } from "../firebase/firebase-config"
 import {
     Table,
     Button,
@@ -23,60 +24,101 @@ export default function Contactosempresas() {
     const [modalActualizar, setModalactualizar] = useState(false);
     const [modalInsertar, setModalinsertar] = useState(false);
     const [modalInformacion, setModalinformacion] = useState(false);
-    const [form, setForm] = useState({
-        codigo: "",
-        empresa:"",
-        representante:"",
-        direccion:"",
-        ruc:"",
-        correo:"",
-        telefono:"",
-        producto:"",
-        evaluacion:"",
-
-    });
+    const [empresa,setEmpresa]= useState('');
+    const [representante,setRepresentante]= useState('');
+    const [direccion,setDireccion]= useState('');
+    const [ruc,setRuc]= useState('');
+    const [correo,setCorreo]= useState('');
+    const [telefono,setTelefono]= useState('');
+    const [producto,setProducto]= useState('');
+    const [evaluacion,setEvaluacion]= useState('');
+    const [file,setFile]= useState(null);
+    const [url, setUrl] = useState("");
+    const [form, setForm] = useState({});
+    
+    const buscarImagen = (e) =>{
+        if (e.target.files[0] !== undefined) {
+            setFile(e.target.files[0]);
+        }else{
+            console.log('no hay archivo');
+        }
+    };
 
     const getData = async () => {
         const reference = query(collection(db, "empresas"));
         onSnapshot(reference, (querySnapshot) => {
-            console.log(querySnapshot.docs)
             setData(
                 querySnapshot.docs.map((doc) => ({ ...doc.data() }))
             );
         });
-    }
-    const agregardatos = async (informacion) => {
+    };
 
-        const newperson = {
-            codigo: informacion.codigo,
-            empresa: informacion.empresa,
-            representante: informacion.representante,
-            direccion: informacion.direccion,
-            ruc: informacion.ruc,
-            correo: informacion.correo,
-            telefono: informacion.telefono,
-            producto: informacion.producto,
-            evaluacion: informacion.evaluacion,
+    const actualizar = async ()=> {
+        const database = doc(db, "empresas",form.id);
+        await updateDoc(database,form);
+        cerrarModalActualizar();
+    };
+
+    const agregardatos = async () => {
+        var contactos= {};
+        if (file === null ){
+        contactos = {
+            empresa: empresa,
+            representante: representante,
+            direccion: direccion,
+            ruc: ruc,
+            correo: correo,
+            telefono: telefono,
+            producto: producto,
+            evaluacion:evaluacion,
+            nameImg: 'SP.PNG',
             id: uuidv4(),
             indice: Date.now(),
-        }
-
-
+        };
+        sendFirestore(contactos);
+    }else{
+        contactos = {
+            empresa: empresa,
+            representante: representante,
+            direccion: direccion,
+            ruc: ruc,
+            correo: correo,
+            telefono: telefono,
+            producto: producto,
+            evaluacion:evaluacion,
+            nameImg: file.name,
+            id: uuidv4(),
+            indice: Date.now(),
+        };
+        sendFirestore(contactos);
+        sendStorage();
+      }
+      setFile(null); 
+  };
+  const sendFirestore = (contactos) => {
         try {
-            await setDoc(doc(db, "empresas", `${newperson.id}`), newperson);
+            setDoc(doc(db, "empresas", `${contactos.id}`), contactos);
 
         } catch (e) {
             console.error("Error adding document: ", e);
         }
-    }
+    };
+    const sendStorage = () =>{
+        //pasar parametros variables
+        const storageRef = ref(storage, `evaluaciones/${file.name}`);
+        uploadBytes(storageRef, file).then((snapshot) => {
+        });
+    }; 
 
     const mostrarModalActualizar = (dato) => {
         setForm(dato);
         setModalactualizar(true);
     };
 
+
     const mostrarModalInformacion = (dato) => {
         setForm(dato);
+        descargararchivo(dato.nameImg);
         setModalinformacion(true);
     };
 
@@ -102,55 +144,12 @@ export default function Contactosempresas() {
         setModalinsertar(false);
     };
 
-    const editar = async (dato) => {
-
-        var arreglo = data;
-        console.log(data);
-        const database = doc(db, "empresas", dato.id);
-        arreglo.map((registro) => {
-            if (dato.id === registro.id) {
-                registro.codigo= dato.codigo;
-                registro.empresa= dato.empresa;
-                registro.representante= dato.representante;
-                registro.direccion= dato.direccion;
-                registro.ruc= dato.ruc;
-                registro.correo= dato.correo;
-                registro.telefono= dato.telefono;
-                registro.producto= dato.producto;
-                registro.evaluacion= dato.evaluacion;
-                return 0;
-            }
-            return 0;
-        });
-        setData(arreglo);
-        await updateDoc(database, {
-            codigo: dato.codigo,
-            empresa: dato.empresa,
-            representante: dato.representante,
-            direccion: dato.direccion,
-            ruc: dato.ruc,
-            correo: dato.correo,
-            telefono: dato.telefono,
-            producto: dato.producto,
-            evaluacion: dato.evaluacion,
-        });
-
-        setModalactualizar(false);
-    };
     const eliminar = async (dato) => {
         var opcion = window.confirm("Estás Seguro que deseas Eliminar el elemento " + dato.id);
         if (opcion === true) {
             await deleteDoc(doc(db, "empresas", `${dato.id}`));
-            setModalactualizar(false);
         }
     };
-
-    const insertar = () => {
-        var valorNuevo = { ...form };
-        console.log(valorNuevo);
-        setModalinsertar(false);
-        agregardatos(valorNuevo);
-    }
 
     const handleChange = (e) => {
         setForm(
@@ -159,8 +158,16 @@ export default function Contactosempresas() {
                 [e.target.name]: e.target.value,
             },
         )
-        console.log(form);
     };
+
+    const descargararchivo = (nombre) => {
+        getDownloadURL(ref(storage, `evaluaciones/${nombre}`)).then((url) => {
+            setUrl(url);
+        })
+
+    };
+
+
     useEffect(() => {
         getData();
     }, [])
@@ -169,12 +176,13 @@ export default function Contactosempresas() {
         <>
         <Container>
                 <br />
-                <Button color="success" onClick={() => mostrarModalInsertar()}>Agregar Equipo</Button>
+                <Button color="success" onClick={() => mostrarModalInsertar()}>Agregar Empresa</Button>
                 <br />
                 <br />
                 <Table>
                     <thead>
                         <tr>
+                            <th>#</th>
                             <th>Empresa</th>
                             <th>Representante</th>
                             <th>Ruc</th>
@@ -187,26 +195,27 @@ export default function Contactosempresas() {
                     </thead>
 
                     <tbody>
-                        {data.sort((a, b) => (a.indice - b.indice)).map((dato, index) => (
-                            <tr key={dato.indice} >
-                                <td>{dato.empresa}</td>
-                                <td>{dato.representante}</td>
-                                <td>{dato.ruc}</td>
-                                <td>{dato.telefono}</td>
-                                <td>{dato.correo}</td>
+                        {data.sort((a, b) => (a.indice - b.indice)).map((contactos, index) => (
+                            <tr key={contactos.indice} >
+                                <td>{index+1}</td>
+                                <td>{contactos.empresa}</td>
+                                <td>{contactos.representante}</td>
+                                <td>{contactos.ruc}</td>
+                                <td>{contactos.telefono}</td>
+                                <td>{contactos.correo}</td>
                                 <td>
                                     <Stack direction="row" spacing={2} alignitems="center" justifyContent="center" >
                                         <Button
                                             color="primary"
-                                            onClick={() => mostrarModalActualizar(dato)}
+                                            onClick={() => mostrarModalActualizar(contactos)}
                                         >
                                             Editar
                                         </Button>{" "}
-                                        <Button color="danger" onClick={() => eliminar(dato)}>Eliminar</Button>
+                                        <Button color="danger" onClick={() => eliminar(contactos)}>Eliminar</Button>
                                     </Stack>
                                 </td>
                                 <td>
-                                    <IconButton aria-label="delete" color="success" onClick={() => mostrarModalInformacion(dato)}><InfoIcon /></IconButton>
+                                    <IconButton aria-label="delete" color="success" onClick={() => mostrarModalInformacion(contactos)}><InfoIcon /></IconButton>
 
                                 </td>
                             </tr>
@@ -260,6 +269,20 @@ export default function Contactosempresas() {
                                 />
                             </Grid>
                             <Grid item xs={3}></Grid>
+                            <Grid className="fila" item xs={12}>
+                                    <label className="archivo">
+                                        Archivo:
+                                    </label>
+                                    <a
+                                        component="button"
+                                        variant="body2" 
+                                        href={url}
+                                        target="_blank" 
+                                        rel="noreferrer"
+                                    >
+                                        Visualizar Contrato
+                                    </a>
+                                </Grid >
                         </Grid>
                     </FormGroup>
 
@@ -393,18 +416,8 @@ export default function Contactosempresas() {
                 </ModalBody>
 
                 <ModalFooter>
-                    <Button
-                        color="primary"
-                        onClick={() => editar(form)}
-                    >
-                        Editar
-                    </Button>
-                    <Button
-                        color="danger"
-                        onClick={() => cerrarModalActualizar()}
-                    >
-                        Cancelar
-                    </Button>
+                    <Button color="primary"onClick={() => actualizar()}>Guardar Cambios</Button>
+                    <Button color="danger" onClick={() => cerrarModalActualizar()}>Cancelar </Button>
                 </ModalFooter>
             </Modal>
 
@@ -424,7 +437,7 @@ export default function Contactosempresas() {
                                     className="form-control"
                                     name="empresa"
                                     type="text"
-                                    onChange={handleChange}
+                                    onChange={(e)=>{setEmpresa(e.target.value)}}
                                 />
                             </Grid> 
                             <Grid item xs={12}>
@@ -435,7 +448,7 @@ export default function Contactosempresas() {
                                     className="form-control"
                                     name="representante"
                                     type="text"
-                                    onChange={handleChange}
+                                    onChange={(e)=>{setRepresentante(e.target.value)}}
                                 />
                             </Grid>
                             <Grid item xs={6}>
@@ -446,7 +459,7 @@ export default function Contactosempresas() {
                                     className="form-control"
                                     name="ruc"
                                     type="text"
-                                    onChange={handleChange}
+                                    onChange={(e)=>{setRuc(e.target.value)}}
                                 />
                             </Grid>
                             <Grid item xs={6}>
@@ -455,9 +468,9 @@ export default function Contactosempresas() {
                                 </label>
                                 <input
                                     className="form-control"
-                                    name="contacto"
+                                    name="telefono"
                                     type="text"
-                                    onChange={handleChange}
+                                    onChange={(e)=>{setTelefono(e.target.value)}}
                                 />
                             </Grid>
                             <Grid item xs={12}>
@@ -468,7 +481,7 @@ export default function Contactosempresas() {
                                     className="form-control"
                                     name="correo"
                                     type="text"
-                                    onChange={handleChange}
+                                    onChange={(e)=>{setCorreo(e.target.value)}}
                                 />
                             </Grid>
                             <Grid item xs={12}>
@@ -479,7 +492,7 @@ export default function Contactosempresas() {
                                     className="form-control"
                                     name="direccion"
                                     type="text"
-                                    onChange={handleChange}
+                                    onChange={(e)=>{setDireccion(e.target.value)}}
                                 />
                             </Grid>
                             <Grid item xs={12}>
@@ -490,7 +503,7 @@ export default function Contactosempresas() {
                                     className="form-control"
                                     name="producto"
                                     type="text"
-                                    onChange={handleChange}
+                                    onChange={(e)=>{setProducto(e.target.value)}}
                                 />
                             </Grid>
                             <Grid item xs={3}></Grid>
@@ -503,11 +516,16 @@ export default function Contactosempresas() {
                                     className="form-control"
                                     name="evaluacion"
                                     type="text"
-                                    onChange={handleChange}
+                                    onChange={(e)=>{setEvaluacion(e.target.value)}}
                                 />
                             </Grid>
                             <Grid item xs={3}></Grid>
-                            
+                            <Grid item xs={12}>
+            <div className="mb-3">
+                <label className="form-label">Cargar Evaluacion</label>
+                <input className="form-control" onChange={buscarImagen} type="file" id="formFile" />
+            </div>
+            </Grid>
                         </Grid>
                     </FormGroup>
                 </ModalBody>
@@ -515,7 +533,7 @@ export default function Contactosempresas() {
                 <ModalFooter>
                     <Button
                         color="primary"
-                        onClick={() => insertar()}
+                        onClick={() => agregardatos()}
                     >
                         Insertar
                     </Button>

@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import InfoIcon from '@mui/icons-material/Info';
 import IconButton from '@mui/material/IconButton';
-import Link from '@mui/material/Link';
-import { collection, setDoc, query, doc, updateDoc, deleteDoc, onSnapshot } from "firebase/firestore";
+import { uploadBytes,ref,getDownloadURL } from "firebase/storage";
+import { collection, setDoc, query, doc, deleteDoc, onSnapshot } from "firebase/firestore";
 import Grid from "@mui/material/Grid"
-import { db } from "../firebase/firebase-config"
+import { db,storage } from "../firebase/firebase-config";
 import {
     Table,
     Button,
@@ -22,23 +22,31 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 
-
 export default function Ingresoequipos() {
     const [data, setData] = useState([]);
     // const [modalActualizar, setModalactualizar] = useState(false);
     const [modalInsertar, setModalinsertar] = useState(false);
     const [modalInformacion, setModalinformacion] = useState(false);
-    const [value4, setValue4] = React.useState(new Date('2022-08-01T21:11:54'));
-    const [value5, setValue5] = React.useState(new Date('2022-08-02T21:11:54'));
-    const [form, setForm] = useState({
-        contrato: "",
-        empresa: "",
-        descripcion: "",
-        equipos: "",
-        finicio: "",
-        ffinal: "",
-    });
+    const [fechainicio, setFechainicio] = React.useState(new Date('2022-08-01T21:11:54'));
+    const [fechafinal, setFechafinal] = React.useState(new Date('2022-08-02T21:11:54'));
+   const [ncontrato, setNcontrato]= useState('');
+   const [equipos, setEquipos]= useState('');
+   const [empresa, setEmpresa]= useState('');
+   const [descripcion, setDescripcion]= useState('');
+    const [file,setFile]= useState(null);
+    const [url, setUrl] = useState("");
+    const [form, setForm] = useState({});
 
+    const buscarImagen = (e) =>{
+        if (e.target.files[0] !== undefined) {
+            setFile(e.target.files[0]);
+            console.log(e.target.files[0]);
+        }else{
+            console.log('no hay archivo');
+        }
+    };
+
+ 
 
     const getData = async () => {
         const reference = query(collection(db, "contratos"));
@@ -50,29 +58,78 @@ export default function Ingresoequipos() {
         });
     }
 
-
-
-    const agregardatos = async (informacion) => {
-
-        const newperson = {
-            finicio: value4.toDateString(),
-            ffinal: value5.toDateString(),
-            contrato: informacion.contrato,
-            equipos: informacion.equipos,
-            empresa: informacion.empresa,
-            descripcion: informacion.descripcion,
-            id: uuidv4(),
-            indice: Date.now(),
+    const sendData = () =>{
+        var contrato = {};
+        var val = Date.now();
+        if (file === null ){
+            contrato = {
+                finicio: fechainicio.toDateString(),
+                ffinal: fechafinal.toDateString(),
+                indice: val,
+                ncontrato: ncontrato,
+                equipos: equipos,
+                empresa: empresa,
+                descripcion: descripcion,
+                nameImg: 'SP.PNG',
+                id:uuidv4(),
+              };
+              sendFirestore(contrato);
+        }else{
+         contrato = {
+            finicio: fechainicio.toDateString(),
+            ffinal: fechafinal.toDateString(),
+            indice: val,
+            ncontrato: ncontrato,
+            equipos: equipos,
+            empresa: empresa,
+            descripcion: descripcion,
+            nameImg: file.name,
+            id:uuidv4(),
+          };
+          sendFirestore(contrato);
+          sendStorage();
         }
+        setFile(null);
+        cerrarModalInsertar();
+    };
 
-
+    const sendFirestore = (contrato) => {
         try {
-            await setDoc(doc(db, "contratos", `${newperson.id}`), newperson);
-
+            setDoc(doc(db, "contratos",`${contrato.id}` ),contrato);
+              console.log("Contrato agregada")
         } catch (e) {
             console.error("Error adding document: ", e);
         }
-    }
+    };
+    const sendStorage = () =>{
+        //pasar parametros variables
+        const storageRef = ref(storage, `contratos/${file.name}`);
+        uploadBytes(storageRef, file).then((snapshot) => {
+          console.log('Uploaded a blob or file!');
+        });
+    };
+
+    // const agregardatos = async (informacion) => {
+
+    //     const newperson = {
+    //         finicio: value4.toDateString(),
+    //         ffinal: value5.toDateString(),
+    //         contrato: informacion.contrato,
+    //         equipos: informacion.equipos,
+    //         empresa: informacion.empresa,
+    //         descripcion: informacion.descripcion,
+    //         id: uuidv4(),
+    //         indice: Date.now(),
+    //     }
+
+
+    //     try {
+    //         await setDoc(doc(db, "contratos", `${newperson.id}`), newperson);
+
+    //     } catch (e) {
+    //         console.error("Error adding document: ", e);
+    //     }
+    // }
 
     // const mostrarModalActualizar = (dato) => {
     //     setForm(dato);
@@ -81,9 +138,10 @@ export default function Ingresoequipos() {
 
     const mostrarModalInformacion = (dato) => {
         setForm(dato);
+        descargararchivo(dato.nameImg);
         setModalinformacion(true);
     };
-
+   
     const cerrarModalInformacion = () => {
         // this.setState({ modalActualizar: false });
         setModalinformacion(false);
@@ -106,36 +164,36 @@ export default function Ingresoequipos() {
         setModalinsertar(false);
     };
 
-    const editar = async (dato) => {
+    // const editar = async (dato) => {
 
-        var arreglo = data;
-        console.log(data);
-        const database = doc(db, "contratos", dato.id);
-        arreglo.map((registro) => {
-            if (dato.id === registro.id) {
-                registro.contrato= dato.contrato;
-                registro.equipos= dato.equipos;
-                registro.empresa= dato.empresa;
-                registro.descripcion= dato.descripcion;
-                registro.finicio= dato.finicio;
-                registro.ffinal= dato.ffinal;
+    //     var arreglo = data;
+    //     console.log(data);
+    //     const database = doc(db, "contratos", dato.id);
+    //     arreglo.map((registro) => {
+    //         if (dato.id === registro.id) {
+    //             registro.contrato= dato.contrato;
+    //             registro.equipos= dato.equipos;
+    //             registro.empresa= dato.empresa;
+    //             registro.descripcion= dato.descripcion;
+    //             registro.finicio= dato.finicio;
+    //             registro.ffinal= dato.ffinal;
 
-                return 0;
-            }
-            return 0;
-        });
-        setData(arreglo);
-        await updateDoc(database, {
-            contrato: dato.contrato,
-            equipos: dato.equipos,
-            empresa: dato.empresa,
-            descripcion: dato.descripcion,
-            finicio: dato.finicio,
-            ffinal: dato.ffinal,
-        });
+    //             return 0;
+    //         }
+    //         return 0;
+    //     });
+    //     setData(arreglo);
+    //     await updateDoc(database, {
+    //         contrato: dato.contrato,
+    //         equipos: dato.equipos,
+    //         empresa: dato.empresa,
+    //         descripcion: dato.descripcion,
+    //         finicio: dato.finicio,
+    //         ffinal: dato.ffinal,
+    //     });
 
-        // setModalactualizar(false);
-    };
+    //     // setModalactualizar(false);
+    // };
 
     const eliminar = async (dato) => {
         var opcion = window.confirm("Estás Seguro que deseas Eliminar el elemento " + dato.id);
@@ -145,49 +203,21 @@ export default function Ingresoequipos() {
         }
     };
 
-    const insertar = () => {
-        var valorNuevo = { ...form };
-        console.log(valorNuevo);
-        setModalinsertar(false);
-        agregardatos(valorNuevo);
-    }
-
-    const handleChange = (e) => {
-        setForm(
-            {
-                ...form,
-                [e.target.name]: e.target.value,
-            },
-        )
-        console.log(form);
-    };
+  
 
     const handleChange4 = (newValue) => {
-        setValue4(newValue);
+        setFechainicio(newValue);
     };
     const handleChange5 = (newValue) => {
-        setValue5(newValue);
-    };
-    const selecSeguro = (e)=>{
-        console.log(e.target.value);
-        var newForm = form;
-        newForm.seguro = e.target.value;
-        setForm(newForm);
-    };
-    const selecTipo = (e)=>{
-        console.log(e.target.value);
-        var newForm = form;
-        newForm.tipo = e.target.value;
-        setForm(newForm);
-    };
-    const selecDepartamento = (e)=>{
-        console.log(e.target.value);
-        var newForm = form;
-        newForm.area = e.target.value;
-        setForm(newForm);
+        setFechafinal(newValue);
     };
 
-
+    const descargararchivo = (nombre) => {
+        getDownloadURL(ref(storage, `contratos/${nombre}`)).then((url) => {
+            console.log(url);
+            setUrl(url);
+        })
+    };
     useEffect(() => {
         getData();
     }, [])
@@ -204,6 +234,7 @@ export default function Ingresoequipos() {
                 <Table>
                     <thead>
                         <tr>
+                            <th>#</th>
                             <th>N. Contrato</th>
                             <th>Empresa</th>
                             <th>Descripcion</th>
@@ -214,11 +245,12 @@ export default function Ingresoequipos() {
                     </thead>
 
                     <tbody>
-                        {data.sort((a, b) => (a.indice - b.indice)).map((dato, index) => (
-                            <tr key={dato.indice} >
-                                <td>{dato.contrato}</td>
-                                <td>{dato.empresa}</td>
-                                <td>{dato.descripcion}</td>
+                        {data.sort((a, b) => (a.indice - b.indice)).map((contrato, index) => (
+                            <tr key={contrato.indice} >
+                                <td>{index+1}</td>
+                                <td>{contrato.ncontrato}</td>
+                                <td>{contrato.empresa}</td>
+                                <td>{contrato.descripcion}</td>
                                 <td>
                                     <Stack direction="row" spacing={2} alignitems="center" justifyContent="center" >
                                         {/* <Button
@@ -227,11 +259,11 @@ export default function Ingresoequipos() {
                                         >
                                             Editar
                                         </Button>{" "} */}
-                                        <Button color="danger" onClick={() => eliminar(dato)}>Eliminar</Button>
+                                        <Button color="danger" onClick={() => eliminar(contrato)}>Eliminar</Button>
                                     </Stack>
                                 </td>
                                 <td>
-                                    <IconButton aria-label="delete" color="success" onClick={() => mostrarModalInformacion(dato)}><InfoIcon /></IconButton>
+                                    <IconButton aria-label="delete" color="success" onClick={() => mostrarModalInformacion(contrato)}><InfoIcon /></IconButton>
 
                                 </td>
                             </tr>
@@ -271,9 +303,9 @@ export default function Ingresoequipos() {
                                     value={form.ffinal}
                                 />
                             </Grid>
-                            <Grid item xs={3}>
+                            <Grid item xs={1}>
                             </Grid>
-                            <Grid item xs={6}>
+                            <Grid item xs={10}>
                                 <label>
                                     Equipos:
                                 </label>
@@ -285,18 +317,21 @@ export default function Ingresoequipos() {
                                     value={form.equipos}
                                 />
                             </Grid>
-                            <Grid item xs={3}>
+                            <Grid item xs={1}>
                             </Grid>
                             <Grid className="fila" item xs={12}>
                                     <label className="archivo">
                                         Archivo:
                                     </label>
-                                    <Link
+                                    <a
                                         component="button"
-                                        variant="body2"  
+                                        variant="body2" 
+                                        href={url}
+                                        target="_blank" 
+                                        rel="noreferrer"
                                     >
                                         Visualizar Contrato
-                                    </Link>
+                                    </a>
                                 </Grid >
                         </Grid>
                     </FormGroup>
@@ -429,7 +464,7 @@ export default function Ingresoequipos() {
                                     <Stack spacing={3}>
                                         <DateTimePicker
                                             label="Fecha Inicio"
-                                            value={value4}
+                                            value={fechainicio}
                                             onChange={handleChange4}
                                             renderInput={(params) => <TextField {...params} />}
                                         />
@@ -442,7 +477,7 @@ export default function Ingresoequipos() {
                                     <Stack spacing={3}>
                                         <DateTimePicker
                                             label="Fecha Final"
-                                            value={value5}
+                                            value={fechafinal}
                                             onChange={handleChange5}
                                             renderInput={(params) => <TextField {...params} />}
                                         />
@@ -457,7 +492,7 @@ export default function Ingresoequipos() {
                                     className="form-control"
                                     name="contrato"
                                     type="text"
-                                    onChange={handleChange}
+                                    onChange={(e)=>{setNcontrato(e.target.value)}}
                                 />
                             </Grid>
                             <Grid item xs={12}>
@@ -468,7 +503,7 @@ export default function Ingresoequipos() {
                                     className="form-control"
                                     name="empresa"
                                     type="text"
-                                    onChange={handleChange}
+                                    onChange={(e)=>{setEmpresa(e.target.value)}}
                                 />
                             </Grid>
                             <Grid item xs={12}>
@@ -479,7 +514,7 @@ export default function Ingresoequipos() {
                                     className="form-control"
                                     name="equipos"
                                     type="text"
-                                    onChange={handleChange}
+                                    onChange={(e)=>{setEquipos(e.target.value)}}
                                 />
                             </Grid>
                             <Grid item xs={12}>
@@ -490,9 +525,15 @@ export default function Ingresoequipos() {
                                     className="form-control"
                                     name="descripcion"
                                     type="text"
-                                    onChange={handleChange}
+                                    onChange={(e)=>{setDescripcion(e.target.value)}}
                                 />
                             </Grid>
+            <Grid item xs={12}>
+            <div className="mb-3">
+                <label className="form-label">Cargar Contrato</label>
+                <input className="form-control" onChange={buscarImagen} type="file" id="formFile" />
+            </div>
+            </Grid>
                         </Grid>
                     </FormGroup>
                     {/* aqui termina el grid */}
@@ -503,7 +544,7 @@ export default function Ingresoequipos() {
                 <ModalFooter>
                     <Button
                         color="primary"
-                        onClick={() => insertar()}
+                        onClick={() => sendData()}
                     >
                         Insertar
                     </Button>

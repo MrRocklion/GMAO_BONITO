@@ -28,7 +28,7 @@ export default function Homepage() {
     // Signed in
     const user = userCredential.user;
     console.log(user)
-    navigate('/home/activos')
+    navigate('/home')
   })
   .catch((error) => {
     const errorMessage = error.message;

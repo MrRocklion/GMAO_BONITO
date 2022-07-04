@@ -1,48 +1,124 @@
 import React, { useState } from "react";
 import Box from '@mui/material/Box';
-import Autocomplete from '@mui/material/Autocomplete';
-// import { useNavigate } from 'react-router-dom'
 import Button from '@mui/material/Button';
-// import DeleteIcon from '@mui/icons-material/Delete';
 import SendIcon from '@mui/icons-material/Send';
 import Stack from '@mui/material/Stack';
 import { setDoc, doc} from "firebase/firestore";
-import { db } from "../firebase/firebase-config";
+import { db,storage } from "../firebase/firebase-config";
 import { v4 as uuidv4 } from 'uuid';
 import TextField from '@mui/material/TextField';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import {Container} from "reactstrap";
-import Grid from "@mui/material/Grid"
+import { uploadBytes,ref } from "firebase/storage";
+import Grid from "@mui/material/Grid";
+import Modal from '@mui/material/Modal';
+import DeleteIcon from '@mui/icons-material/Delete';
+import { useNavigate } from 'react-router-dom';
 
 export default function Tercerizacion(){
-
-    // const navigate = useNavigate();
-    const [value6, setValue6] = React.useState(new Date('2022-08-01T21:11:54'));
-    const [value7, setValue7] = React.useState(new Date('2022-08-02T21:11:54'));
-    const [empresaext,setEmpresaext] = useState('');
+    const navigate = useNavigate();
+    const [value6, setValue6] = React.useState(new Date('2022-08-01T21:09:09'));
+    const [value7, setValue7] = React.useState(new Date('2022-08-02T21:09:09'));
+    const [empresaext,setEmpresaext] = useState('Softcase');
     const [numeroreportefisico,setNumeroreportefisico] = useState('');
     const [equipoter,setEquipoter] = useState('');
+    const [file,setFile]= useState(null);
+    const [modal1, setModal1] = useState(false);
+    const [modal2, setModal2] = useState(false);
+    const style = {
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        width: 400,
+        bgcolor: 'background.paper',
+        boxShadow: 24,
+        pt: 2,
+        px: 4,
+        pb: 3,
+        borderRadius:3,
+      };
 
-    // const regresarhome= () => {
-    //     navigate('/home/mantenimiento')
-    // }
+    const handleOpen = () => {
+      setModal1(true);
+    };
+    const handleClose = () => {
+      setModal1(false);
+    };
+    const handleOpen2 = () => {
+      setModal2(true);
+    };
+    const handleClose2 = () => {
+      setModal2(false);
+      setModal1(false);
+      navigate('/home');
+    };
+    const handleClose3 =()=>{
+      setModal2(false);
+    };
 
+    const regresar = () => {
+        navigate('/home')
+    };
+
+    const buscarImagen = (e) =>{
+        if (e.target.files[0] !== undefined) {
+            setFile(e.target.files[0]);
+            console.log(e.target.files[0]);
+        }else{
+            console.log('no hay archivo');
+        }
+    };
 
     const enviardatoster= () => {
-
-        var externos = {
-            feinicio: "",
-            fetermino: "",
-            empresaext: empresaext,
-            numeroreportefisico: numeroreportefisico,
-            equipoter: equipoter,
-            estadoext:"Pendiente",
-            id: uuidv4(),
+        var externos = {};
+        var val = Date.now();
+        var val1=value6.toLocaleString();
+        var val2=value7.toLocaleString();
+        if( numeroreportefisico !== '' && equipoter !== ''){ 
+        if (file === null ){
+            externos={
+                indice: val,
+                feinicio: val1,
+                fetermino: val2,
+                empresaext: empresaext,
+                numeroreportefisico: numeroreportefisico,
+                equipoter: equipoter,
+                estadoext:"Pendiente",
+                nameImg: 'SP.PNG',
+                id: uuidv4(),
+            };
+            sendFirestore(externos);
+            handleOpen();
+        }else{
+            externos={
+                indice: val,
+                feinicio: val1,
+                fetermino: val2,
+                empresaext: empresaext,
+                numeroreportefisico: numeroreportefisico,
+                equipoter: equipoter,
+                estadoext:"Pendiente",
+                nameImg: file.name,
+                id: uuidv4(),
         };
         sendFirestore(externos);
-    }
+        sendStorage();
+        handleOpen();
+        }
+      }else{
+        console.log('faltan campos');
+        var opcion= window.confirm("Faltan Campos. Por favor complete toda la informacion de las casillas en ROJO. " );
+            if (opcion === true) {
+              navigate('/home/tercerizacion');
+              // handleClose();
+            }
+      };
+        setFile(null);
+        
+    };
     const sendFirestore = (externos) => {
         try {
             setDoc(doc(db, "reportes externos",`${externos.id}` ),externos);
@@ -50,8 +126,14 @@ export default function Tercerizacion(){
         } catch (e) {
             console.error("Error adding document: ", e);
         } 
-    }
-
+    };
+    const sendStorage = () =>{
+        //pasar parametros variables
+        const storageRef = ref(storage, `externos/${file.name}`);
+        uploadBytes(storageRef, file).then((snapshot) => {
+          console.log('Uploaded a blob or file!');
+        });
+    };
 
     const handleChange6 = (newValue) => {
         setValue6(newValue);
@@ -62,15 +144,14 @@ export default function Tercerizacion(){
 
     return(
         <>
-        <h1> Módulo Tercerizacion</h1>
+        <h1 className="titulos"> Módulo Tercerizacion</h1>
         <Container>
-        <Grid container spacing={4}> 
-        <Grid item xs={2}></Grid>
-        <Grid item xs={4}>
-        <LocalizationProvider dateAdapter={AdapterDateFns}>
+        <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 8, md: 12 }}> 
+        <Grid item xs={6}>
+        <LocalizationProvider  dateAdapter={AdapterDateFns}>
                                     <Stack spacing={3}>
                                         <DateTimePicker
-                                            label="Fecha Inicio Actividad"
+                                            fullWidth label="Fecha Inicio Actividad"
                                             value={value6}
                                             onChange={handleChange6}
                                             renderInput={(params) => <TextField {...params} />}
@@ -78,11 +159,11 @@ export default function Tercerizacion(){
                                     </Stack>
             </LocalizationProvider>
             </Grid>
-        <Grid item xs={4}>
+        <Grid item xs={6}>
         <LocalizationProvider dateAdapter={AdapterDateFns}>
                                     <Stack spacing={3}>
                                         <DateTimePicker
-                                            label="Fecha Culminacion Actividad"
+                                            fullWidth label="Fecha Culminacion Actividad"
                                             value={value7}
                                             onChange={handleChange7}
                                             renderInput={(params) => <TextField {...params} />}
@@ -90,56 +171,38 @@ export default function Tercerizacion(){
                                     </Stack>
                                 </LocalizationProvider>
         </Grid>
-        <Grid item xs={2}></Grid>
-       
 
         <Grid item xs={12}>
         {/* <legend> Seleccionar la empresa a la que corresponde.</legend> */}
-        <Autocomplete
-            disablePortal
-            id="combo-box-demo"
-            options={empresaexterna}
-            onChange={(event,newvalue) =>setEmpresaext(newvalue.label)}
-            sx={{ '& > :not(style)': { m: 3, width: '60ch' },}}
-            renderInput={(params) => <TextField {...params} label="Seleccionar la empresa a la que corresponde" color="secondary" type="text"   focused />}
-        />
+        <select  color={empresaext !== 'Softcase' ? "secondary" : "error"}  label="Empresa" onChange={(e)=>{setEmpresaext(e.target.value)}} className="form-select" aria-label="Default select tipo">
+                                        <option value ="Softcase">Softcase</option>
+                                        <option value="Ing. Color">Ing. Color</option>
+                                        <option value="Indura">Indura</option>
+                                        <option value="Viat" >Viat</option>
+                                        <option value="Conter">Conter</option>
+                                        <option value="Corpoimpex">Corpoimpex</option>
+                                    </select>
         </Grid>
 
-        <Grid item xs={12}>
-        {/* <legend> Completar con el número de identificación del reporte.</legend> */}
-        <Box
-                component="form"
-                sx={{
-                '& > :not(style)': { m: 3, width: '60ch' },
-                }}
-                noValidate
-                autoComplete="off">
-                <TextField label="Completar con el número de identificación del reporte" color="secondary" focused type="int"  onChange={(e) =>setNumeroreportefisico(e.target.value)}  />      
-            </Box>
+        <Grid item xs={6}>
+            <TextField color={numeroreportefisico !== '' ? "secondary" : "error"} fullWidth label="Completar con el número de identificación del reporte" focused type="int"  onChange={(e) =>setNumeroreportefisico(e.target.value)}  />      
             </Grid>
-            <Grid item xs={12}>
-            {/* <legend> Indicar equipo o equipos manipulados. </legend> */}
-        <Box
-                component="form"
-                sx={{
-                '& > :not(style)': { m: 3, width: '70ch' },
-                }}
-                noValidate
-                autoComplete="off">
-                <TextField label="Indicar equipo o equipos manipulados" color="secondary" focused type="int"  onChange={(e) =>setEquipoter(e.target.value)}  />      
-            </Box>
-            </Grid>
-            <Grid item xs={3}></Grid>
             <Grid item xs={6}>
+  
+                <TextField color={equipoter !== '' ? "secondary" : "error"} fullWidth label="Indicar equipo o equipos manipulados" focused type="int"  onChange={(e) =>setEquipoter(e.target.value)}  />      
+      
+            </Grid>
+        
+            <Grid item xs={12}>
             <div className="mb-3">
             <label className="form-label">Cargar Reporte Físico</label>
-            <input className="form-control form-control-sm" id="formFileSm" type="file"/>
+            <input className="form-control " onChange={buscarImagen} type="file" id="formFile"/>
             </div>
 
             <Stack direction="row" spacing={2} alignitems="center" justifyContent="center" >
             
-            {/* <Button variant="outlined" startIcon={<DeleteIcon />}className="boton" onClick={regresar}>
-                Cancelar</Button> */}
+            <Button variant="outlined" startIcon={<DeleteIcon />}className="boton" onClick={regresar}>
+                Cancelar</Button>
             <Button variant="contained" endIcon={<SendIcon />} onClick={enviardatoster}>
                  Enviar</Button>
             
@@ -148,14 +211,35 @@ export default function Tercerizacion(){
         <Grid item xs={3}></Grid>
         </Grid>
         </Container>
+        <Modal
+        open={modal1}
+        onClose={handleClose}
+        aria-labelledby="parent-modal-title"
+        aria-describedby="parent-modal-description"
+      >
+        <Box sx={{ ...style, width: 400 }}>
+          <h2 id="parent-modal-title">Su solicitud fue enviada</h2>
+         <Button onClick={handleOpen2}>Salir</Button>
+      <Button onClick={handleClose}>Nueva Orden</Button>
+      <Modal
+        hideBackdrop
+        open={modal2}
+        onClose={handleClose}
+        aria-labelledby="child-modal-title"
+        aria-describedby="child-modal-description"
+      >
+        <Box sx={{ ...style, width: 200 }}>
+          {/* <h2 id="child-modal-title">Text in a child modal</h2> */}
+          <p id="child-modal-description">
+            Esta seguro que desea salir?
+          </p>
+          <Button onClick={handleClose2}>Si</Button>
+          <Button onClick={handleClose3}>No</Button>
+        </Box>
+      </Modal>
+        </Box>
+      </Modal>
         </>
     );
 }
 
-const empresaexterna=[
-    { label: 'Softcase'},
-    { label: 'Ing. Color'},
-    { label: 'Indura'},
-    { label: 'Viat'},
-    { label: 'Conter'},
-]

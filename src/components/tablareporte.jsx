@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import InfoIcon from '@mui/icons-material/Info';
 import IconButton from '@mui/material/IconButton';
+import { useNavigate } from 'react-router-dom';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { collection, setDoc, query, doc, updateDoc, deleteDoc, onSnapshot } from "firebase/firestore";
 import Grid from "@mui/material/Grid"
@@ -22,6 +23,7 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 
 export default function Tablareporte() {
+    const navigate = useNavigate();
     const [data, setData] = useState([]);
     const [modalActualizar, setModalactualizar] = useState(false);
     const [modalInsertar, setModalinsertar] = useState(false);
@@ -60,11 +62,11 @@ export default function Tablareporte() {
 
 
 
-    const agregardatos = async (informacion) => {
-
-        const newperson = {
-            fechainicio: value.toDateString(),
-            fechatermino: value2.toDateString(),
+    const agregardatos =  (informacion) => {
+        if( informacion.codigoot !== '' && informacion.cedulat !== '' && informacion.codigoe !== '' && informacion.estadoequipo !== '' && informacion.tipomant !== '' && informacion.falla !== '' && informacion.hperdidas !== ''){
+        var newperson = {
+            fechainicio: value.toLocaleDateString(),
+            fechatermino: value2.toLocaleDateString(),
             codigoot: informacion.codigoot,
             cedulat: informacion.cedulat,
             codigoe: informacion.codigoe,
@@ -81,16 +83,26 @@ export default function Tablareporte() {
             verificador: informacion.verificador,
             id: uuidv4(),
             indice: Date.now(),
-        }
+        } 
+        sendFirestore(newperson);
+      }else{
+      console.log('faltan campos');
+      var opcion= window.confirm("Faltan Campos. Por favor complete toda la informacion." );
+          if (opcion === true) {
+            navigate('/home/reportes/reportes');
+            // handleClose();
+          }
+    };
+    };
 
-
+    const sendFirestore = (newperson) => {
         try {
-            await setDoc(doc(db, "reportesint", `${newperson.id}`), newperson);
+        setDoc(doc(db, "reportesint", `${newperson.id}`), newperson);
 
         } catch (e) {
             console.error("Error adding document: ", e);
         }
-    }
+    };
 
     const mostrarModalActualizar = (dato) => {
         setForm(dato);
@@ -245,7 +257,6 @@ export default function Tablareporte() {
                     <thead>
                         <tr>
                             <th>#</th>
-                            <th>ID</th>
                             <th>Fecha Inicio</th>
                             <th>Fecha Culminacion</th>
                             <th>Código O/T</th>
@@ -263,7 +274,6 @@ export default function Tablareporte() {
                         {data.sort((a, b) => (a.indice - b.indice)).map((dato, index) => (
                             <tr key={dato.indice} >
                                 <td>{index + 1}</td>
-                                <td>{dato.id}</td>
                                 <td>{dato.fechainicio}</td>
                                 <td>{dato.fechatermino}</td>
                                 <td>{dato.codigoot}</td>

@@ -2,6 +2,7 @@ import * as React from 'react';
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
 import Button from '@mui/material/Button';
+import { useNavigate } from 'react-router-dom';
 
 const style = {
   position: 'absolute',
@@ -10,29 +11,53 @@ const style = {
   transform: 'translate(-50%, -50%)',
   width: 400,
   bgcolor: 'background.paper',
-  border: '2px solid #000',
   boxShadow: 24,
   pt: 2,
   px: 4,
   pb: 3,
+  borderRadius:3,
 };
 
-function ChildModal() {
-  const [open, setOpen] = React.useState(false);
+
+
+export default function NestedModal() {
+  const [modal1, setModal1] = React.useState(false);
+  const [modal2, setModal2] = React.useState(false);
+  const navigate = useNavigate();
   const handleOpen = () => {
-    setOpen(true);
+    setModal1(true);
   };
   const handleClose = () => {
-    setOpen(false);
+    setModal1(false);
+  };
+  const handleOpen2 = () => {
+    setModal2(true);
+  };
+  const handleClose2 = () => {
+    setModal2(false);
+    setModal1(false);
+    navigate('/home');
+  };
+  const handleClose3 =()=>{
+    setModal2(false);
   };
 
   return (
-    <React.Fragment>
-      <Button onClick={handleOpen}>Salir</Button>
-      <Button onClick={handleOpen}>Nueva Orden</Button>
+    <div>
+      <Button onClick={handleOpen}>Enviar</Button>
+      <Modal
+        open={modal1}
+        onClose={handleClose}
+        aria-labelledby="parent-modal-title"
+        aria-describedby="parent-modal-description"
+      >
+        <Box sx={{ ...style, width: 400 }}>
+          <h2 id="parent-modal-title">Su solicitud fue enviada</h2>
+         <Button onClick={handleOpen2}>Salir</Button>
+      <Button onClick={handleClose}>Nueva Orden</Button>
       <Modal
         hideBackdrop
-        open={open}
+        open={modal2}
         onClose={handleClose}
         aria-labelledby="child-modal-title"
         aria-describedby="child-modal-description"
@@ -42,38 +67,10 @@ function ChildModal() {
           <p id="child-modal-description">
             Esta seguro que desea salir?
           </p>
-          <Button onClick={handleClose}>Si</Button>
-          <Button onClick={handleClose}>No</Button>
+          <Button onClick={handleClose2}>Si</Button>
+          <Button onClick={handleClose3}>No</Button>
         </Box>
       </Modal>
-    </React.Fragment>
-  );
-}
-
-export default function NestedModal() {
-  const [open, setOpen] = React.useState(false);
-  const handleOpen = () => {
-    setOpen(true);
-  };
-  const handleClose = () => {
-    setOpen(false);
-  };
-
-  return (
-    <div>
-      <Button onClick={handleOpen}>Enviar</Button>
-      <Modal
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="parent-modal-title"
-        aria-describedby="parent-modal-description"
-      >
-        <Box sx={{ ...style, width: 400 }}>
-          <h2 id="parent-modal-title">Su solicitud fue enviada</h2>
-          {/* <p id="parent-modal-description">
-            Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
-          </p> */}
-          <ChildModal />
         </Box>
       </Modal>
     </div>

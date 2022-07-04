@@ -71,11 +71,11 @@ export default function Comprasview() {
         descargararchivo(data.nameImg);
         setModalinformacion(true);
         // descargararchivo(data.archivoUrl);
-    }
+    };
 
     const cerrarvistainformacion = () => {
         setModalinformacion(false);
-    }
+    };
 
     const vistaeditar = (data) => {
         setCurrentform(data);
@@ -86,15 +86,15 @@ export default function Comprasview() {
 
     const cerrarvistaeditar =() => {
         setModalactualizar(false);
-    }
+    };
 
     const descargararchivo = (nombre) => {
-        getDownloadURL(ref(storage, `${nombre}`)).then((url) => {
+        getDownloadURL(ref(storage, `proformas/${nombre}`)).then((url) => {
             console.log(url);
             setUrl(url);
         })
 
-    }
+    };
 
 
     console.log(elementoscom);
@@ -230,6 +230,7 @@ export default function Comprasview() {
                                         variant="body2"
                                         href={url}
                                         target="_blank"
+                                        rel="noreferrer"
                                     >
                                         Visualizar Proforma
                                     </a>
