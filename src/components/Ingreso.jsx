@@ -2,8 +2,11 @@ import React, { useEffect, useState } from "react";
 import InfoIcon from '@mui/icons-material/Info';
 import IconButton from '@mui/material/IconButton';
 import { collection, setDoc, query, doc, updateDoc, deleteDoc, onSnapshot } from "firebase/firestore";
-import Grid from "@mui/material/Grid"
-import { db } from "../firebase/firebase-config"
+import Grid from "@mui/material/Grid";
+import TextField from '@mui/material/TextField';
+import { useNavigate } from 'react-router-dom';
+import { db } from "../firebase/firebase-config";
+import Autocomplete from '@mui/material/Autocomplete';
 import {
     Table,
     Button,
@@ -19,22 +22,22 @@ import Stack from '@mui/material/Stack';
 
 
 export default function Ingresoequipos() {
+    const navigate = useNavigate();
     const [data, setData] = useState([]);
     const [modalActualizar, setModalactualizar] = useState(false);
     const [modalInsertar, setModalinsertar] = useState(false);
     const [modalInformacion, setModalinformacion] = useState(false);
-    const [form, setForm] = useState({
-        codigo: "",
-        equipo: "",
-        propietario: "",
-        marca: "",
-        modelo: "",
-        serie: "",
-        accesorios: "",
-        area: "",
-        tipo: "",
-        seguro: "",
-    });
+    const [codigo, setCodigo] = useState('');
+    const [equipo,setEquipo] = useState('');
+    const [propietario,setPropietario] = useState('');
+    const [marca,setMarca] = useState('');
+    const [modelo,setModelo] = useState('');
+    const [serie,setSerie] = useState('');
+    const [accesorios,setAccesorios] = useState('');
+    const [area,setArea] = useState('');
+    const [tipo,setTipo] = useState('');
+    const [seguro,setSeguro] = useState('');
+    const [form, setForm] = useState({});
 
 
     const getData = async () => {
@@ -49,32 +52,39 @@ export default function Ingresoequipos() {
 
 
 
-    const agregardatos = async (informacion) => {
-
-        const newperson = {
-
-            codigo: informacion.codigo,
-            equipo: informacion.equipo,
-            propietario: informacion.propietario,
-            marca: informacion.marca,
-            modelo: informacion.modelo,
-            serie: informacion.serie,
-            accesorios: informacion.accesorios,
-            area: informacion.area,
-            tipo: informacion.tipo,
-            seguro: informacion.seguro,
+    const agregardatos = async () => {
+        if (codigo !== '' && equipo !== '' && marca !== '' && modelo !== '' && serie !== '' && tipo !== '' && seguro !== '') {
+        var newperson = {
+            codigo: codigo,
+            equipo:equipo,
+            propietario:propietario,
+            marca: marca,
+            modelo: modelo,
+            serie: serie,
+            accesorios: accesorios,
+            area: area,
+            tipo: tipo,
+            seguro: seguro,
             id: uuidv4(),
             indice: Date.now(),
         }
-
-
+        sendFirestore(newperson);
+    } else {
+        console.log('faltan campos');
+        var opcion = window.confirm("Faltan Campos. Por favor complete toda la informacion de las casillas en ROJO. ");
+        if (opcion === true) {
+          navigate('/home/inventario/invequipos');
+        }
+      };
+    };
+    const sendFirestore = (newperson) => {
         try {
-            await setDoc(doc(db, "ingreso", `${newperson.id}`), newperson);
+            setDoc(doc(db, "ingreso", `${newperson.id}`), newperson);
 
         } catch (e) {
             console.error("Error adding document: ", e);
         }
-    }
+    };
 
     const mostrarModalActualizar = (dato) => {
         setForm(dato);
@@ -171,19 +181,19 @@ export default function Ingresoequipos() {
         )
         console.log(form);
     };
-    const selecSeguro = (e)=>{
+    const selecSeguro = (e) => {
         console.log(e.target.value);
         var newForm = form;
         newForm.seguro = e.target.value;
         setForm(newForm);
     };
-    const selecTipo = (e)=>{
+    const selecTipo = (e) => {
         console.log(e.target.value);
         var newForm = form;
         newForm.tipo = e.target.value;
         setForm(newForm);
     };
-    const selecDepartamento = (e)=>{
+    const selecDepartamento = (e) => {
         console.log(e.target.value);
         var newForm = form;
         newForm.area = e.target.value;
@@ -347,12 +357,21 @@ export default function Ingresoequipos() {
                                     onChange={handleChange}
                                     value={form.codigo}
                                 />
+
                             </Grid>
                             <Grid item xs={6}>
                                 <label>
                                     Tipo Equipo:
                                 </label>
+                                {/* <Autocomplete
+                                    disableClearable
+                                    id="combo-box-demo"
+                                    options={tipoe}
+                                    onChange={(event, newvalue) => setTipo(newvalue.label)}
+                                    renderInput={(params) => <TextField {...params} fullWidth label="Tipo de equipo" color={tipo !== '' ? "gris" : "oficial"} type="text" focused />}
+                                /> */}
                                 <select  onChange={selecTipo} className="form-select" aria-label="Default select tipo">
+                                <option selected>Open this select menu</option>
                                     <option value="Medico" >Médico</option>
                                     <option value="Industrial">Industrial</option>
                                 </select>
@@ -374,7 +393,15 @@ export default function Ingresoequipos() {
                                 <label>
                                     Departamento:
                                 </label>
+                                {/* <Autocomplete
+                                    disableClearable
+                                    id="combo-box-demo"
+                                    options={departamentos}
+                                    onChange={(event, newvalue) => setArea(newvalue.label)}
+                                    renderInput={(params) => <TextField {...params} fullWidth label="Departamento solicitante" color={area !== '' ? "gris" : "oficial"} type="text" focused />}
+                                /> */}
                                 <select onChange={selecDepartamento} className="form-select" aria-label="Default select departamento">
+                                <option selected>Open this select menu</option>
                                     <option value="Imágenes">Imágenes</option>
                                     <option value="Cedicardio">Cedicardio</option>
                                     <option value="Emergencia">Emergencia</option>
@@ -441,8 +468,15 @@ export default function Ingresoequipos() {
                                 <label>
                                     Seguro:
                                 </label>
-
-                                <select  onChange={selecSeguro}  className="form-select" aria-label="Default select seguro">
+                                {/* <Autocomplete
+                                    disableClearable
+                                    id="combo-box-demo"
+                                    options={tseguro}
+                                    onChange={(event, newvalue) => setSeguro(newvalue.label)}
+                                    renderInput={(params) => <TextField {...params} fullWidth label="Seguro" color={seguro !== '' ? "gris" : "oficial"} type="text" focused />}
+                                /> */}
+                                <select onChange={selecSeguro} className="form-select" aria-label="Default select seguro">
+                                <option selected>Open this select menu</option>
                                     <option value="Asegurado" >Asegurado</option>
                                     <option value="Sin seguro" >Sin seguro</option>
                                 </select>
@@ -470,7 +504,7 @@ export default function Ingresoequipos() {
                     >
                         Editar
                     </Button>
-                    
+
                     <Button
                         className="cancelar"
                         onClick={() => cerrarModalActualizar()}
@@ -489,38 +523,55 @@ export default function Ingresoequipos() {
                     <FormGroup>
                         <Grid container spacing={4}>
                             <Grid item xs={12}>
-                                <label>
+                                {/* <label>
                                     Código Equipo:
-                                </label>
-                                <input
+                                </label> */}
+<TextField color={codigo !== '' ? "gris" : "oficial"} fullWidth label="Código Equipo" focused type="int" onChange={(e) => setCodigo(e.target.value)} />
+                                {/* <input
                                     className="form-control"
                                     name="codigo"
                                     type="text"
                                     onChange={handleChange}
-                                />
+                                /> */}
                             </Grid>
                             <Grid item xs={6}>
-                                <label>
+                                {/* <label>
                                     Tipo de Equipo:
-                                </label>
-                                <select  onChange={selecTipo} className="form-select" aria-label="Default select tipo">
+                                </label> */}
+                                <Autocomplete
+                                    disableClearable
+                                    id="combo-box-demo"
+                                    options={tipoe}
+                                    onChange={(event, newvalue) => setTipo(newvalue.label)}
+                                    renderInput={(params) => <TextField {...params} fullWidth label="Tipo de equipo" color={tipo !== '' ? "gris" : "oficial"} type="text" focused />}
+                                />
+                                {/* <select onChange={selecTipo} className="form-select" aria-label="Default select tipo">
                                     <option value="Medico" >Médico</option>
                                     <option value="Industrial">Industrial</option>
-                                </select>
+                                </select> */}
                             </Grid>
                             <Grid item xs={6}>
-                                <label>
+                            <TextField color={equipo !== '' ? "gris" : "oficial"} fullWidth label="Equipo" focused type="int" onChange={(e) => setEquipo(e.target.value)} />                               
+                                {/* <label>
                                     Equipo:
-                                </label>
-                                <input
+                                </label> */}
+
+                                {/* <input
                                     className="form-control"
                                     name="equipo"
                                     type="text"
                                     onChange={handleChange}
-                                />
+                                /> */}
                             </Grid>
                             <Grid item xs={6}>
-                                <label>
+                                <Autocomplete
+                                    disableClearable
+                                    id="combo-box-demo"
+                                    options={departamentos}
+                                    onChange={(event, newvalue) => setArea(newvalue.label)}
+                                    renderInput={(params) => <TextField {...params} fullWidth label="Departamento solicitante" color={tipo !== '' ? "gris" : "oficial"} type="text" focused />}
+                                />
+                                {/* <label>
                                     Departamento:
                                 </label>
                                 <select onChange={selecDepartamento} className="form-select" aria-label="Default select departamento">
@@ -532,10 +583,11 @@ export default function Ingresoequipos() {
                                     <option value="Covid">Lab. Covid</option>
                                     <option value="Neonatología">Neonatología</option>
                                     <option value="Quirófano">Quirófano</option>
-                                </select>
+                                </select> */}
                             </Grid>
                             <Grid item xs={6}>
-                                <label>
+                            <TextField color={marca !== '' ? "gris" : "oficial"} fullWidth label="Marca" focused type="int" onChange={(e) => setMarca(e.target.value)} />
+                                {/* <label>
                                     Marca:
                                 </label>
                                 <input
@@ -543,10 +595,11 @@ export default function Ingresoequipos() {
                                     name="marca"
                                     type="text"
                                     onChange={handleChange}
-                                />
+                                /> */}
                             </Grid>
                             <Grid item xs={6}>
-                                <label>
+                            <TextField color={modelo !== '' ? "gris" : "oficial"} fullWidth label="Modelo" focused type="int" onChange={(e) => setModelo(e.target.value)} />
+                                {/* <label>
                                     Modelo:
                                 </label>
                                 <input
@@ -554,10 +607,11 @@ export default function Ingresoequipos() {
                                     name="modelo"
                                     type="text"
                                     onChange={handleChange}
-                                />
+                                /> */}
                             </Grid>
                             <Grid item xs={6}>
-                                <label>
+                            <TextField color={serie !== '' ? "gris" : "oficial"} fullWidth label="Serie" focused type="int" onChange={(e) => setSerie(e.target.value)} />
+                                {/* <label>
                                     Serie:
                                 </label>
                                 <input
@@ -565,10 +619,11 @@ export default function Ingresoequipos() {
                                     name="serie"
                                     type="text"
                                     onChange={handleChange}
-                                />
+                                /> */}
                             </Grid>
                             <Grid item xs={6}>
-                                <label>
+                            <TextField color={propietario !== '' ? "gris" : "oficial"} fullWidth label="Propietario" focused type="int" onChange={(e) => setPropietario(e.target.value)} />
+                                {/* <label>
                                     Propietario:
                                 </label>
                                 <input
@@ -576,19 +631,26 @@ export default function Ingresoequipos() {
                                     name="propietario"
                                     type="text"
                                     onChange={handleChange}
-                                />
+                                /> */}
                             </Grid>
                             <Grid item xs={6}>
-                                <label>
+                                {/* <label>
                                     Seguro:
-                                </label>
-                                <select   onChange={selecSeguro}  className="form-select" aria-label="Default select seguro">
+                                </label> */}
+                                <Autocomplete
+                                    disableClearable
+                                    id="combo-box-demo"
+                                    options={tseguro}
+                                    onChange={(event, newvalue) => setSeguro(newvalue.label)}
+                                    renderInput={(params) => <TextField {...params} fullWidth label="Seguro" color={seguro !== '' ? "gris" : "oficial"} type="text" focused />}
+                                />
+                                {/* <select onChange={selecSeguro} className="form-select" aria-label="Default select seguro">
                                     <option value="Asegurado" selected >Asegurado</option>
                                     <option value="Sin seguro" >Sin seguro</option>
-                                </select>
+                                </select> */}
                             </Grid>
                             <Grid item xs={12}>
-                                <label>
+                                {/* <label>
                                     Accesorios:
                                 </label>
                                 <input
@@ -596,7 +658,8 @@ export default function Ingresoequipos() {
                                     name="accesorios"
                                     type="text"
                                     onChange={handleChange}
-                                />
+                                /> */}
+                                <TextField color={accesorios !== '' ? "gris" : "oficial"} fullWidth label="Accesorios" focused type="int" onChange={(e) => setAccesorios(e.target.value)} />
                             </Grid>
                         </Grid>
                     </FormGroup>
@@ -625,5 +688,23 @@ export default function Ingresoequipos() {
 
 }
 
+const tipoe = [
+    { label: 'Médico' },
+    { label: 'Industrial' },
+  ]
 
+  const departamentos = [
+    { label: 'Imágenes' },
+    { label: 'Cedicardio' },
+    { label: 'Emergencia' },
+    { label: 'Endoscopia' },
+    { label: 'Lab. Clínico' },
+    { label: 'Lab. Covid' },
+    { label: 'Neonatología' },
+    { label: 'Quirófano' },
+  ]
 
+  const tseguro = [
+    { label: 'Asegurado' },
+    { label: 'Sin seguro' },
+  ]

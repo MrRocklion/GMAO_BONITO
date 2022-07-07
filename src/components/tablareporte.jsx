@@ -552,6 +552,7 @@ export default function Tablareporte() {
                             Estado:
                         </label>
                         <select  onChange={selecEstado} className="form-select" aria-label="Default select tipo">
+                        <option selected>Seleccionar el estado del reporte</option>
                                     <option value="Reparado Completamente" >Reparado Completamente</option>
                                     <option value="Reparado Parcialmente">Reparado Parcialmente</option>
                                     <option value="En espera de repuestos">En espera de repuestos</option>
@@ -564,6 +565,7 @@ export default function Tablareporte() {
                             Tipo:
                         </label>
                         <select  onChange={selecMantenimiento} className="form-select" aria-label="Default select tipo">
+                        <option selected>Seleccionar tipo de mantenimiento</option>
                                     <option value="Preventivo" >Preventivo</option>
                                     <option value="Correctivo">Correctivo</option>
                         </select>
@@ -573,8 +575,9 @@ export default function Tablareporte() {
                             Nivel de Alerta:
                         </label>
                         <select  onChange={selecAlerta} className="form-select" aria-label="Default select tipo">
+                        <option selected>Seleccionar nivel de alerta</option>
                                     <option value="Funcional" >Funcional</option>
-                                    <option value="Catastrófico">Catastrófico</option>
+                                    <option value="Catastrófico">No Funcional</option>
                         </select>
                     </FormGroup>
                     <FormGroup>
@@ -767,6 +770,7 @@ export default function Tablareporte() {
                                     Tipo de Mantenimiento:
                                 </label>
                                 <select  onChange={selecMantenimiento} className="form-select" aria-label="Default select tipo">
+                                <option selected>Seleccionar tipo de mantenimiento</option>
                                     <option value="Preventivo" >Preventivo</option>
                                     <option value="Correctivo">Correctivo</option>
                                 </select>
@@ -777,6 +781,7 @@ export default function Tablareporte() {
                                     Estado:
                                 </label>
                                 <select  onChange={selecEstado} className="form-select" aria-label="Default select tipo">
+                                <option selected>Seleccionar estado de la solicitud</option>
                                     <option value="Reparado Completamente" >Reparado Completamente</option>
                                     <option value="Reparado Parcialmente">Reparado Parcialmente</option>
                                     <option value="En espera de repuestos">En espera de repuestos</option>
@@ -788,8 +793,9 @@ export default function Tablareporte() {
                                     Nivel Alerta:
                                 </label>
                                 <select  onChange={selecAlerta} className="form-select" aria-label="Default select tipo">
+                                <option selected>Seleccionar nivel de alerta</option>
                                     <option value="Funcional" >Funcional</option>
-                                    <option value="Catastrófico">Catastrófico</option>
+                                    <option value="Catastrófico">No Funcional</option>
                                 </select>
                             </Grid>
                             <Grid item xs={6}>
