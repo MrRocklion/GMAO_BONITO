@@ -201,7 +201,7 @@ export default function Ingresoequipos() {
         <>
             <Container>
                 <br />
-                <Button color="success" onClick={() => mostrarModalInsertar()}>Agregar Equipo</Button>
+                <Button className="agregar" onClick={() => mostrarModalInsertar()}>Agregar Equipo</Button>
                 <br />
                 <br />
                 <Table>
@@ -230,17 +230,14 @@ export default function Ingresoequipos() {
                                 <td>{dato.seguro}</td>
                                 <td>
                                     <Stack direction="row" spacing={2} alignitems="center" justifyContent="center" >
-                                        <Button
-                                            color="primary"
-                                            onClick={() => mostrarModalActualizar(dato)}
-                                        >
-                                            Editar
-                                        </Button>{" "}
-                                        <Button color="danger" onClick={() => eliminar(dato)}>Eliminar</Button>
+                                        {/* <Button color="primary" onClick={() => mostrarModalActualizar(dato)}>Editar</Button>{" "} */}
+                                        <button className="btn btn-outline-warning" onClick={() => mostrarModalActualizar(dato)}>Editar</button>
+                                        <button className="btn btn-outline-danger" onClick={() => eliminar(dato)}>Eliminar</button>
+                                        {/* <Button class="btn btn-outline-primary" onClick={() => eliminar(dato)}>Eliminar</Button> */}
                                     </Stack>
                                 </td>
                                 <td>
-                                    <IconButton aria-label="delete" color="success" onClick={() => mostrarModalInformacion(dato)}><InfoIcon /></IconButton>
+                                    <IconButton aria-label="delete" color="gris" onClick={() => mostrarModalInformacion(dato)}><InfoIcon /></IconButton>
 
                                 </td>
                             </tr>
@@ -323,7 +320,7 @@ export default function Ingresoequipos() {
                 </ModalBody>
                 <ModalFooter>
                     <Button
-                        color="danger"
+                        className="editar"
                         onClick={() => cerrarModalInformacion()}
                     >
                         Cancelar
@@ -468,13 +465,14 @@ export default function Ingresoequipos() {
 
                 <ModalFooter>
                     <Button
-                        color="primary"
+                        className="editar"
                         onClick={() => editar(form)}
                     >
                         Editar
                     </Button>
+                    
                     <Button
-                        color="danger"
+                        className="cancelar"
                         onClick={() => cerrarModalActualizar()}
                     >
                         Cancelar
@@ -609,13 +607,13 @@ export default function Ingresoequipos() {
 
                 <ModalFooter>
                     <Button
-                        color="primary"
+                        className="editar"
                         onClick={() => insertar()}
                     >
                         Insertar
                     </Button>
                     <Button
-                        className="btn btn-danger"
+                        className="cancelar"
                         onClick={() => cerrarModalInsertar()}
                     >
                         Cancelar

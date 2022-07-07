@@ -16,6 +16,9 @@ import Grid from "@mui/material/Grid";
 import Modal from '@mui/material/Modal';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useNavigate } from 'react-router-dom';
+import Autocomplete from '@mui/material/Autocomplete';
+import '../hoja-de-estilos/Ordentrabajo.css';
+import '../hoja-de-estilos/Compras.css';
 
 export default function Tercerizacion(){
     const navigate = useNavigate();
@@ -152,6 +155,7 @@ export default function Tercerizacion(){
                                     <Stack spacing={3}>
                                         <DateTimePicker
                                             fullWidth label="Fecha Inicio Actividad"
+                                            color="gris"
                                             value={value6}
                                             onChange={handleChange6}
                                             renderInput={(params) => <TextField {...params} />}
@@ -174,22 +178,30 @@ export default function Tercerizacion(){
 
         <Grid item xs={12}>
         {/* <legend> Seleccionar la empresa a la que corresponde.</legend> */}
-        <select  color={empresaext !== 'Softcase' ? "secondary" : "error"}  label="Empresa" onChange={(e)=>{setEmpresaext(e.target.value)}} className="form-select" aria-label="Default select tipo">
+        {/* <select  color={empresaext !== 'Softcase' ? "gris" : "oficial"}  label="Empresa" onChange={(e)=>{setEmpresaext(e.target.value)}} className="form-select" aria-label="Default select tipo">
                                         <option value ="Softcase">Softcase</option>
                                         <option value="Ing. Color">Ing. Color</option>
                                         <option value="Indura">Indura</option>
                                         <option value="Viat" >Viat</option>
                                         <option value="Conter">Conter</option>
                                         <option value="Corpoimpex">Corpoimpex</option>
-                                    </select>
+                                    </select> */}
+
+<Autocomplete
+                    disableClearable
+                    id="combo-box-demo"
+                    options={empresas}
+                    onChange={(event, newvalue) => setEmpresaext(newvalue.label)}
+                    renderInput={(params) => <TextField {...params} fullWidth label="Empresa" color={empresaext !== '' ? "gris" : "oficial"} type="text" focused />}
+                />
         </Grid>
 
         <Grid item xs={6}>
-            <TextField color={numeroreportefisico !== '' ? "secondary" : "error"} fullWidth label="Completar con el número de identificación del reporte" focused type="int"  onChange={(e) =>setNumeroreportefisico(e.target.value)}  />      
+            <TextField color={numeroreportefisico !== '' ? "gris" : "oficial"} fullWidth label="Completar con el número de identificación del reporte" focused type="int"  onChange={(e) =>setNumeroreportefisico(e.target.value)}  />      
             </Grid>
             <Grid item xs={6}>
   
-                <TextField color={equipoter !== '' ? "secondary" : "error"} fullWidth label="Indicar equipo o equipos manipulados" focused type="int"  onChange={(e) =>setEquipoter(e.target.value)}  />      
+                <TextField color={equipoter !== '' ? "gris" : "oficial"} fullWidth label="Indicar equipo o equipos manipulados" focused type="int"  onChange={(e) =>setEquipoter(e.target.value)}  />      
       
             </Grid>
         
@@ -200,11 +212,11 @@ export default function Tercerizacion(){
             </div>
 
             <Stack direction="row" spacing={2} alignitems="center" justifyContent="center" >
-            
-            <Button variant="outlined" startIcon={<DeleteIcon />}className="boton" onClick={regresar}>
+
+            <Button variant="outlined" color="cancelarcp" startIcon={<DeleteIcon />} className="boton" onClick={regresar}>
                 Cancelar</Button>
-            <Button variant="contained" endIcon={<SendIcon />} onClick={enviardatoster}>
-                 Enviar</Button>
+              <Button variant="contained" color="enviarcp" className= "botone" endIcon={<SendIcon />} onClick={enviardatoster}>
+                Enviar</Button>
             
         </Stack>
         </Grid>
@@ -243,3 +255,11 @@ export default function Tercerizacion(){
     );
 }
 
+const empresas = [
+  { label: 'Softcase' },
+  { label: 'Ing. Color' },
+  { label: 'Indura' },
+  { label: 'Viat' },
+  { label: 'Conter' },
+  { label: 'Corpoimpex' },
+]

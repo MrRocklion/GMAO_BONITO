@@ -13,6 +13,7 @@ import { Container } from "reactstrap";
 import Grid from "@mui/material/Grid";
 import Modal from '@mui/material/Modal';
 import Autocomplete from '@mui/material/Autocomplete';
+import '../hoja-de-estilos/Ordentrabajo.css';
 
 export default function Ordentrabajoview() {
   const navigate = useNavigate();
@@ -68,7 +69,7 @@ export default function Ordentrabajoview() {
     var val3 = val2.toLocaleDateString("en-US");
     console.log(val);
     console.log(val3);
-    if( cedula !== '' && departamento !== '' && prioridad1 !== '' && tipotrabajo !== ''&& asunto !== ''&& problematica !== ''){
+    if (cedula !== '' && departamento !== '' && prioridad1 !== '' && tipotrabajo !== '' && asunto !== '' && problematica !== '') {
       var orden = {
         fecha: val3,
         indice: val,
@@ -88,14 +89,14 @@ export default function Ordentrabajoview() {
       setAsunto("");
       setProblematica("");
       setObservaciones("");
-    }else{
-    console.log('faltan campos');
-    var opcion= window.confirm("Faltan Campos. Por favor complete toda la informacion de las casillas en ROJO. " );
-        if (opcion === true) {
-          navigate('/home/OTS');
-          // handleClose();
-        }
-  };
+    } else {
+      console.log('faltan campos');
+      var opcion = window.confirm("Faltan Campos. Por favor complete toda la informacion de las casillas en ROJO. ");
+      if (opcion === true) {
+        navigate('/home/OTS');
+        // handleClose();
+      }
+    };
   };
 
   const sendFirestore = (orden) => {
@@ -117,32 +118,32 @@ export default function Ordentrabajoview() {
           {/* <Grid item xs={12}>
             <p className="texto1"> El formulario en línea constará de 4 secciones que permitirán determinar los problemas y atender adecuadamente la solicitud. Por favor, responda todos los campos de manera específica. </p>
           </Grid> */}
-          <Grid item xs={12}>
-            <TextField color={cedula !== '' ? "secondary" : "error"} fullWidth label="Indicar número de identificación del solicitante" focused type="int" onChange={(e) => setCedula(e.target.value)} />
+          <Grid item xs={6}>
+            <TextField color={cedula !== '' ? "gris" : "oficial"} fullWidth label="Cédula del solicitante" focused type="int" onChange={(e) => setCedula(e.target.value)} />
           </Grid>
-          <Grid item xs={12}>
+          <Grid item xs={6}>
             <Autocomplete
-                    disableClearable
-                    id="combo-box-demo"
-                    options={departamentos}
-                    onChange={(event, newvalue) => setDepartamento(newvalue.label)}
-                    renderInput={(params) => <TextField {...params} fullWidth label="Departamento Solicitante" color={departamento !== '' ? "secondary" : "error"} type="text" focused />}
-                />
-                {/* <p className="pregunta">Seleccionar el departamento</p> */}
+              disableClearable
+              id="combo-box-demo"
+              options={departamentos}
+              onChange={(event, newvalue) => setDepartamento(newvalue.label)}
+              renderInput={(params) => <TextField {...params} fullWidth label="Departamento Solicitante" color={departamento !== '' ? "gris" : "oficial"} type="text" focused />}
+            />
+            {/* <p className="pregunta">Seleccionar el departamento</p> */}
             {/* <select onChange={(e) => { setDepartamento(e.target.value) }} label="Departamento Solicitante"className="form-select" aria-label="Default select tipo">
               <option value="Emergencia">Emergencia</option>
               <option value="Ambulancia">Ambulancia</option>
               <option value="Farmacia">Farmacia</option>
             </select> */}
           </Grid>
-          <Grid item xs={12}>
-          <Autocomplete
-                    disableClearable
-                    id="combo-box-demo"
-                    options={prioridad}
-                    onChange={(event, newvalue) => setPrioridad1(newvalue.label)}
-                    renderInput={(params) => <TextField {...params} fullWidth label="Seleccionar la prioridad del trabajo" color={prioridad1 !== '' ? "secondary" : "error"} type="text" focused />}
-                />
+          <Grid item xs={6}>
+            <Autocomplete
+              disableClearable
+              id="combo-box-demo"
+              options={prioridad}
+              onChange={(event, newvalue) => setPrioridad1(newvalue.label)}
+              renderInput={(params) => <TextField {...params} fullWidth label="Prioridad del trabajo" color={prioridad1 !== '' ? "gris" : "oficial"} type="text" focused />}
+            />
             {/* <p className="pregunta1">Seleccionar la prioridad del trabajo</p>
             <select onChange={(e) => { setPrioridad1(e.target.value) }} className="form-select" aria-label="Default select tipo">
               <option value="Media (Menor a 15 días)">Media "Menor a 15 días"</option>
@@ -150,14 +151,14 @@ export default function Ordentrabajoview() {
               <option value="Crítica (EMERGENCIA)">Crítica "EMERGENCIA"</option>
             </select> */}
           </Grid>
-          <Grid item xs={12}>
-          <Autocomplete
-                    disableClearable
-                    id="combo-box-demo"
-                    options={tipos}
-                    onChange={(event, newvalue) => setTipotrabajo(newvalue.label)}
-                    renderInput={(params) => <TextField {...params} fullWidth label="Seleccionar el tipo de trabajo requerido" color={tipotrabajo !== '' ? "secondary" : "error"} type="text" focused />}
-                />
+          <Grid item xs={6}>
+            <Autocomplete
+              disableClearable
+              id="combo-box-demo"
+              options={tipos}
+              onChange={(event, newvalue) => setTipotrabajo(newvalue.label)}
+              renderInput={(params) => <TextField {...params} fullWidth label="Tipo de trabajo requerido" color={tipotrabajo !== '' ? "gris" : "oficial"} type="text" focused />}
+            />
             {/* <p className="pregunta2">Seleccionar el tipo de trabajo requerido</p>
             <select onChange={(e) => { setTipotrabajo(e.target.value) }} className="form-select" aria-label="Default select tipo">
               <option value="Equipo Médico">Equipo Médico</option>
@@ -169,20 +170,20 @@ export default function Ordentrabajoview() {
             </select> */}
           </Grid>
           <Grid item xs={12}>
-            <TextField color={asunto !== '' ? "secondary" : "error"} fullWidth label="Identificar el equipo que presenta el problema" focused type="int" onChange={(e) => setAsunto(e.target.value)} />
+            <TextField color={asunto !== '' ? "gris" : "oficial"} fullWidth label="Descripcion del equipo" focused type="int" onChange={(e) => setAsunto(e.target.value)} />
           </Grid>
           <Grid item xs={12}>
-            <TextField color={problematica !== '' ? "secondary" : "error"} fullWidth label="Especificar el inconveniente que presentó el equipo" focused type="int" onChange={(e) => setProblematica(e.target.value)} />
+            <TextField color={problematica !== '' ? "gris" : "oficial"} fullWidth label="Inconveniente o Problemática" focused type="int" onChange={(e) => setProblematica(e.target.value)} />
           </Grid>
           <Grid item xs={12}>
-            <TextField fullWidth label="Observaciones" focused type="int" onChange={(e) => setObservaciones(e.target.value)} />
+            <TextField fullWidth label="Observaciones" color="gris" focused type="int" onChange={(e) => setObservaciones(e.target.value)} />
           </Grid>
           <Grid item xs={12}>
             <Stack direction="row" spacing={2} alignitems="center" justifyContent="center" >
 
-              <Button variant="outlined" startIcon={<DeleteIcon />} className="boton" onClick={regresar}>
+              <Button variant="outlined" color="cancelarcp" startIcon={<DeleteIcon />} className="boton" onClick={regresar}>
                 Cancelar</Button>
-              <Button variant="contained" endIcon={<SendIcon />} onClick={enviardatos}>
+              <Button variant="contained" color="enviarcp" className="botone" endIcon={<SendIcon />} onClick={enviardatos}>
                 Enviar</Button>
 
             </Stack>
@@ -226,19 +227,19 @@ export default function Ordentrabajoview() {
 }
 
 const departamentos = [
-    { label: 'Ambulancia' },
-    { label: 'Esterilización' },
-    { label: 'Fisioterapia' },
-    { label: 'Hospital del Día' },
-    { label: 'Hospitalización' },
-    { label: 'Imágenes ' },
-    { label: 'Laboratorio Clínico ' },
-    { label: 'Quirófano ' },
-    { label: 'Recuperación ' },
-    { label: 'UCI Adultos ' },
-    { label: 'UCI Intermedio ' },
-    { label: 'UCI Neonatal' },
-    { label: 'UCI Pediátrica' },
+  { label: 'Ambulancia' },
+  { label: 'Esterilización' },
+  { label: 'Fisioterapia' },
+  { label: 'Hospital del Día' },
+  { label: 'Hospitalización' },
+  { label: 'Imágenes ' },
+  { label: 'Laboratorio Clínico ' },
+  { label: 'Quirófano ' },
+  { label: 'Recuperación ' },
+  { label: 'UCI Adultos ' },
+  { label: 'UCI Intermedio ' },
+  { label: 'UCI Neonatal' },
+  { label: 'UCI Pediátrica' },
 ]
 
 const prioridad = [

@@ -13,6 +13,7 @@ import {
     ModalHeader,
     ModalBody,
     FormGroup,
+    Button,
     ModalFooter,
 } from "reactstrap";
 
@@ -132,10 +133,10 @@ export default function Comprasview() {
                                             <td>{compras.articulocom}</td>
                                             <td>{compras.estadocom}</td>
                                             <td>
-                                                <button className="btn btn-danger mx-2" onClick={() => { vistaeditar(compras) }}>Cambiar Estado</button>
+                                                <button className="btn btn-outline-danger" onClick={() => { vistaeditar(compras) }}>Cambiar Estado</button>
                                             </td>
                                             <td>
-                                                <IconButton aria-label="delete" onClick={() => { vistainformacion(compras) }} color="success"><InfoIcon /></IconButton>
+                                                <IconButton aria-label="delete" onClick={() => { vistainformacion(compras) }} color="gris"><InfoIcon /></IconButton>
 
                                             </td>
                                         </tr>
@@ -240,7 +241,13 @@ export default function Comprasview() {
                         </FormGroup>
                     </ModalBody>
                     <ModalFooter className="modal-footer">
-                        <button className="btn btn-success" onClick={cerrarvistainformacion}>Cerrar</button>
+                    <Button
+                        className="editar"
+                        onClick={cerrarvistainformacion}
+                    >
+                        Cancelar
+                    </Button>
+                        {/* <button className="btn btn-success" onClick={cerrarvistainformacion}>Cerrar</button> */}
                     </ModalFooter>
 
                 </Container>
@@ -283,8 +290,21 @@ sele
                     </ModalBody>
 
                     <ModalFooter className="modal-footer">
-                        <button className="btn btn-warning" onClick={() => { cambiarestado(currentform.id) }}>Aceptar</button>
-                        <button className="btn btn-success" onClick={cerrarvistaeditar}>Cerrar</button>
+                    <Button
+                        className="editar"
+                        onClick={() => { cambiarestado(currentform.id) }}
+                    >
+                        Aceptar
+                    </Button>
+                
+                    <Button
+                        className="cancelar"
+                        onClick={cerrarvistaeditar}
+                    >
+                        Cerrar
+                    </Button>
+                        {/* <button className="btn btn-warning" onClick={() => { cambiarestado(currentform.id) }}>Aceptar</button>
+                        <button className="btn btn-success" onClick={cerrarvistaeditar}>Cerrar</button> */}
                     </ModalFooter>
                 </Container>
             </Modal>

@@ -135,7 +135,7 @@ export default function Manual(){
 <Container>
                 <br />
                 <Stack direction="row" spacing={2} alignitems="center" justifyContent="center" >
-                <Button color="success" onClick={() => mostrarModalInsertar()}>Agregar Manual</Button>
+                <Button className="agregar" onClick={() => mostrarModalInsertar()}>Agregar Manual</Button>
                 </Stack>
                 <br />
                 <br />
@@ -157,13 +157,13 @@ export default function Manual(){
                                 <td>{manual.cequipo}</td>
                                 <td>{manual.equipo}</td>
                                 <td>
-                                    <IconButton aria-label="delete" color="success" onClick={() => mostrarModalArchivo(manual)}><InfoIcon /></IconButton>
+                                    <IconButton aria-label="delete" color="gris" onClick={() => mostrarModalArchivo(manual)}><InfoIcon /></IconButton>
 
                                 </td>
                                 <td>
                                     <Stack direction="row" spacing={2} alignitems="center" justifyContent="center" >
-                                        <Button color="danger" onClick={() => eliminar(manual)}>Eliminar</Button>
-                                    
+                                        {/* <Button color="danger" onClick={() => eliminar(manual)}>Eliminar</Button> */}
+                                        <button className="btn btn-outline-danger"  onClick={() => eliminar(manual)}>Eliminar</button>
                                     </Stack>
                                 </td>
                             </tr>
@@ -218,13 +218,13 @@ export default function Manual(){
                 </ModalBody>
                 <ModalFooter>
                     <Button
-                        color="primary"
+                        className="editar"
                         onClick={() => sendData()}
                     >
                         Insertar
                     </Button>
                     <Button
-                        className="btn btn-danger"
+                        className="cancelar"
                         onClick={() => cerrarModalInsertar()}
                     >
                         Cancelar
@@ -259,7 +259,7 @@ export default function Manual(){
                 </ModalBody>
                 <ModalFooter>
                     <Button
-                        color="danger"
+                        className="editar"
                         onClick={() => cerrarModalArchivo()}
                     >
                         Cancelar

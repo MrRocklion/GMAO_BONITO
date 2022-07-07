@@ -228,7 +228,7 @@ export default function Ingresoequipos() {
         <>
             <Container>
                 <br />
-                <Button color="success" onClick={() => mostrarModalInsertar()}>Agregar Contrato</Button>
+                <Button className="agregar" onClick={() => mostrarModalInsertar()}>Agregar Contrato</Button>
                 <br />
                 <br />
                 <Table>
@@ -259,11 +259,12 @@ export default function Ingresoequipos() {
                                         >
                                             Editar
                                         </Button>{" "} */}
-                                        <Button color="danger" onClick={() => eliminar(contrato)}>Eliminar</Button>
+                                        
+                                        <button className="btn btn-outline-danger" onClick={() => eliminar(contrato)}>Eliminar</button>
                                     </Stack>
                                 </td>
                                 <td>
-                                    <IconButton aria-label="delete" color="success" onClick={() => mostrarModalInformacion(contrato)}><InfoIcon /></IconButton>
+                                    <IconButton aria-label="delete" color="gris" onClick={() => mostrarModalInformacion(contrato)}><InfoIcon /></IconButton>
 
                                 </td>
                             </tr>
@@ -339,7 +340,7 @@ export default function Ingresoequipos() {
                 </ModalBody>
                 <ModalFooter>
                     <Button
-                        color="danger"
+                        className="editar"
                         onClick={() => cerrarModalInformacion()}
                     >
                         Cancelar
@@ -542,14 +543,15 @@ export default function Ingresoequipos() {
                 </ModalBody>
 
                 <ModalFooter>
+                    
                     <Button
-                        color="primary"
+                        className="editar"
                         onClick={() => sendData()}
                     >
                         Insertar
                     </Button>
                     <Button
-                        className="btn btn-danger"
+                        className="cancelar"
                         onClick={() => cerrarModalInsertar()}
                     >
                         Cancelar

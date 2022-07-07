@@ -99,7 +99,7 @@ export default function MenuApp2(props) {
 
     return (
         <>
-            <AppBar color="primary" position="static">
+            <AppBar  className="bts" position="static">
                 <Toolbar>
                     <IconButton
                         size="large"

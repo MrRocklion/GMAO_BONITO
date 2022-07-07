@@ -250,7 +250,7 @@ export default function Tablareporte() {
         <>
             <Container>
                 <br />
-                <Button color="success" onClick={() => mostrarModalInsertar()}>Agregar Reporte</Button>
+                <Button className="agregar" onClick={() => mostrarModalInsertar()}>Agregar Reporte</Button>
                 <br />
                 <br />
                 <Table>
@@ -283,17 +283,19 @@ export default function Tablareporte() {
                                 <td>{dato.costo}</td>
                                 <td>
                                     <Stack direction="row" spacing={2} alignitems="center" justifyContent="center" >
-                                        <Button
+                                        {/* <Button
                                             color="primary"
                                             onClick={() => mostrarModalActualizar(dato)}
                                         >
                                             Editar
                                         </Button>{" "}
-                                        <Button color="danger" onClick={() => eliminar(dato)}>Eliminar</Button>
+                                        <Button color="danger" onClick={() => eliminar(dato)}>Eliminar</Button> */}
+                                    <button className="btn btn-outline-warning" onClick={() => mostrarModalActualizar(dato)}>Editar</button>
+                                        <button className="btn btn-outline-danger" onClick={() => eliminar(dato)}>Eliminar</button>
                                     </Stack>
                                 </td>
                                 <td>
-                                    <IconButton aria-label="delete" color="success" onClick={() => mostrarModalInformacion(dato)}><InfoIcon /></IconButton>
+                                    <IconButton aria-label="delete" color="gris" onClick={() => mostrarModalInformacion(dato)}><InfoIcon /></IconButton>
 
                                 </td>
                             </tr>
@@ -453,7 +455,7 @@ export default function Tablareporte() {
                 </ModalBody>
                 <ModalFooter>
                     <Button
-                        color="danger"
+                        className="editar"
                         onClick={() => cerrarModalInformacion()}
                     >
                         Cancelar
@@ -675,13 +677,13 @@ export default function Tablareporte() {
 
                 <ModalFooter>
                     <Button
-                        color="primary"
+                       className="editar"
                         onClick={() => editar(form)}
                     >
                         Editar
                     </Button>
                     <Button
-                        color="danger"
+                       className="cancelar"
                         onClick={() => cerrarModalActualizar()}
                     >
                         Cancelar
@@ -889,13 +891,15 @@ export default function Tablareporte() {
 
                 <ModalFooter>
                     <Button
-                        color="primary"
+                        // color="primary"
+                        className="editar"
                         onClick={() => insertar()}
                     >
                         Insertar
                     </Button>
                     <Button
-                        className="btn btn-danger"
+                        // className="btn btn-danger"
+                        className="cancelar"
                         onClick={() => cerrarModalInsertar()}
                     >
                         Cancelar

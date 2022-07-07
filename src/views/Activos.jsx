@@ -60,7 +60,7 @@ export default function Activosview() {
                       <td>{ingresos.seguro}</td>
 
                       <td>
-                        <IconButton aria-label="delete" onClick={() => { vistainformacion1(ingresos) }} color="success"><InfoIcon /></IconButton>
+                        <IconButton aria-label="delete" onClick={() => { vistainformacion1(ingresos) }} color="gris"><InfoIcon /></IconButton>
                       </td>
                     </tr>
                   ))}

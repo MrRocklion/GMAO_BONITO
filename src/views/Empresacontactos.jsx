@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import InfoIcon from '@mui/icons-material/Info';
 import IconButton from '@mui/material/IconButton';
-import { uploadBytes,ref,getDownloadURL } from "firebase/storage";
-import { collection, setDoc, query, doc, deleteDoc, onSnapshot,updateDoc, } from "firebase/firestore";
+import { uploadBytes, ref, getDownloadURL } from "firebase/storage";
+import { collection, setDoc, query, doc, deleteDoc, onSnapshot, updateDoc, } from "firebase/firestore";
 import Grid from "@mui/material/Grid"
-import { db,storage } from "../firebase/firebase-config"
+import { db, storage } from "../firebase/firebase-config"
 import {
     Table,
     Button,
@@ -24,22 +24,22 @@ export default function Contactosempresas() {
     const [modalActualizar, setModalactualizar] = useState(false);
     const [modalInsertar, setModalinsertar] = useState(false);
     const [modalInformacion, setModalinformacion] = useState(false);
-    const [empresa,setEmpresa]= useState('');
-    const [representante,setRepresentante]= useState('');
-    const [direccion,setDireccion]= useState('');
-    const [ruc,setRuc]= useState('');
-    const [correo,setCorreo]= useState('');
-    const [telefono,setTelefono]= useState('');
-    const [producto,setProducto]= useState('');
-    const [evaluacion,setEvaluacion]= useState('');
-    const [file,setFile]= useState(null);
+    const [empresa, setEmpresa] = useState('');
+    const [representante, setRepresentante] = useState('');
+    const [direccion, setDireccion] = useState('');
+    const [ruc, setRuc] = useState('');
+    const [correo, setCorreo] = useState('');
+    const [telefono, setTelefono] = useState('');
+    const [producto, setProducto] = useState('');
+    const [evaluacion, setEvaluacion] = useState('');
+    const [file, setFile] = useState(null);
     const [url, setUrl] = useState("");
     const [form, setForm] = useState({});
-    
-    const buscarImagen = (e) =>{
+
+    const buscarImagen = (e) => {
         if (e.target.files[0] !== undefined) {
             setFile(e.target.files[0]);
-        }else{
+        } else {
             console.log('no hay archivo');
         }
     };
@@ -53,49 +53,49 @@ export default function Contactosempresas() {
         });
     };
 
-    const actualizar = async ()=> {
-        const database = doc(db, "empresas",form.id);
-        await updateDoc(database,form);
+    const actualizar = async () => {
+        const database = doc(db, "empresas", form.id);
+        await updateDoc(database, form);
         cerrarModalActualizar();
     };
 
     const agregardatos = async () => {
-        var contactos= {};
-        if (file === null ){
-        contactos = {
-            empresa: empresa,
-            representante: representante,
-            direccion: direccion,
-            ruc: ruc,
-            correo: correo,
-            telefono: telefono,
-            producto: producto,
-            evaluacion:evaluacion,
-            nameImg: 'SP.PNG',
-            id: uuidv4(),
-            indice: Date.now(),
-        };
-        sendFirestore(contactos);
-    }else{
-        contactos = {
-            empresa: empresa,
-            representante: representante,
-            direccion: direccion,
-            ruc: ruc,
-            correo: correo,
-            telefono: telefono,
-            producto: producto,
-            evaluacion:evaluacion,
-            nameImg: file.name,
-            id: uuidv4(),
-            indice: Date.now(),
-        };
-        sendFirestore(contactos);
-        sendStorage();
-      }
-      setFile(null); 
-  };
-  const sendFirestore = (contactos) => {
+        var contactos = {};
+        if (file === null) {
+            contactos = {
+                empresa: empresa,
+                representante: representante,
+                direccion: direccion,
+                ruc: ruc,
+                correo: correo,
+                telefono: telefono,
+                producto: producto,
+                evaluacion: evaluacion,
+                nameImg: 'SP.PNG',
+                id: uuidv4(),
+                indice: Date.now(),
+            };
+            sendFirestore(contactos);
+        } else {
+            contactos = {
+                empresa: empresa,
+                representante: representante,
+                direccion: direccion,
+                ruc: ruc,
+                correo: correo,
+                telefono: telefono,
+                producto: producto,
+                evaluacion: evaluacion,
+                nameImg: file.name,
+                id: uuidv4(),
+                indice: Date.now(),
+            };
+            sendFirestore(contactos);
+            sendStorage();
+        }
+        setFile(null);
+    };
+    const sendFirestore = (contactos) => {
         try {
             setDoc(doc(db, "empresas", `${contactos.id}`), contactos);
 
@@ -103,12 +103,12 @@ export default function Contactosempresas() {
             console.error("Error adding document: ", e);
         }
     };
-    const sendStorage = () =>{
+    const sendStorage = () => {
         //pasar parametros variables
         const storageRef = ref(storage, `evaluaciones/${file.name}`);
         uploadBytes(storageRef, file).then((snapshot) => {
         });
-    }; 
+    };
 
     const mostrarModalActualizar = (dato) => {
         setForm(dato);
@@ -174,9 +174,9 @@ export default function Contactosempresas() {
 
     return (
         <>
-        <Container>
+            <Container>
                 <br />
-                <Button color="success" onClick={() => mostrarModalInsertar()}>Agregar Empresa</Button>
+                <Button className="agregar" onClick={() => mostrarModalInsertar()}>Agregar Empresa</Button>
                 <br />
                 <br />
                 <Table>
@@ -197,7 +197,7 @@ export default function Contactosempresas() {
                     <tbody>
                         {data.sort((a, b) => (a.indice - b.indice)).map((contactos, index) => (
                             <tr key={contactos.indice} >
-                                <td>{index+1}</td>
+                                <td>{index + 1}</td>
                                 <td>{contactos.empresa}</td>
                                 <td>{contactos.representante}</td>
                                 <td>{contactos.ruc}</td>
@@ -205,17 +205,19 @@ export default function Contactosempresas() {
                                 <td>{contactos.correo}</td>
                                 <td>
                                     <Stack direction="row" spacing={2} alignitems="center" justifyContent="center" >
-                                        <Button
+                                        <button className="btn btn-outline-warning" onClick={() => mostrarModalActualizar(contactos)}>Editar</button>
+                                        <button className="btn btn-outline-danger" onClick={() => eliminar(contactos)}>Eliminar</button>
+                                        {/* <Button
                                             color="primary"
                                             onClick={() => mostrarModalActualizar(contactos)}
                                         >
                                             Editar
                                         </Button>{" "}
-                                        <Button color="danger" onClick={() => eliminar(contactos)}>Eliminar</Button>
+                                        <Button color="danger" onClick={() => eliminar(contactos)}>Eliminar</Button> */}
                                     </Stack>
                                 </td>
                                 <td>
-                                    <IconButton aria-label="delete" color="success" onClick={() => mostrarModalInformacion(contactos)}><InfoIcon /></IconButton>
+                                    <IconButton aria-label="delete" color="gris" onClick={() => mostrarModalInformacion(contactos)}><InfoIcon /></IconButton>
 
                                 </td>
                             </tr>
@@ -231,7 +233,7 @@ export default function Contactosempresas() {
                 <ModalBody>
                     <FormGroup>
                         <Grid container spacing={4}>
-                        <Grid item xs={12}>
+                            <Grid item xs={12}>
                                 <label>
                                     Direccion:
                                 </label>
@@ -270,26 +272,26 @@ export default function Contactosempresas() {
                             </Grid>
                             <Grid item xs={3}></Grid>
                             <Grid className="fila" item xs={12}>
-                                    <label className="archivo">
-                                        Archivo:
-                                    </label>
-                                    <a
-                                        component="button"
-                                        variant="body2" 
-                                        href={url}
-                                        target="_blank" 
-                                        rel="noreferrer"
-                                    >
-                                        Visualizar Contrato
-                                    </a>
-                                </Grid >
+                                <label className="archivo">
+                                    Archivo:
+                                </label>
+                                <a
+                                    component="button"
+                                    variant="body2"
+                                    href={url}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                >
+                                    Visualizar Contrato
+                                </a>
+                            </Grid >
                         </Grid>
                     </FormGroup>
 
                 </ModalBody>
                 <ModalFooter>
                     <Button
-                        color="danger"
+                        className="editar"
                         onClick={() => cerrarModalInformacion()}
                     >
                         Cancelar
@@ -304,7 +306,7 @@ export default function Contactosempresas() {
                 <ModalBody>
                     <FormGroup>
                         <Grid container spacing={4}>
-                        <Grid item xs={12}>
+                            <Grid item xs={12}>
                                 <label>
                                     Empresa:
                                 </label>
@@ -410,14 +412,14 @@ export default function Contactosempresas() {
                                 />
                             </Grid>
                             <Grid item xs={3}></Grid>
-                            
+
                         </Grid>
                     </FormGroup>
                 </ModalBody>
 
                 <ModalFooter>
-                    <Button color="primary"onClick={() => actualizar()}>Guardar Cambios</Button>
-                    <Button color="danger" onClick={() => cerrarModalActualizar()}>Cancelar </Button>
+                    <Button className="editar" onClick={() => actualizar()}>Guardar Cambios</Button>
+                    <Button className="cancelar" onClick={() => cerrarModalActualizar()}>Cancelar </Button>
                 </ModalFooter>
             </Modal>
 
@@ -437,9 +439,9 @@ export default function Contactosempresas() {
                                     className="form-control"
                                     name="empresa"
                                     type="text"
-                                    onChange={(e)=>{setEmpresa(e.target.value)}}
+                                    onChange={(e) => { setEmpresa(e.target.value) }}
                                 />
-                            </Grid> 
+                            </Grid>
                             <Grid item xs={12}>
                                 <label>
                                     Representante Legal:
@@ -448,7 +450,7 @@ export default function Contactosempresas() {
                                     className="form-control"
                                     name="representante"
                                     type="text"
-                                    onChange={(e)=>{setRepresentante(e.target.value)}}
+                                    onChange={(e) => { setRepresentante(e.target.value) }}
                                 />
                             </Grid>
                             <Grid item xs={6}>
@@ -459,7 +461,7 @@ export default function Contactosempresas() {
                                     className="form-control"
                                     name="ruc"
                                     type="text"
-                                    onChange={(e)=>{setRuc(e.target.value)}}
+                                    onChange={(e) => { setRuc(e.target.value) }}
                                 />
                             </Grid>
                             <Grid item xs={6}>
@@ -470,7 +472,7 @@ export default function Contactosempresas() {
                                     className="form-control"
                                     name="telefono"
                                     type="text"
-                                    onChange={(e)=>{setTelefono(e.target.value)}}
+                                    onChange={(e) => { setTelefono(e.target.value) }}
                                 />
                             </Grid>
                             <Grid item xs={12}>
@@ -481,7 +483,7 @@ export default function Contactosempresas() {
                                     className="form-control"
                                     name="correo"
                                     type="text"
-                                    onChange={(e)=>{setCorreo(e.target.value)}}
+                                    onChange={(e) => { setCorreo(e.target.value) }}
                                 />
                             </Grid>
                             <Grid item xs={12}>
@@ -492,7 +494,7 @@ export default function Contactosempresas() {
                                     className="form-control"
                                     name="direccion"
                                     type="text"
-                                    onChange={(e)=>{setDireccion(e.target.value)}}
+                                    onChange={(e) => { setDireccion(e.target.value) }}
                                 />
                             </Grid>
                             <Grid item xs={12}>
@@ -503,7 +505,7 @@ export default function Contactosempresas() {
                                     className="form-control"
                                     name="producto"
                                     type="text"
-                                    onChange={(e)=>{setProducto(e.target.value)}}
+                                    onChange={(e) => { setProducto(e.target.value) }}
                                 />
                             </Grid>
                             <Grid item xs={3}></Grid>
@@ -516,29 +518,29 @@ export default function Contactosempresas() {
                                     className="form-control"
                                     name="evaluacion"
                                     type="text"
-                                    onChange={(e)=>{setEvaluacion(e.target.value)}}
+                                    onChange={(e) => { setEvaluacion(e.target.value) }}
                                 />
                             </Grid>
                             <Grid item xs={3}></Grid>
                             <Grid item xs={12}>
-            <div className="mb-3">
-                <label className="form-label">Cargar Evaluacion</label>
-                <input className="form-control" onChange={buscarImagen} type="file" id="formFile" />
-            </div>
-            </Grid>
+                                <div className="mb-3">
+                                    <label className="form-label">Cargar Evaluacion</label>
+                                    <input className="form-control" onChange={buscarImagen} type="file" id="formFile" />
+                                </div>
+                            </Grid>
                         </Grid>
                     </FormGroup>
                 </ModalBody>
 
                 <ModalFooter>
                     <Button
-                        color="primary"
+                        className="editar"
                         onClick={() => agregardatos()}
                     >
                         Insertar
                     </Button>
                     <Button
-                        className="btn btn-danger"
+                        className="cancelar"
                         onClick={() => cerrarModalInsertar()}
                     >
                         Cancelar

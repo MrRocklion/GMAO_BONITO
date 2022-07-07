@@ -10,6 +10,7 @@ import Box from '@mui/material/Box';
 import  '../hoja-de-estilos/InicioCompras.css'
 import Manual from "./Manual";
 import Plan from "./Plan";
+import '../hoja-de-estilos/Planmantenimiento.css';
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;

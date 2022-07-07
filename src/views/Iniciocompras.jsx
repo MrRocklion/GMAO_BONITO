@@ -42,7 +42,7 @@ export default function Formularioscompras() {
   const handleOpen = () => {
     setModal1(true);
   };
-  const handleClose = () => {
+  const handleClose = (e) => {
     setModal1(false);
   };
   const handleOpen2 = () => {
@@ -118,13 +118,12 @@ export default function Formularioscompras() {
     }
   }else{
     console.log('faltan campos');
-    var opcion= window.confirm("Faltan Campos. Por favor complete toda la informacion de las casillas en rojo. " );
+    var opcion= window.confirm("Faltan Campos. Por favor complete toda la informacion de las casillas en rojo " );
         if (opcion === true) {
           navigate('/home/inventario/solicitudcompra');
-          // handleClose();
         }
   };
-    setFile(null);
+  setFile(null);
     
 
 
@@ -153,28 +152,28 @@ export default function Formularioscompras() {
         <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 8, md: 12 }}>
 
           <Grid item xs={6}>
-              <TextField  color={cedulacom !== '' ? "secondary" : "error"}  fullWidth label="Número de Cédula Técnico"  focused type="int" onChange={(e) => setCedulacom(e.target.value)} />
+              <TextField  color={cedulacom !== '' ? "gris" : "oficial"}  fullWidth label="Número de Cédula Técnico"  focused type="int" onChange={(e) => setCedulacom(e.target.value)} />
           </Grid>
           <Grid item xs={6}>
-              <TextField  color={codigoeqcom !== '' ? "secondary" : "error"} fullWidth label="Código Equipo"  focused type="int" onChange={(e) => setCodigoeqcom(e.target.value)} />
+              <TextField  color={codigoeqcom !== '' ? "gris" : "oficial"} fullWidth label="Código Equipo"  focused type="int" onChange={(e) => setCodigoeqcom(e.target.value)} />
           </Grid>
 
           <Grid item xs={6}>
-              <TextField  color={equipocom !== '' ? "secondary" : "error"} fullWidth label="Equipo" focused type="int" onChange={(e) => setEquipocom(e.target.value)} />
+              <TextField  color={equipocom !== '' ? "gris" : "oficial"} fullWidth label="Equipo" focused type="int" onChange={(e) => setEquipocom(e.target.value)} />
           </Grid>
           <Grid item xs={6}>
-              <TextField  color={articulocom !== '' ? "secondary" : "error"} fullWidth label="Articulo"  focused type="int" onChange={(e) => setArticulocom(e.target.value)} />
+              <TextField  color={articulocom !== '' ? "gris" : "oficial"} fullWidth label="Articulo"  focused type="int" onChange={(e) => setArticulocom(e.target.value)} />
           </Grid>
           <Grid item xs={6}>
-              <TextField  color={cantidadcom !== '' ? "secondary" : "error"} fullWidth label="Cantidad"  focused type="int" onChange={(e) => setCantidadcom(e.target.value)} />
+              <TextField  color={cantidadcom !== '' ? "gris" : "oficial"} fullWidth label="Cantidad"  focused type="int" onChange={(e) => setCantidadcom(e.target.value)} />
           </Grid>
           <Grid item xs={6}>
 
-              <TextField color="secondary" fullWidth label="Precio"  focused type="int" onChange={(e) => setPreciocom(e.target.value)} />
+              <TextField color="gris" fullWidth label="Precio"  focused type="int" onChange={(e) => setPreciocom(e.target.value)} />
           </Grid>
           <Grid item xs={12}>
            
-              <TextField  color="secondary" fullWidth label="Proveedor"  focused type="int" onChange={(e) => setProveedorcom(e.target.value)} />
+              <TextField  color="gris" fullWidth label="Proveedor"  focused type="int" onChange={(e) => setProveedorcom(e.target.value)} />
 
           </Grid>
 
@@ -186,9 +185,9 @@ export default function Formularioscompras() {
           </Grid>
           <Grid item xs={12}>
             <Stack direction="row" spacing={2} alignitems="center" justifyContent="center" >
-              <Button variant="outlined" startIcon={<DeleteIcon />} className="boton" onClick={cancelar}>
+              <Button variant="outlined" color="cancelarcp" startIcon={<DeleteIcon />} className="boton" onClick={cancelar}>
                 Cancelar</Button>
-              <Button variant="contained" endIcon={<SendIcon />} onClick={sendData}>
+              <Button variant="contained" color="enviarcp" endIcon={<SendIcon />} onClick={sendData}>
                 Enviar</Button>
             </Stack>
           </Grid>

@@ -72,7 +72,7 @@ const [elementoscon, setElementoscon] = useState([]);
                       <td>{contratos.empresa}</td>
                       <td>{contratos.descripcion}</td>
                       <td>
-                        <IconButton aria-label="delete" onClick={() => { vistainfor(contratos) }} color="success"><InfoIcon /></IconButton>
+                        <IconButton aria-label="delete" onClick={() => { vistainfor(contratos) }} color="gris"><InfoIcon /></IconButton>
                       </td>
                     </tr>
                   ))}

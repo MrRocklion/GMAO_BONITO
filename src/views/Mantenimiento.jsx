@@ -89,7 +89,7 @@ export default function Mantenimientoview() {
     return (
         <>
             <h1> Módulo Gestión de Mantenimiento </h1>
-            {<Button variant="contained" color='success' className="boton" onClick={agregarformulario}>Visualizar Reporte</Button>}
+            {<Button variant="contained" className="agregar" onClick={agregarformulario}>Visualizar Reporte</Button>}
             <div style={{ height: 800, width: '100%',marginTop:20 }}>
                 <div className='container'>
                     <div className='row'>
@@ -120,13 +120,14 @@ export default function Mantenimientoview() {
                                             <td>{orden.estado}</td>
                                             <td>
                                                 <Stack direction="row" spacing={2} alignitems="center" justifyContent="center" >
-                                                    <Button
-                                                        color="primary" onClick={() => { vistaedi(orden) }}>Cambiar Estado </Button>{" "}
-                                                    <Button color="danger" onClick={() => eliminar(orden.id)}>Eliminar</Button>
+
+                                                        <button className="btn btn-outline-warning"onClick={() => { vistaedi(orden) }}>Cambiar Estado</button> {" "}
+                                                         <button className="btn btn-outline-danger" onClick={() => eliminar(orden.id)}>Eliminar</button>
+                                                   
                                                 </Stack>
                                             </td>
                                             <td>
-                                                <IconButton aria-label="delete" onClick={() => { vistainfo(orden) }} color="success"><InfoIcon /></IconButton>
+                                                <IconButton aria-label="delete" onClick={() => { vistainfo(orden) }} color="gris"><InfoIcon /></IconButton>
 
                                             </td>
                                         </tr>
@@ -193,7 +194,7 @@ export default function Mantenimientoview() {
                         </FormGroup>
                     </ModalBody>
                     <ModalFooter className="modal-footer">
-                        <button className="btn btn-success" onClick={cerrarvistainfo}>Cerrar</button>
+                    <Button className="editar" onClick={cerrarvistainfo}>Cerrar </Button>
                     </ModalFooter>
                 </Container>
             </Modal>
@@ -224,8 +225,19 @@ export default function Mantenimientoview() {
                     </ModalBody>
 
                     <ModalFooter className="modal-footer">
-                        <button className="btn btn-warning" onClick={() => { cambiarestado(currentform.id) }}>Aceptar</button>
-                        <button className="btn btn-success" onClick={cerrarvistaedi}>Cerrar</button>
+                    <Button
+                        className="editar"
+                        onClick={() => { cambiarestado(currentform.id) }}
+                    >
+                        Aceptar
+                    </Button>
+                
+                    <Button
+                        className="cancelar"
+                        onClick={cerrarvistaedi}
+                    >
+                        Cerrar
+                    </Button>
                     </ModalFooter>
                 </Container>
             </Modal>

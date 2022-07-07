@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { collection, setDoc, query, doc, updateDoc, deleteDoc, onSnapshot } from "firebase/firestore";
 import { db, storage } from "../firebase/firebase-config"
 import { Table, Button, Container, Modal, ModalHeader, ModalBody, FormGroup, ModalFooter, } from "reactstrap";
-
+import Stack from '@mui/material/Stack';
 import { v4 as uuidv4 } from 'uuid';
 import Grid from "@mui/material/Grid";
 import TextareaAutosize from '@mui/material/TextareaAutosize';
@@ -281,7 +281,7 @@ export default function Tablav2() {
         <>
             <Container>
                 <br />
-                <Button color="success" onClick={() => mostrarModalInsertar()}>Agregar Empleado</Button>
+                <Button className="agregar" onClick={() => mostrarModalInsertar()}>Agregar Empleado</Button>
                 <br />
                 <br />
                 <Table>
@@ -304,16 +304,16 @@ export default function Tablav2() {
                                 <td>{dato.apellidos}</td>
                     
                                 <td>
-                                    <Button onClick={()=>{handleOpen(dato)}}>Informacion</Button>
+                                <button type="button" class="btn btn-outline-secondary" onClick={()=>{handleOpen(dato)}}>Información</button>
+                                    {/* <Button onClick={()=>{handleOpen(dato)}}>Informacion</Button> */}
                                 </td>
                                 <td>
-                                    <Button
-                                        color="primary"
-                                        onClick={() => mostrarModalActualizar(dato)}
-                                    >
-                                        Editar
-                                    </Button>{" "}
-                                    <Button color="danger" onClick={() => eliminar(dato)}>Eliminar</Button>
+                                <Stack direction="row" spacing={2} alignitems="center" justifyContent="center" >
+                                <button className="btn btn-outline-warning" onClick={() => mostrarModalActualizar(dato)}>Editar</button>
+                                <button className="btn btn-outline-danger" onClick={() => eliminar(dato)}>Eliminar</button>
+                                    {/* <Button color="primary" onClick={() => mostrarModalActualizar(dato)}>Editar</Button>{" "}
+                                    <Button color="danger" onClick={() => eliminar(dato)}>Eliminar</Button> */}
+                                     </Stack>
                                 </td>
                             </tr>
                         ))}
@@ -486,8 +486,8 @@ export default function Tablav2() {
                         </FormGroup>
                     </ModalBody>
                     <ModalFooter>
-                        <Button color="primary" onClick={() => editar(form)}> Editar</Button>
-                        <Button color="danger" onClick={() => cerrarModalActualizar()}>Cancelar</Button>
+                        <Button className="editar" onClick={() => editar(form)}> Editar</Button>
+                        <Button className="cancelar" onClick={() => cerrarModalActualizar()}>Cancelar</Button>
                     </ModalFooter>
                 </Container>
             </Modal>
@@ -655,13 +655,13 @@ export default function Tablav2() {
 
                     <ModalFooter>
                         <Button
-                            color="primary"
+                            className="editar"
                             onClick={() => insertar()}
                         >
                             Insertar
                         </Button>
                         <Button
-                            className="btn btn-danger"
+                            className="cancelar"
                             onClick={() => cerrarModalInsertar()}
                         >
                             Cancelar
@@ -891,7 +891,7 @@ export default function Tablav2() {
                 </ModalBody>
                 <ModalFooter>
                     <Button
-                        color="danger"
+                       className="editar"
                         onClick={() => handleClose()}
                     >
                         Salir
