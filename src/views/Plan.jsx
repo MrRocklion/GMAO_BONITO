@@ -30,7 +30,7 @@ export default function Plan() {
     const [equipo, setEquipo] = useState('');
     const [file, setFile] = useState(null);
     const [url, setUrl] = useState("");
-
+    const [currentform, setCurrentform] = useState({});
 
 
     const buscarArchivo = (e) => {
@@ -110,6 +110,7 @@ export default function Plan() {
     };
 
     const mostrarModalArchivo = (dato) => {
+        setCurrentform(dato);
         descargararchivo(dato.nameImg);
         setModalarchivo(true);
     };
@@ -150,8 +151,6 @@ export default function Plan() {
                         <tr>
                             <th>#</th>
                             <th>Año</th>
-                            <th>Empresa</th>
-                            <th>Código Equipo</th>
                             <th>Equipo</th>
                             <th>Archivo</th>
                             <th>Acciones</th>
@@ -163,8 +162,6 @@ export default function Plan() {
                             <tr key={plan.indice} >
                                 <td>{index + 1}</td>
                                 <td>{plan.año}</td>
-                                <td>{plan.empresa}</td>
-                                <td>{plan.cequipo}</td>
                                 <td>{plan.equipo}</td>
                                 <td>
                                     <IconButton aria-label="delete" color="gris" onClick={() => mostrarModalArchivo(plan)}><InfoIcon /></IconButton>
@@ -172,7 +169,7 @@ export default function Plan() {
                                 </td>
                                 <td>
                                     <Stack direction="row" spacing={2} alignitems="center" justifyContent="center" >
-                                    <button className="btn btn-outline-danger"  onClick={() => eliminar(plan)}>Eliminar</button>
+                                        <button className="btn btn-outline-danger" onClick={() => eliminar(plan)}>Eliminar</button>
 
                                     </Stack>
                                 </td>
@@ -188,6 +185,7 @@ export default function Plan() {
                 <ModalBody>
                     <FormGroup>
                         <Grid container spacing={4}>
+                            <Grid item xs={3}></Grid>
                             <Grid item xs={6}>
                                 <label>
                                     Año:
@@ -199,7 +197,8 @@ export default function Plan() {
                                     onChange={(e) => { setAño(e.target.value) }}
                                 />
                             </Grid>
-                            <Grid item xs={6}>
+                            <Grid item xs={3}></Grid>
+                            <Grid item xs={12}>
                                 <label>
                                     Empresa:
                                 </label>
@@ -210,7 +209,7 @@ export default function Plan() {
                                     onChange={(e) => { setEmpresa(e.target.value) }}
                                 />
                             </Grid>
-                            <Grid item xs={6}>
+                            <Grid item xs={12}>
                                 <label>
                                     Código Equipo:
                                 </label>
@@ -221,7 +220,7 @@ export default function Plan() {
                                     onChange={(e) => { setCequipo(e.target.value) }}
                                 />
                             </Grid>
-                            <Grid item xs={6}>
+                            <Grid item xs={12}>
                                 <label>
                                     Equipo:
                                 </label>
@@ -265,6 +264,28 @@ export default function Plan() {
                 <ModalBody>
                     <FormGroup>
                         <Grid container spacing={4}>
+                            <Grid item xs={12}>
+                                <label>
+                                    Empresa:
+                                </label>
+                                <input
+                                    className="form-control"
+                                    readOnly
+                                    type="text"
+                                    value={currentform.empresa}
+                                />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <label>
+                                    Código Equipo:
+                                </label>
+                                <input
+                                    className="form-control"
+                                    readOnly
+                                    type="text"
+                                    value={currentform.cequipo}
+                                />
+                            </Grid>
                             <Grid className="fila" item xs={12}>
                                 <label className="archivo">
                                     Archivo:

@@ -5,8 +5,10 @@ import { uploadBytes,ref,getDownloadURL } from "firebase/storage";
 import { collection, setDoc, query, doc, deleteDoc, onSnapshot } from "firebase/firestore";
 import Grid from "@mui/material/Grid"
 import { db,storage } from "../firebase/firebase-config";
+import { Table, Thead, Tbody, Tr, Th, Td } from 'react-super-responsive-table';
+import 'react-super-responsive-table/dist/SuperResponsiveTableStyle.css';
+import '../hoja-de-estilos/Tabla.css'
 import {
-    Table,
     Button,
     Container,
     Modal,
@@ -227,31 +229,31 @@ export default function Ingresoequipos() {
     return (
         <>
             <Container>
-                <br />
+            <br />
+            <h1>Contratos</h1>
+            <br />
                 <Button className="agregar" onClick={() => mostrarModalInsertar()}>Agregar Contrato</Button>
                 <br />
-                <br />
                 <Table>
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>N. Contrato</th>
-                            <th>Empresa</th>
-                            <th>Descripcion</th>
-                            <th>Acciones</th>
-                            <th>Información</th>
+                <Thead>
+                <Tr>
+                <Th>#</Th>
+                <Th>N. Contrato</Th>
+                <Th>Empresa</Th>
+                <Th>Descripción</Th>
+                <Th>Acciones</Th>
+                <Th>Información</Th>
 
-                        </tr>
-                    </thead>
-
-                    <tbody>
+                            </Tr>
+                        </Thead>
+                        <Tbody>
                         {data.sort((a, b) => (a.indice - b.indice)).map((contrato, index) => (
-                            <tr key={contrato.indice} >
-                                <td>{index+1}</td>
-                                <td>{contrato.ncontrato}</td>
-                                <td>{contrato.empresa}</td>
-                                <td>{contrato.descripcion}</td>
-                                <td>
+                            <Tr key={contrato.indice} >
+                               <Td>{index + 1}</Td>
+                               <Td>{contrato.ncontrato}</Td>
+                               <Td>{contrato.empresa}</Td>
+                               <Td>{contrato.descripcion}</Td>
+                               <Td>
                                     <Stack direction="row" spacing={2} alignitems="center" justifyContent="center" >
                                         {/* <Button
                                             color="primary"
@@ -262,14 +264,14 @@ export default function Ingresoequipos() {
                                         
                                         <button className="btn btn-outline-danger" onClick={() => eliminar(contrato)}>Eliminar</button>
                                     </Stack>
-                                </td>
-                                <td>
+                                    </Td>
+          <Td>
                                     <IconButton aria-label="delete" color="gris" onClick={() => mostrarModalInformacion(contrato)}><InfoIcon /></IconButton>
 
-                                </td>
-                            </tr>
+                                    </Td>
+                                </Tr>
                         ))}
-                    </tbody>
+                 </Tbody>
                 </Table>
             </Container>
 

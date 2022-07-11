@@ -1,4 +1,19 @@
 .titulo{
-  color:#003772 ;  
+  color: #977F2F;  
   padding-top: 2%!important;
+}
+
+.d-block {
+  margin-top: 10px;
+  height: 65vh;
+}
+
+.text{
+  color: black;
+}
+
+.princi{
+  color: #977F2F;
+  font-family: Roboto, sans-serif;
+  font-size: large;
 }

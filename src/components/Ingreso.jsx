@@ -7,8 +7,10 @@ import TextField from '@mui/material/TextField';
 import { useNavigate } from 'react-router-dom';
 import { db } from "../firebase/firebase-config";
 import Autocomplete from '@mui/material/Autocomplete';
+import { Table, Thead, Tbody, Tr, Th, Td } from 'react-super-responsive-table';
+import 'react-super-responsive-table/dist/SuperResponsiveTableStyle.css';
+import '../hoja-de-estilos/Tabla.css'
 import {
-    Table,
     Button,
     Container,
     Modal,
@@ -28,15 +30,15 @@ export default function Ingresoequipos() {
     const [modalInsertar, setModalinsertar] = useState(false);
     const [modalInformacion, setModalinformacion] = useState(false);
     const [codigo, setCodigo] = useState('');
-    const [equipo,setEquipo] = useState('');
-    const [propietario,setPropietario] = useState('');
-    const [marca,setMarca] = useState('');
-    const [modelo,setModelo] = useState('');
-    const [serie,setSerie] = useState('');
-    const [accesorios,setAccesorios] = useState('');
-    const [area,setArea] = useState('');
-    const [tipo,setTipo] = useState('');
-    const [seguro,setSeguro] = useState('');
+    const [equipo, setEquipo] = useState('');
+    const [propietario, setPropietario] = useState('');
+    const [marca, setMarca] = useState('');
+    const [modelo, setModelo] = useState('');
+    const [serie, setSerie] = useState('');
+    const [accesorios, setAccesorios] = useState('');
+    const [area, setArea] = useState('');
+    const [tipo, setTipo] = useState('');
+    const [seguro, setSeguro] = useState('');
     const [form, setForm] = useState({});
 
 
@@ -54,28 +56,28 @@ export default function Ingresoequipos() {
 
     const agregardatos = async () => {
         if (codigo !== '' && equipo !== '' && marca !== '' && modelo !== '' && serie !== '' && tipo !== '' && seguro !== '') {
-        var newperson = {
-            codigo: codigo,
-            equipo:equipo,
-            propietario:propietario,
-            marca: marca,
-            modelo: modelo,
-            serie: serie,
-            accesorios: accesorios,
-            area: area,
-            tipo: tipo,
-            seguro: seguro,
-            id: uuidv4(),
-            indice: Date.now(),
-        }
-        sendFirestore(newperson);
-    } else {
-        console.log('faltan campos');
-        var opcion = window.confirm("Faltan Campos. Por favor complete toda la informacion de las casillas en ROJO. ");
-        if (opcion === true) {
-          navigate('/home/inventario/invequipos');
-        }
-      };
+            var newperson = {
+                codigo: codigo,
+                equipo: equipo,
+                propietario: propietario,
+                marca: marca,
+                modelo: modelo,
+                serie: serie,
+                accesorios: accesorios,
+                area: area,
+                tipo: tipo,
+                seguro: seguro,
+                id: uuidv4(),
+                indice: Date.now(),
+            }
+            sendFirestore(newperson);
+        } else {
+            console.log('faltan campos');
+            var opcion = window.confirm("Faltan Campos. Por favor complete toda la informacion de las casillas en ROJO. ");
+            if (opcion === true) {
+                navigate('/home/inventario/invequipos');
+            }
+        };
     };
     const sendFirestore = (newperson) => {
         try {
@@ -210,49 +212,46 @@ export default function Ingresoequipos() {
     return (
         <>
             <Container>
-                <br />
                 <Button className="agregar" onClick={() => mostrarModalInsertar()}>Agregar Equipo</Button>
                 <br />
-                <br />
-                <Table>
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Codigo</th>
-                            <th>Equipo</th>
-                            <th>Departamento</th>
-                            <th>Propietario</th>
-                            <th>Seguro</th>
-                            <th>Acciones</th>
-                            <th>Información</th>
+                <Table className='table table-light table-hover'>
+                    <Thead>
+                        <Tr>
+                            <Th>#</Th>
+                            <Th>Código</Th>
+                            <Th>Equipo</Th>
+                            <Th>Departamento</Th>
+                            <Th>Propietario</Th>
+                            <Th>Seguro</Th>
+                            <Th>Acciones</Th>
+                            <Th>Información</Th>
 
-                        </tr>
-                    </thead>
+                        </Tr>
+                    </Thead>
 
-                    <tbody>
+                    <Tbody>
                         {data.sort((a, b) => (a.indice - b.indice)).map((dato, index) => (
-                            <tr key={dato.indice} >
-                                <td>{index + 1}</td>
-                                <td>{dato.codigo}</td>
-                                <td>{dato.equipo}</td>
-                                <td>{dato.area}</td>
-                                <td>{dato.propietario}</td>
-                                <td>{dato.seguro}</td>
-                                <td>
+                            <Tr key={dato.indice}>
+                                <Td>{index + 1}</Td>
+                                <Td>{dato.codigo}</Td>
+                                <Td>{dato.equipo}</Td>
+                                <Td>{dato.area}</Td>
+                                <Td>{dato.propietario}</Td>
+                                <Td>{dato.seguro}</Td>
+                                <Td>
                                     <Stack direction="row" spacing={2} alignitems="center" justifyContent="center" >
                                         {/* <Button color="primary" onClick={() => mostrarModalActualizar(dato)}>Editar</Button>{" "} */}
                                         <button className="btn btn-outline-warning" onClick={() => mostrarModalActualizar(dato)}>Editar</button>
                                         <button className="btn btn-outline-danger" onClick={() => eliminar(dato)}>Eliminar</button>
                                         {/* <Button class="btn btn-outline-primary" onClick={() => eliminar(dato)}>Eliminar</Button> */}
                                     </Stack>
-                                </td>
-                                <td>
+                                </Td>
+                                <Td>
                                     <IconButton aria-label="delete" color="gris" onClick={() => mostrarModalInformacion(dato)}><InfoIcon /></IconButton>
-
-                                </td>
-                            </tr>
+                                </Td>
+                            </Tr>
                         ))}
-                    </tbody>
+                    </Tbody>
                 </Table>
             </Container>
 
@@ -370,8 +369,8 @@ export default function Ingresoequipos() {
                                     onChange={(event, newvalue) => setTipo(newvalue.label)}
                                     renderInput={(params) => <TextField {...params} fullWidth label="Tipo de equipo" color={tipo !== '' ? "gris" : "oficial"} type="text" focused />}
                                 /> */}
-                                <select  onChange={selecTipo} className="form-select" aria-label="Default select tipo">
-                                <option selected>Open this select menu</option>
+                                <select onChange={selecTipo} className="form-select" aria-label="Default select tipo">
+                                    <option selected>Open this select menu</option>
                                     <option value="Medico" >Médico</option>
                                     <option value="Industrial">Industrial</option>
                                 </select>
@@ -401,7 +400,7 @@ export default function Ingresoequipos() {
                                     renderInput={(params) => <TextField {...params} fullWidth label="Departamento solicitante" color={area !== '' ? "gris" : "oficial"} type="text" focused />}
                                 /> */}
                                 <select onChange={selecDepartamento} className="form-select" aria-label="Default select departamento">
-                                <option selected>Open this select menu</option>
+                                    <option selected>Open this select menu</option>
                                     <option value="Imágenes">Imágenes</option>
                                     <option value="Cedicardio">Cedicardio</option>
                                     <option value="Emergencia">Emergencia</option>
@@ -476,7 +475,7 @@ export default function Ingresoequipos() {
                                     renderInput={(params) => <TextField {...params} fullWidth label="Seguro" color={seguro !== '' ? "gris" : "oficial"} type="text" focused />}
                                 /> */}
                                 <select onChange={selecSeguro} className="form-select" aria-label="Default select seguro">
-                                <option selected>Open this select menu</option>
+                                    <option selected>Open this select menu</option>
                                     <option value="Asegurado" >Asegurado</option>
                                     <option value="Sin seguro" >Sin seguro</option>
                                 </select>
@@ -526,7 +525,7 @@ export default function Ingresoequipos() {
                                 {/* <label>
                                     Código Equipo:
                                 </label> */}
-<TextField color={codigo !== '' ? "gris" : "oficial"} fullWidth label="Código Equipo" focused type="int" onChange={(e) => setCodigo(e.target.value)} />
+                                <TextField color={codigo !== '' ? "gris" : "oficial"} fullWidth label="Código Equipo" focused type="int" onChange={(e) => setCodigo(e.target.value)} />
                                 {/* <input
                                     className="form-control"
                                     name="codigo"
@@ -551,7 +550,7 @@ export default function Ingresoequipos() {
                                 </select> */}
                             </Grid>
                             <Grid item xs={6}>
-                            <TextField color={equipo !== '' ? "gris" : "oficial"} fullWidth label="Equipo" focused type="int" onChange={(e) => setEquipo(e.target.value)} />                               
+                                <TextField color={equipo !== '' ? "gris" : "oficial"} fullWidth label="Equipo" focused type="int" onChange={(e) => setEquipo(e.target.value)} />
                                 {/* <label>
                                     Equipo:
                                 </label> */}
@@ -586,7 +585,7 @@ export default function Ingresoequipos() {
                                 </select> */}
                             </Grid>
                             <Grid item xs={6}>
-                            <TextField color={marca !== '' ? "gris" : "oficial"} fullWidth label="Marca" focused type="int" onChange={(e) => setMarca(e.target.value)} />
+                                <TextField color={marca !== '' ? "gris" : "oficial"} fullWidth label="Marca" focused type="int" onChange={(e) => setMarca(e.target.value)} />
                                 {/* <label>
                                     Marca:
                                 </label>
@@ -598,7 +597,7 @@ export default function Ingresoequipos() {
                                 /> */}
                             </Grid>
                             <Grid item xs={6}>
-                            <TextField color={modelo !== '' ? "gris" : "oficial"} fullWidth label="Modelo" focused type="int" onChange={(e) => setModelo(e.target.value)} />
+                                <TextField color={modelo !== '' ? "gris" : "oficial"} fullWidth label="Modelo" focused type="int" onChange={(e) => setModelo(e.target.value)} />
                                 {/* <label>
                                     Modelo:
                                 </label>
@@ -610,7 +609,7 @@ export default function Ingresoequipos() {
                                 /> */}
                             </Grid>
                             <Grid item xs={6}>
-                            <TextField color={serie !== '' ? "gris" : "oficial"} fullWidth label="Serie" focused type="int" onChange={(e) => setSerie(e.target.value)} />
+                                <TextField color={serie !== '' ? "gris" : "oficial"} fullWidth label="Serie" focused type="int" onChange={(e) => setSerie(e.target.value)} />
                                 {/* <label>
                                     Serie:
                                 </label>
@@ -622,7 +621,7 @@ export default function Ingresoequipos() {
                                 /> */}
                             </Grid>
                             <Grid item xs={6}>
-                            <TextField color={propietario !== '' ? "gris" : "oficial"} fullWidth label="Propietario" focused type="int" onChange={(e) => setPropietario(e.target.value)} />
+                                <TextField color={propietario !== '' ? "gris" : "oficial"} fullWidth label="Propietario" focused type="int" onChange={(e) => setPropietario(e.target.value)} />
                                 {/* <label>
                                     Propietario:
                                 </label>
@@ -691,9 +690,9 @@ export default function Ingresoequipos() {
 const tipoe = [
     { label: 'Médico' },
     { label: 'Industrial' },
-  ]
+]
 
-  const departamentos = [
+const departamentos = [
     { label: 'Imágenes' },
     { label: 'Cedicardio' },
     { label: 'Emergencia' },
@@ -702,9 +701,9 @@ const tipoe = [
     { label: 'Lab. Covid' },
     { label: 'Neonatología' },
     { label: 'Quirófano' },
-  ]
+]
 
-  const tseguro = [
+const tseguro = [
     { label: 'Asegurado' },
     { label: 'Sin seguro' },
-  ]
+]

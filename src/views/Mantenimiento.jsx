@@ -6,7 +6,10 @@ import { db } from "../firebase/firebase-config";
 import IconButton from '@mui/material/IconButton';
 import InfoIcon from '@mui/icons-material/Info';
 import Stack from '@mui/material/Stack';
-import Grid from "@mui/material/Grid"
+import Grid from "@mui/material/Grid";
+import { Table, Thead, Tbody, Tr, Th, Td } from 'react-super-responsive-table';
+import 'react-super-responsive-table/dist/SuperResponsiveTableStyle.css';
+import '../hoja-de-estilos/Tabla.css'
 import {
     Container,
     Modal,
@@ -88,56 +91,53 @@ export default function Mantenimientoview() {
 
     return (
         <>
-            <h1> Módulo Gestión de Mantenimiento </h1>
+           <Container>
+            <h1> Órdenes de Trabajo </h1>
             {<Button variant="contained" className="agregar" onClick={agregarformulario}>Visualizar Reporte</Button>}
-            <div style={{ height: 800, width: '100%',marginTop:20 }}>
-                <div className='container'>
-                    <div className='row'>
-                        <div className='col'>
-                            <table className='table table-light table-hover'>
-                                <thead>
-                                    <tr>
-                                        <th>#</th>
-                                        <th>Fecha</th>
-                                        <th>Departamento</th>
-                                        <th>Prioridad</th>
-                                        <th>Tipo de Trabajo</th>
-                                        <th>Asunto</th>
-                                        <th>Estado</th>
-                                        <th>Acciones</th>
-                                        <th>Informacion</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
+            <br />
+                <Table className='table table-light table-hover'>
+                    <Thead>
+                        <Tr>
+                        <Th>#</Th>
+                        <Th>Fecha</Th>
+                        <Th>Departamento</Th>
+                        <Th>Prioridad</Th>
+                        <Th>Tipo de Trabajo</Th>
+                        <Th>Asunto</Th>
+                        <Th>Estado</Th>
+                        <Th>Acciones</Th>
+                            <Th>Información</Th>
+                            </Tr>
+                    </Thead>
+
+                    <Tbody>
                                     {elementosfb.sort((a, b) => (a.indice - b.indice)).map((orden, index) => (
-                                        <tr key={orden.indice}>
-                                            <td>{index + 1}</td>
-                                            <td>{orden.fecha}</td>
-                                            <td>{orden.departamento}</td>
-                                            <td>{orden.prioridad1}</td>
-                                            <td>{orden.tipotrabajo}</td>
-                                            <td>{orden.asunto}</td>
-                                            <td>{orden.estado}</td>
-                                            <td>
+                                       <Tr key={orden.indice}>
+                                             <Td>{index + 1}</Td>
+                                             <Td>{orden.fecha}</Td>
+                                             <Td>{orden.departamento}</Td>
+                                             <Td>{orden.prioridad1}</Td>
+                                             <Td>{orden.tipotrabajo}</Td>
+                                             <Td>{orden.asunto}</Td>
+                                             <Td>{orden.estado}</Td>
+                                             <Td>
                                                 <Stack direction="row" spacing={2} alignitems="center" justifyContent="center" >
 
                                                         <button className="btn btn-outline-warning"onClick={() => { vistaedi(orden) }}>Cambiar Estado</button> {" "}
                                                          <button className="btn btn-outline-danger" onClick={() => eliminar(orden.id)}>Eliminar</button>
                                                    
                                                 </Stack>
-                                            </td>
-                                            <td>
+                                                </Td>
+                                <Td>
                                                 <IconButton aria-label="delete" onClick={() => { vistainfo(orden) }} color="gris"><InfoIcon /></IconButton>
 
-                                            </td>
-                                        </tr>
+                                                </Td>
+                            </Tr>
                                     ))}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
+                          </Tbody>
+                </Table>
+            </Container>
+            
             <Modal isOpen={modalInformacion}>
                 <Container>
                     <ModalHeader>

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import InfoIcon from '@mui/icons-material/Info';
 import IconButton from '@mui/material/IconButton';
 import Grid from "@mui/material/Grid";
-import { db,storage } from "../firebase/firebase-config";
+import { db, storage } from "../firebase/firebase-config";
 import { collection, setDoc, query, doc, deleteDoc, onSnapshot } from "firebase/firestore";
 import {
     Table,
@@ -16,27 +16,27 @@ import {
 } from "reactstrap";
 import Stack from '@mui/material/Stack';
 import { v4 as uuidv4 } from 'uuid';
-import { uploadBytes,ref,getDownloadURL } from "firebase/storage";
+import { uploadBytes, ref, getDownloadURL } from "firebase/storage";
 
 
-export default function Manual(){
+export default function Manual() {
 
     const [data, setData] = useState([]);
     const [modalInsertar, setModalinsertar] = useState(false);
     const [modalArchivo, setModalarchivo] = useState(false);
-    const [cequipo, setCequipo]= useState('');
-    const [equipo, setEquipo]= useState('');
-    const [file,setFile]= useState(null);
+    const [cequipo, setCequipo] = useState('');
+    const [equipo, setEquipo] = useState('');
+    const [file, setFile] = useState(null);
     const [url, setUrl] = useState("");
 
 
 
 
-    const buscarArchivo = (e) =>{
+    const buscarArchivo = (e) => {
         if (e.target.files[0] !== undefined) {
             setFile(e.target.files[0]);
             console.log(e.target.files[0]);
-        }else{
+        } else {
             console.log('no hay archivo');
         }
     };
@@ -51,29 +51,29 @@ export default function Manual(){
         });
     };
 
-    const sendData = () =>{
+    const sendData = () => {
         var manual = {};
         var val = Date.now();
-        if (file === null ){
-            manual= {
-                cequipo:cequipo,
-                equipo:equipo,
+        if (file === null) {
+            manual = {
+                cequipo: cequipo,
+                equipo: equipo,
                 indice: val,
                 nameImg: 'SP.PNG',
                 // comentarios:" hola ",
-                id:uuidv4(),
-              };
-              sendFirestore(manual);
-        }else{
-         manual = {
-            cequipo:cequipo,
-                equipo:equipo,
+                id: uuidv4(),
+            };
+            sendFirestore(manual);
+        } else {
+            manual = {
+                cequipo: cequipo,
+                equipo: equipo,
                 indice: val,
-            nameImg: file.name,
-            id:uuidv4(),
-          };
-          sendFirestore(manual);
-          sendStorage();
+                nameImg: file.name,
+                id: uuidv4(),
+            };
+            sendFirestore(manual);
+            sendStorage();
         }
         setFile(null);
         cerrarModalInsertar();
@@ -81,18 +81,18 @@ export default function Manual(){
 
     const sendFirestore = (manual) => {
         try {
-            setDoc(doc(db, "manuales",`${manual.id}` ),manual);
-              console.log("Manual agregada")
+            setDoc(doc(db, "manuales", `${manual.id}`), manual);
+            console.log("Manual agregada")
         } catch (e) {
             console.error("Error adding document: ", e);
         }
     };
 
-    const sendStorage = () =>{
+    const sendStorage = () => {
         //pasar parametros variables
         const storageRef = ref(storage, `manualequipos/${file.name}`);
         uploadBytes(storageRef, file).then((snapshot) => {
-          console.log('Uploaded a blob or file!');
+            console.log('Uploaded a blob or file!');
         });
     };
     const mostrarModalInsertar = () => {
@@ -109,7 +109,7 @@ export default function Manual(){
     };
 
     const cerrarModalArchivo = () => {
-       setModalarchivo(false);
+        setModalarchivo(false);
     };
 
     const eliminar = async (dato) => {
@@ -130,12 +130,12 @@ export default function Manual(){
     useEffect(() => {
         getData();
     }, [])
-    return(
+    return (
         <>
-<Container>
+            <Container>
                 <br />
                 <Stack direction="row" spacing={2} alignitems="center" justifyContent="center" >
-                <Button className="agregar" onClick={() => mostrarModalInsertar()}>Agregar Manual</Button>
+                    <Button className="agregar" onClick={() => mostrarModalInsertar()}>Agregar Manual</Button>
                 </Stack>
                 <br />
                 <br />
@@ -153,7 +153,7 @@ export default function Manual(){
                     <tbody>
                         {data.sort((a, b) => (a.indice - b.indice)).map((manual, index) => (
                             <tr key={manual.indice} >
-                                <td>{index+1}</td>
+                                <td>{index + 1}</td>
                                 <td>{manual.cequipo}</td>
                                 <td>{manual.equipo}</td>
                                 <td>
@@ -163,7 +163,7 @@ export default function Manual(){
                                 <td>
                                     <Stack direction="row" spacing={2} alignitems="center" justifyContent="center" >
                                         {/* <Button color="danger" onClick={() => eliminar(manual)}>Eliminar</Button> */}
-                                        <button className="btn btn-outline-danger"  onClick={() => eliminar(manual)}>Eliminar</button>
+                                        <button className="btn btn-outline-danger" onClick={() => eliminar(manual)}>Eliminar</button>
                                     </Stack>
                                 </td>
                             </tr>
@@ -172,49 +172,49 @@ export default function Manual(){
                 </Table>
             </Container>
             <Modal className="{width:0px}" isOpen={modalInsertar}>
-            <ModalHeader>
+                <ModalHeader>
                     <div><h3>Insertar</h3></div>
                 </ModalHeader>
                 <ModalBody>
-                <FormGroup>
-                <Grid container spacing={4}>
-                <Grid item xs={1}></Grid>
-                <Grid item xs={10}>
-                <label>
-                                    Codigo Equipo:
+                    <FormGroup>
+                        <Grid container spacing={4}>
+                            <Grid item xs={1}></Grid>
+                            <Grid item xs={10}>
+                                <label>
+                                    Código Equipo:
                                 </label>
                                 <input
                                     className="form-control"
                                     name="cequipo"
                                     type="text"
-                                    onChange={(e)=>{setCequipo(e.target.value)}}
+                                    onChange={(e) => { setCequipo(e.target.value) }}
                                 />
-                </Grid>
-                <Grid item xs={1}></Grid>
-                <Grid item xs={1}></Grid>
-                <Grid item xs={10}>
-                <label>
+                            </Grid>
+                            <Grid item xs={1}></Grid>
+                            <Grid item xs={1}></Grid>
+                            <Grid item xs={10}>
+                                <label>
                                     Equipo:
                                 </label>
                                 <input
                                     className="form-control"
                                     name="cequipo"
                                     type="text"
-                                    onChange={(e)=>{setEquipo(e.target.value)}}
+                                    onChange={(e) => { setEquipo(e.target.value) }}
                                 />
-                </Grid>
-                <Grid item xs={1}></Grid>
-                <Grid item xs={1}></Grid>
-                <Grid item xs={10}>
-            <div className="mb-3">
-                <label className="form-label">Cargar Manual</label>
-                <input className="form-control" onChange={buscarArchivo} type="file" id="formFile" />
-            </div>
-            </Grid>
-            <Grid item xs={1}></Grid>
-                </Grid>
-                </FormGroup>
-                       
+                            </Grid>
+                            <Grid item xs={1}></Grid>
+                            <Grid item xs={1}></Grid>
+                            <Grid item xs={10}>
+                                <div className="mb-3">
+                                    <label className="form-label">Cargar Manual</label>
+                                    <input className="form-control" onChange={buscarArchivo} type="file" id="formFile" />
+                                </div>
+                            </Grid>
+                            <Grid item xs={1}></Grid>
+                        </Grid>
+                    </FormGroup>
+
                 </ModalBody>
                 <ModalFooter>
                     <Button
@@ -229,7 +229,7 @@ export default function Manual(){
                     >
                         Cancelar
                     </Button>
-                </ModalFooter> 
+                </ModalFooter>
             </Modal>
 
             <Modal isOpen={modalArchivo}>
@@ -240,19 +240,19 @@ export default function Manual(){
                     <FormGroup>
                         <Grid container spacing={4}>
                             <Grid className="fila" item xs={12}>
-                                    <label className="archivo">
-                                        Archivo:
-                                    </label>
-                                    <a
-                                        component="button"
-                                        variant="body2" 
-                                        href={url}
-                                        target="_blank" 
-                                        rel="noreferrer"
-                                    >
-                                        Visualizar Manual
-                                    </a>
-                                </Grid >
+                                <label className="archivo">
+                                    Archivo:
+                                </label>
+                                <a
+                                    component="button"
+                                    variant="body2"
+                                    href={url}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                >
+                                    Visualizar Manual
+                                </a>
+                            </Grid >
                         </Grid>
                     </FormGroup>
 

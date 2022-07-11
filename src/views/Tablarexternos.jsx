@@ -4,6 +4,9 @@ import { db } from "../firebase/firebase-config";
 import Stack from '@mui/material/Stack';
 import { storage } from "../firebase/firebase-config";
 import { ref, getDownloadURL } from "firebase/storage";
+import { Table, Thead, Tbody, Tr, Th, Td } from 'react-super-responsive-table';
+import 'react-super-responsive-table/dist/SuperResponsiveTableStyle.css';
+import '../hoja-de-estilos/Tabla.css'
 import {
     Container,
     Modal,
@@ -93,32 +96,34 @@ export default function Reportexterno() {
 
     return (
         <>
-            <h1> Estatus Reportes Externos</h1>
-            <div style={{ height: 800, width: '100%' }}>
-                <div className='container'>
-                    <div className='row'>
-                        <div className='col'>
-                            <table className='table table-light table-hover'>
-                                <thead>
-                                    <tr>
-                                        <th>#</th>
-                                        <th>Empresa</th>
-                                        <th>N.Reporte</th>
-                                        <th>Equipo</th>
-                                        <th>Estado</th>
-                                        <th>Acciones</th>
-                                        <th>Información</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
+              <Container>
+                <br />
+                <h1>Reporte Mantenimiento</h1>
+                <br />
+                <h3>Externos</h3>
+                <br />
+                <Table>
+                <Thead>
+                        <Tr>
+                            <Th>#</Th>
+                            <Th>Empresa</Th>
+                            <Th>N.Reporte</Th>
+                            <Th>Equipo</Th>
+                            <Th>Estado</Th>
+                            <Th>Acciones</Th>
+                            <Th>Información</Th>
+                            </Tr>
+                    </Thead>
+
+                    <Tbody>
                                 {elementosext.sort((a, b) => (a.indice - b.indice)).map((rexterno, index) => (
-                                        <tr key={rexterno.indice}>
-                                            <td>{index + 1}</td>
-                                            <td>{rexterno.empresaext}</td>
-                                            <td>{rexterno.numeroreportefisico}</td>
-                                            <td>{rexterno.equipoter}</td>
-                                            <td>{rexterno.estadoext}</td>
-                                            <td>
+                                         <Tr key={rexterno.indice}>
+                                           <Td>{index + 1}</Td>
+                                           <Td>{rexterno.empresaext}</Td>
+                                           <Td>{rexterno.numeroreportefisico}</Td>
+                                           <Td>{rexterno.equipoter}</Td>
+                                           <Td>{rexterno.estadoext}</Td>
+                                           <Td>
                                             <Stack direction="row" spacing={2} alignitems="center" justifyContent="center" >
                                             {/* <Button
                                             color="primary" onClick={() => { vistaedi(rexterno) }}>Cambiar Estado </Button>{" "}
@@ -126,18 +131,15 @@ export default function Reportexterno() {
                                                 <button className="btn btn-outline-warning"  onClick={() => { vistaedi(rexterno) }}>Cambiar Estado</button>
                                                 <button className="btn btn-outline-danger"  onClick={() => eliminar(rexterno.id)}>Eliminar</button>
                                                 </Stack>
-                                            </td>
-                                            <td>
+                                                </Td>
+                                <Td>
                                             <IconButton aria-label="delete" onClick={() => { vistainformacion(rexterno) }} color="gris"><InfoIcon /></IconButton>
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
+                                            </Td>
+                            </Tr>
+                        ))}
+                    </Tbody>
+                </Table>
+            </Container>
             <Modal isOpen={modalInformacion}>
             <Container>
             <ModalHeader>
@@ -172,6 +174,30 @@ export default function Reportexterno() {
                                     />
                     </Grid>
                     
+                    <Grid item xs={6}>
+                    <label>
+                                        Código Equipo:
+                                </label>
+
+                                <input
+                                    className="form-control"
+                                    readOnly
+                                    type="text"
+                                    value={currentform.codigo}
+                                    />
+                    </Grid>
+                    <Grid item xs={6}>
+                    <label>
+                                        Nivel Alerta:
+                                </label>
+
+                                <input
+                                    className="form-control"
+                                    readOnly
+                                    type="text"
+                                    value={currentform.nivelalerta}
+                                    />
+                    </Grid>
                     <Grid className="fila" item xs={12}>
                                     <label className="archivo">
                                         Archivo:

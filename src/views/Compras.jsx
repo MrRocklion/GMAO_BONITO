@@ -5,7 +5,10 @@ import IconButton from '@mui/material/IconButton';
 import InfoIcon from '@mui/icons-material/Info';
 import { storage } from "../firebase/firebase-config";
 import { ref, getDownloadURL } from "firebase/storage";
-import '../hoja-de-estilos/Compras.css'
+import { Table, Thead, Tbody, Tr, Th, Td } from 'react-super-responsive-table';
+import '../hoja-de-estilos/Compras.css';
+import 'react-super-responsive-table/dist/SuperResponsiveTableStyle.css';
+import '../hoja-de-estilos/Tabla.css'
 import Grid from "@mui/material/Grid"
 import {
     Container,
@@ -105,48 +108,48 @@ export default function Comprasview() {
     }, [])
     return (
         <>
-            <h1> Solicitud de Compras</h1>
-            <div style={{ height: 800, width: '100%' }}>
-                <div className='container'>
-                    <div className='row'>
-                        <div className='col'>
-                            <table className='table table-light table-hover'>
-                                <thead>
-                                    <tr>
-                                        <th>#</th>
-                                        <th>Fecha</th>
-                                        <th>CI Solicitante</th>
-                                        <th>Equipo</th>
-                                        <th>Artículo</th>
-                                        <th>Estado</th>
-                                        <th>Acciones</th>
-                                        <th>Información</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
+            
+            <Container>
+                <br />
+                <h1 className="tit"> Compras</h1>
+                <br />
+                <Table>
+                <Thead>
+                <Tr>
+                <Th>#</Th>
+                <Th>Fecha</Th>
+                <Th>CI Solicitante</Th>
+                <Th>Equipo</Th>
+                <Th>Artículo</Th>
+                <Th>Estado</Th>
+                <Th>Acciones</Th>
+          <Th>Información</Th>
+                                       
+          </Tr>
+                        </Thead>
+
+                        <Tbody>
                                     {elementoscom.sort((a, b) => (a.indice - b.indice)).map((compras, index) => (
-                                            <tr key={compras.indice} >
-                                            <td>{index + 1}</td>
-                                            <td>{compras.fechacom}</td>
-                                            <td>{compras.cedulacom}</td>
-                                            <td>{compras.equipocom}</td>
-                                            <td>{compras.articulocom}</td>
-                                            <td>{compras.estadocom}</td>
-                                            <td>
+                                            <Tr key={compras.indice} >
+                                           <Td>{index + 1}</Td>
+                                           <Td>{compras.fechacom}</Td>
+                                           <Td>{compras.cedulacom}</Td>
+                                           <Td>{compras.equipocom}</Td>
+                                           <Td>{compras.articulocom}</Td>
+                                           <Td>{compras.estadocom}</Td>
+                                           <Td>
                                                 <button className="btn btn-outline-danger" onClick={() => { vistaeditar(compras) }}>Cambiar Estado</button>
-                                            </td>
-                                            <td>
+                                                </Td>
+          <Td>
                                                 <IconButton aria-label="delete" onClick={() => { vistainformacion(compras) }} color="gris"><InfoIcon /></IconButton>
 
-                                            </td>
-                                        </tr>
+                                                </Td>
+                                </Tr>
                                     ))}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
+                          </Tbody>
+                </Table>
+            </Container>
+
             <Modal isOpen={modalInformacion}>
                 <Container>
                     <ModalHeader>

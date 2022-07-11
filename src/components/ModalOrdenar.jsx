@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { collection, setDoc, query, doc, updateDoc, deleteDoc, onSnapshot } from "firebase/firestore";
 import { db, storage } from "../firebase/firebase-config"
-import { Table, Button, Container, Modal, ModalHeader, ModalBody, FormGroup, ModalFooter, } from "reactstrap";
+import { Button, Container, Modal, ModalHeader, ModalBody, FormGroup, ModalFooter, } from "reactstrap";
 import Stack from '@mui/material/Stack';
 import { v4 as uuidv4 } from 'uuid';
 import Grid from "@mui/material/Grid";
@@ -10,7 +10,9 @@ import { uploadBytes, ref, getDownloadURL } from "firebase/storage";
 import PropTypes from 'prop-types';
 import SwipeableViews from 'react-swipeable-views';
 import { useTheme } from '@mui/material/styles';
-
+import { Table, Thead, Tbody, Tr, Th, Td } from 'react-super-responsive-table';
+import 'react-super-responsive-table/dist/SuperResponsiveTableStyle.css';
+import '../hoja-de-estilos/Tabla.css'
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Typography from '@mui/material/Typography';
@@ -280,44 +282,44 @@ export default function Tablav2() {
     return (
         <>
             <Container>
-                <br />
+            <br />
+            <h1>Registro Empleados</h1>
+            <br />
                 <Button className="agregar" onClick={() => mostrarModalInsertar()}>Agregar Empleado</Button>
                 <br />
-                <br />
-                <Table>
-                    <thead>
-                        <tr>
-                            <th>Código Empleado</th>
-                            <th>Nombres</th>
-                            <th>Apellidos</th>
-                            <th>Informacion</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
+                <Table className='table table-light table-hover'>
+                <Thead>
+                <Tr>
+                <Th>Código Empleado</Th>
+                <Th>Nombres</Th>
+                <Th>Apellidos</Th>
+                <Th>Informacion</Th>
+                <Th>Acciones</Th>
+                </Tr>
+                        </Thead>
+                        <Tbody>
                         {data.map((dato) => (
 
-                            <tr key={dato.id} >
-                                <td>{dato.ruc}</td>
-                                <td>{dato.nombres}</td>
-                                <td>{dato.apellidos}</td>
+                            <Tr key={dato.id} >
+                                <Td>{dato.codigo}</Td>
+                                <Td>{dato.nombres}</Td>
+                                <Td>{dato.apellidos}</Td>
                     
-                                <td>
+                                <Td>
                                 <button type="button" class="btn btn-outline-secondary" onClick={()=>{handleOpen(dato)}}>Información</button>
                                     {/* <Button onClick={()=>{handleOpen(dato)}}>Informacion</Button> */}
-                                </td>
-                                <td>
+                                </Td>
+                                <Td>
                                 <Stack direction="row" spacing={2} alignitems="center" justifyContent="center" >
                                 <button className="btn btn-outline-warning" onClick={() => mostrarModalActualizar(dato)}>Editar</button>
                                 <button className="btn btn-outline-danger" onClick={() => eliminar(dato)}>Eliminar</button>
                                     {/* <Button color="primary" onClick={() => mostrarModalActualizar(dato)}>Editar</Button>{" "}
                                     <Button color="danger" onClick={() => eliminar(dato)}>Eliminar</Button> */}
                                      </Stack>
-                                </td>
-                            </tr>
+                                </Td>
+                            </Tr>
                         ))}
-                    </tbody>
+                    </Tbody>
                 </Table>
             </Container>
 
@@ -329,6 +331,18 @@ export default function Tablav2() {
                     <ModalBody>
                         <FormGroup>
                             <Grid container spacing={4}>
+                            <Grid item xs={6}>
+                                    <label>
+                                        Código Empleado:
+                                    </label>
+                                    <input
+                                        className="form-control"
+                                        name="codigo"
+                                        type="text"
+                                        onChange={handleChange}
+                                        value={form.codigo}
+                                    />
+                                </Grid>
                                 <Grid item xs={6}>
                                     <label>
                                         Nombres:
@@ -501,6 +515,17 @@ export default function Tablav2() {
                     <ModalBody>
                         <FormGroup>
                             <Grid container spacing={4}>
+                            <Grid item xs={6}>
+                                    <label>
+                                        Código Empleado:
+                                    </label>
+                                    <input
+                                        className="form-control"
+                                        name="codigo"
+                                        type="text"
+                                        onChange={handleChange}
+                                    />
+                                </Grid>
                                 <Grid item xs={6}>
                                     <label>
                                         Nombres:

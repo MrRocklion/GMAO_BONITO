@@ -275,7 +275,7 @@ export default function Tablav2() {
             {data.map((dato) => (
 
               <tr key={dato.id} >
-                <td>{dato.ruc}</td>
+                <td>{dato.codigo}</td>
                 <td>{dato.nombres}</td>
                 <td>{dato.apellidos}</td>
                 {/* <td>{dato.ruc}</td>
@@ -314,6 +314,18 @@ export default function Tablav2() {
         <ModalBody>
           <FormGroup>
           <Grid container spacing={4}>
+          <Grid item xs={6}>
+          <label>
+              Código Empleado:
+            </label>
+            <input
+              className="form-control"
+              name="codigo"
+              type="text"
+              onChange={handleChange}
+              value={form.codigo}
+            />
+          </Grid>
           <Grid item xs={6}>
           <label>
               Nombres:
@@ -486,6 +498,17 @@ export default function Tablav2() {
         <ModalBody>
           <FormGroup>
           <Grid container spacing={4}>
+          <Grid item xs={6}>
+          <label>
+              Código Empleado:
+            </label>
+            <input
+              className="form-control"
+              name="codigo"
+              type="text"
+              onChange={handleChange}
+            />
+          </Grid>
           <Grid item xs={6}>
           <label>
               Nombres:

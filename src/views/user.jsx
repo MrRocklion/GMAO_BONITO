@@ -1,5 +1,6 @@
 import React from "react";
 import MenuApp2 from "../components/Menuapp";
+import MenuAppUsuario from "../components/Menuappusuario";
 import Mantenimientoview from "./Mantenimiento";
 import Activosview from "./Activos";
 import Inventarioview from "./Inventario";
@@ -22,6 +23,7 @@ import Planmantenimiento from "./Planmantenimiento";
 import Plan from "./Plan";
 import Manual from "./Manual";
 import Inicio from "./Presentacion";
+import Indicadores from "./Indicadores";
 
 
 
@@ -30,11 +32,12 @@ export default function Userview() {
 
 return(
     <>
-        <MenuApp2 />
+        <MenuAppUsuario />
         <Routes>
         <Route path="/" element={<Inicio/>}/>
         <Route path="/activos/equipos" element={<Activosview />} />
         <Route path="/activos/contrato" element={<Vistacontratos />} />
+        <Route path="/activos/indicadores" element={<Indicadores/>}/>
         <Route path="/inventario/invequipos" element={<Inventarioview />} />
         <Route path="/inventario/contratos" element={<Contratosview />} />
         <Route path="/inventario/solicitudcompra" element={<Formularioscompras/>} />

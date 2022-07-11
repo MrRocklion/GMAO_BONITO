@@ -4,7 +4,10 @@ import { db } from "../firebase/firebase-config";
 import InfoIcon from '@mui/icons-material/Info';
 import IconButton from '@mui/material/IconButton';
 import Grid from "@mui/material/Grid"
-import { Container, Modal, ModalHeader, ModalBody, FormGroup, ModalFooter } from "reactstrap";
+import {Button, Container, Modal, ModalHeader, ModalBody, FormGroup, ModalFooter } from "reactstrap";
+import { Table, Thead, Tbody, Tr, Th, Td } from 'react-super-responsive-table';
+import 'react-super-responsive-table/dist/SuperResponsiveTableStyle.css';
+import '../hoja-de-estilos/Tabla.css'
 
 export default function Activosview() {
   const [elementosin, setElementosin] = useState([]);
@@ -33,48 +36,45 @@ export default function Activosview() {
   }, [])
   return (
     <>
-      <h1> Módulo Gestión de Activos</h1>
-      <div style={{ height: 800, width: '100%' }}>
-        <div className='container'>
-          <div className='row'>
-            <div className='col'>
-              <table className='table table-light table-hover'>
-                <thead>
-                  <tr>
-                    <th>Código</th>
-                    <th>Equipo</th>
-                    <th>Departamento</th>
-                    <th>Propietario</th>
-                    <th>Seguro</th>
-                    <th>Información</th>
-                  </tr>
-                </thead>
+      
+      <Container>
+      <br />
+        <h1>Inventario Equipos</h1>
+        <br />
+        <h3>Médicos - Industriales</h3>
+                <br />
+                <Table>
+                    <Thead>
+                        <Tr>
+                            <Th>Código</Th>
+                            <Th>Equipo</Th>
+                            <Th>Departamento</Th>
+                            <Th>Propietario</Th>
+                            <Th>Seguro</Th>
+                            <Th>Información</Th>
+                        </Tr>
+                    </Thead>
 
-                <tbody>
+                    <Tbody>
                   {elementosin.sort((a, b) => (a.indice - b.indice)).map((ingresos, index) => (
-                    <tr key={ingresos.indice} >
-                      <td>{ingresos.codigo}</td>
-                      <td>{ingresos.equipo}</td>
-                      <td>{ingresos.area}</td>
-                      <td>{ingresos.propietario}</td>
-                      <td>{ingresos.seguro}</td>
-
-                      <td>
+                    <Tr key={ingresos.indice} >
+                       <Td>{ingresos.codigo}</Td>
+                       <Td>{ingresos.equipo}</Td>
+                       <Td>{ingresos.area}</Td>
+                       <Td>{ingresos.propietario}</Td>
+                       <Td>{ingresos.seguro}</Td>
+                       <Td>
                         <IconButton aria-label="delete" onClick={() => { vistainformacion1(ingresos) }} color="gris"><InfoIcon /></IconButton>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      </div>
+                        </Td>
+                            </Tr>
+                        ))}
+                    </Tbody>
+                </Table>
+            </Container>
 
-      <Modal isOpen={modalInformacion1}>
-        <Container>
+      <Modal className="{width:0px}" isOpen={modalInformacion1}>
           <ModalHeader>
-            <div><h1>Información Solicitud</h1></div>
+            <div><h3>Información Solicitud</h3></div>
           </ModalHeader>
           <ModalBody>
             <FormGroup>
@@ -138,10 +138,13 @@ export default function Activosview() {
             </FormGroup>
           </ModalBody>
           <ModalFooter className="modal-footer">
-            <button className="btn btn-success" onClick={() => { cerrarmodalinf(false) }}>Cerrar</button>
+          <Button
+                        className="editar"
+                        onClick={() => cerrarmodalinf()}
+                    >
+                        Cerrar
+                    </Button>
           </ModalFooter>
-
-        </Container>
       </Modal>
 
     </>

@@ -6,7 +6,10 @@ import IconButton from '@mui/material/IconButton';
 import Grid from "@mui/material/Grid";
 import { storage } from "../firebase/firebase-config";
 import { ref, getDownloadURL } from "firebase/storage";
-import { Container, Modal, ModalHeader, ModalBody, FormGroup, ModalFooter } from "reactstrap";
+import { Button, Container, Modal, ModalHeader, ModalBody, FormGroup, ModalFooter } from "reactstrap";
+import { Table, Thead, Tbody, Tr, Th, Td } from 'react-super-responsive-table';
+import 'react-super-responsive-table/dist/SuperResponsiveTableStyle.css';
+import '../hoja-de-estilos/Tabla.css'
 
 export default function Vistacontratos() {
 const [elementoscon, setElementoscon] = useState([]);
@@ -48,40 +51,35 @@ const [elementoscon, setElementoscon] = useState([]);
 
     return (
         <>
+        <Container>
+        <br />
         <h1> Contratos </h1>
-        <div style={{ height: 800, width: '100%' }}>
-        <div className='container'>
-          <div className='row'>
-            <div className='col'>
-              <table className='table table-light table-hover'>
-                <thead>
-                  <tr>
-                    <th>#</th>
-                    <th>N.Contrato</th>
-                    <th>Empresa</th>
-                    <th>Descripción</th>
-                    <th>Información</th>
-                  </tr>
-                </thead>
-
-                <tbody>
+        <br />
+        <Table>
+                <Thead>
+                <Tr>
+                <Th>#</Th>
+                <Th>N. Contrato</Th>
+                <Th>Empresa</Th>
+                <Th>Descripción</Th>
+                <Th>Información</Th>
+                </Tr>
+                        </Thead>
+                        <Tbody>
                   {elementoscon.sort((a, b) => (a.indice - b.indice)).map((contratos, index) => (
-                    <tr key={contratos.indice} >
-                      <td>{index + 1}</td>
-                      <td>{contratos.contrato}</td>
-                      <td>{contratos.empresa}</td>
-                      <td>{contratos.descripcion}</td>
-                      <td>
+                    <Tr key={contratos.indice} >
+                    <Td>{index + 1}</Td>
+                    <Td>{contratos.ncontrato}</Td>
+                    <Td>{contratos.empresa}</Td>
+                    <Td>{contratos.descripcion}</Td>
+                    <Td>
                         <IconButton aria-label="delete" onClick={() => { vistainfor(contratos) }} color="gris"><InfoIcon /></IconButton>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      </div>
+                        </Td>
+                                </Tr>
+                        ))}
+                 </Tbody>
+                </Table>
+            </Container>
 
       <Modal isOpen={modalInfor}>
         <Container>
@@ -144,7 +142,12 @@ const [elementoscon, setElementoscon] = useState([]);
             </FormGroup>
           </ModalBody>
           <ModalFooter className="modal-footer">
-            <button className="btn btn-success" onClick={() => { cerrarmodalinfor(false) }}>Cerrar</button>
+          <Button
+                        className="editar"
+                        onClick={() => cerrarmodalinfor()}
+                    >
+                        Cerrar
+                    </Button>
           </ModalFooter>
 
         </Container>

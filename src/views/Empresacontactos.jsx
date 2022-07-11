@@ -3,10 +3,12 @@ import InfoIcon from '@mui/icons-material/Info';
 import IconButton from '@mui/material/IconButton';
 import { uploadBytes, ref, getDownloadURL } from "firebase/storage";
 import { collection, setDoc, query, doc, deleteDoc, onSnapshot, updateDoc, } from "firebase/firestore";
-import Grid from "@mui/material/Grid"
-import { db, storage } from "../firebase/firebase-config"
+import Grid from "@mui/material/Grid";
+import { db, storage } from "../firebase/firebase-config";
+import { Table, Thead, Tbody, Tr, Th, Td } from 'react-super-responsive-table';
+import 'react-super-responsive-table/dist/SuperResponsiveTableStyle.css';
+import '../hoja-de-estilos/Tabla.css'
 import {
-    Table,
     Button,
     Container,
     Modal,
@@ -176,34 +178,35 @@ export default function Contactosempresas() {
         <>
             <Container>
                 <br />
+                <h1>Empresas Contratistas</h1>
+                <br />
                 <Button className="agregar" onClick={() => mostrarModalInsertar()}>Agregar Empresa</Button>
                 <br />
-                <br />
-                <Table>
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Empresa</th>
-                            <th>Representante</th>
-                            <th>Ruc</th>
-                            <th>Contacto</th>
-                            <th>Correo</th>
-                            <th>Acciones</th>
-                            <th>Información</th>
+                <Table className='table table-light table-hover'>
+                <Thead>
+                        <Tr>
+                            <Th>#</Th>
+                            <Th>Empresa</Th>
+                            <Th>Representante</Th>
+                            <Th>Ruc</Th>
+                            <Th>Contacto</Th>
+                            <Th>Correo</Th>
+                            <Th>Acciones</Th>
+                            <Th>Información</Th>
+                          
+                            </Tr>
+                    </Thead>
 
-                        </tr>
-                    </thead>
-
-                    <tbody>
+                    <Tbody>
                         {data.sort((a, b) => (a.indice - b.indice)).map((contactos, index) => (
-                            <tr key={contactos.indice} >
-                                <td>{index + 1}</td>
-                                <td>{contactos.empresa}</td>
-                                <td>{contactos.representante}</td>
-                                <td>{contactos.ruc}</td>
-                                <td>{contactos.telefono}</td>
-                                <td>{contactos.correo}</td>
-                                <td>
+                         <Tr  key={contactos.indice} >
+                              <Td>{index + 1}</Td>
+                              <Td>{contactos.empresa}</Td>
+                              <Td>{contactos.representante}</Td>
+                              <Td>{contactos.ruc}</Td>
+                              <Td>{contactos.telefono}</Td>
+                              <Td>{contactos.correo}</Td>
+                              <Td>
                                     <Stack direction="row" spacing={2} alignitems="center" justifyContent="center" >
                                         <button className="btn btn-outline-warning" onClick={() => mostrarModalActualizar(contactos)}>Editar</button>
                                         <button className="btn btn-outline-danger" onClick={() => eliminar(contactos)}>Eliminar</button>
@@ -215,14 +218,13 @@ export default function Contactosempresas() {
                                         </Button>{" "}
                                         <Button color="danger" onClick={() => eliminar(contactos)}>Eliminar</Button> */}
                                     </Stack>
-                                </td>
-                                <td>
+                                    </Td>
+                                <Td>
                                     <IconButton aria-label="delete" color="gris" onClick={() => mostrarModalInformacion(contactos)}><InfoIcon /></IconButton>
-
-                                </td>
-                            </tr>
+                                    </Td>
+                            </Tr>
                         ))}
-                    </tbody>
+                    </Tbody>
                 </Table>
             </Container>
 

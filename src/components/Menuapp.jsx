@@ -28,7 +28,8 @@ import SummarizeIcon from '@mui/icons-material/Summarize';
 import GroupIcon from '@mui/icons-material/Group';
 import PersonIcon from '@mui/icons-material/Person';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom';
+
 
 export default function MenuApp2(props) {
     const [anchorEl, setAnchorEl] = React.useState(null);
@@ -310,18 +311,9 @@ export default function MenuApp2(props) {
                                 <ListItemText primary="Estátus R. Externos" />
                             </ListItemButton>
 
-                            {/* <ListItemButton onClick={() =>Changeview('/home/reportes/agregar')} sx={{ pl: 4 }}>
-                                <ListItemIcon>
-                                    <StarBorder />
-                                </ListItemIcon>
-                                <ListItemText primary="Formulario Reporte" />
-                            </ListItemButton> */}
+
                         </List>
                     </Collapse>
-                    {/* Fin Boton Gestion de Reportes  */}
-
-
-                    {/* Boton Gestion de Tercerizados */}
                     <ListItemButton onClick={handleClick3}>
                         <ListItemIcon>
                             <GroupIcon />
