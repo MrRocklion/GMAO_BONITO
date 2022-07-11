@@ -92,7 +92,6 @@ export default function MenuApp2(props) {
             onClick={toggleDrawer(anchor, false)}
             onKeyDown={toggleDrawer(anchor, false)}
         >
-
             <Divider />
         </Box>
     );

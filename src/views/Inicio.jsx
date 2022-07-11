@@ -15,6 +15,7 @@ import {auth} from "../firebase/firebase-config"
 const theme = createTheme();
 
 export default function Homepage() {
+  const [uid,setuid] = React.useState();
   const navigate = useNavigate();
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -27,7 +28,8 @@ export default function Homepage() {
   .then((userCredential) => {
     // Signed in
     const user = userCredential.user;
-    console.log(user)
+    setuid(user.uid);
+    console.log(user);
     navigate('/home')
   })
   .catch((error) => {

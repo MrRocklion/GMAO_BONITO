@@ -1,4 +1,4 @@
-import React, { useEffect,useState } from 'react';
+import React, { useState } from 'react';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
@@ -29,8 +29,7 @@ import GroupIcon from '@mui/icons-material/Group';
 import PersonIcon from '@mui/icons-material/Person';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import { useNavigate } from 'react-router-dom';
-import { collection, query, onSnapshot } from "firebase/firestore";
-import { db } from '../firebase/firebase-config';
+
 
 
 
@@ -100,21 +99,11 @@ export default function MenuAppUsuario(props) {
             <Divider />
         </Box>
     );
-    const getReportes = () => {
-        const externos = query(collection(db, "usuario"));
-        onSnapshot(externos, (querySnapshot) => {
-            setIdenteficacion(
-                querySnapshot.docs.map((doc) => ({ ...doc.data() }))
-            );
-        });
-  
 
-    }
-    useEffect(() => {
-        getReportes();
-    }, [])
+    console.log(identificacion);
+    if(props.uid){
     return (
-        <>
+        <> 
             <AppBar  className="bts" position="static">
                 <Toolbar>
                     <IconButton
@@ -388,5 +377,5 @@ export default function MenuAppUsuario(props) {
                 </List>
             </Drawer>
         </>
-    );
+    );}
 }

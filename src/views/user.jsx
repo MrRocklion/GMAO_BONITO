@@ -32,7 +32,7 @@ export default function Userview() {
 
 return(
     <>
-        <MenuAppUsuario />
+        <MenuApp2 />
         <Routes>
         <Route path="/" element={<Inicio/>}/>
         <Route path="/activos/equipos" element={<Activosview />} />

@@ -8,6 +8,7 @@ import Grid from '@mui/material/Grid';
 import Barchart from "../components/Graficabarras";
 import LineChart from "../components/Graficalineal";
 import { Input } from "reactstrap";
+import '../hoja-de-estilos/Presentacion.css';
 const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#000',
     ...theme.typography.body2,
@@ -24,6 +25,7 @@ export default function Indicadores() {
     const [equipo, setEquipo] = useState("");
     const [mttr, setMttr] = useState([]);
     const [fallas, setFallas] = useState([]);
+    const [reportes, setReportes]= useState([]);
 
 
     const selecCodigo = (e) => {
@@ -50,6 +52,7 @@ export default function Indicadores() {
         setFallas(fallos);
         console.log(fallos);
         let total = reformat.reduce((a, b) => a + b, 0);
+        setReportes([reformat.length]);
         setMttr([total / reformat.length]);
 
        
@@ -87,7 +90,6 @@ export default function Indicadores() {
 
     useEffect(() => {
         getReportes();
-
     }, [])
 
     return (
@@ -113,24 +115,42 @@ export default function Indicadores() {
                     </Grid>
                     <Grid item xs={6} md={1}></Grid>
                     <Grid item xs={6} md={1}></Grid>
-                    <Grid item xs={6} md={5}>
+                    <Grid item xs={6} md={7}>
                         <Item>
                             <p> Gráfica de Barras</p>
                             <Barchart equipo={equipo.toString()} datos={mttr} />
                         </Item>
                     </Grid>
-                    <Grid item xs={6} md={5}>
+                    {/* <Grid item xs={6} md={5}>
                         <Item>
                             <LineChart datos={[1, 0, 0, 0, 1, 0, 1, 0, 0, 1, 1, 0, 1]} labels={[1, 2, 3, 4, 5, 6, 8, 9, 10, 11, 12, 13]} />
                         </Item>
                     </Grid>
-                    <Grid item xs={6} md={1}></Grid>
-                    <Grid item xs={6} md={3}></Grid>
-                    <Grid item xs={6} md={6}>
+                    <Grid item xs={6} md={1}></Grid> */}
+                    {/* <Grid item xs={6} md={3}></Grid> */}
+                    <Grid item xs={6} md={3}>
                         <Item>
+                        <p className="parr">MTTR</p>
+                        <Input
+                            readOnly
+                            value={mttr}
+                            label="mttr"
+                        />
+                         {/* <p className="parr">Equipo</p>
+                          <Input
+                            readOnly
+                            value={equipo}
+                            label="equipo"
+                        /> */}
+                        <p className="parr"># Fallos</p>
+                          <Input
+                            readOnly
+                            value={reportes}
+                            label="reportes"
+                        />
                         </Item>
                     </Grid>
-                    <Grid item xs={6} md={3}></Grid>
+                    <Grid item xs={6} md={1}></Grid>
                 </Grid>
             </Box>
         </>

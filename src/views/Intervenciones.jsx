@@ -7,6 +7,7 @@ import Grid from '@mui/material/Grid';
 import Barchart2 from "../components/Graficapersonal";
 import { db } from "../firebase/firebase-config";
 import { Input } from "reactstrap";
+import '../hoja-de-estilos/Presentacion.css';
 const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#000',
     ...theme.typography.body2,
@@ -16,16 +17,19 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 export default function Indicadores() {
     const [nombre, setNombre] = useState("");
+    const [apellidos, setApellidos] = useState("");
     const [fallas, setFallas] = useState([]);
     const [reportin, setReportin] = useState([]);
     const [personales, setPersonales] = useState([]);
     const [horasp, setHorasp] = useState([]);
+    const [total, setTotal] = useState([]);
     const [datouser, setDatouser] = useState([]);
-    const [dataselec, setDataselec] = useState([]);
+
 
     const selecCedula = (e) => {
         console.log(e.target.value)
         setNombre(e.target.value);
+        setApellidos(e.target.value);
         const filtrados = reportin.filter(machine => machine.cedulat === e.target.value)
         var reformat = filtrados.map(function (obj) {
             var someDate1 = new Date(obj.fetermino);
@@ -44,7 +48,11 @@ export default function Indicadores() {
         console.log(fallos);
         setFallas(fallos);
         let total = reformat.reduce((a, b) => a + b, 0);
-        setHorasp([total / 16000]);
+        setTotal([total]);
+        console.log(total);
+        setHorasp([(total/ 1920)*100]);
+    
+        console.log(horasp);
         var meses = fallos.map(function (fecha) {
             console.log(fecha[1]);
             var someDate1 = new Date(fecha[1]);
@@ -117,7 +125,39 @@ export default function Indicadores() {
                     </Grid>
                     <Grid item xs={6} md={3}>
                         <Item>
-
+                        <h4 className="grafi">Datos Trabajador</h4>
+                        <Grid item xs={12} md={12}>
+                        <p className="parr">Código</p>
+                        <Input
+                            readOnly
+                            value={nombre}
+                            label="Nombre"
+                        />
+                    </Grid>
+                    <Grid item xs={12} md={12}>
+                    <p className="parr">Nombre</p>
+                        <Input
+                            readOnly
+                            value={apellidos}
+                            label="apellido"
+                        />
+                    </Grid>
+                    <Grid item xs={12} md={12}>
+                    <p className="parr">Horas Trabajadas</p>
+                        <Input
+                            readOnly
+                            value={total}
+                            label="total"
+                        />
+                    </Grid>
+                    <Grid item xs={12} md={12}>
+                    <p className="parr">Indicador</p>
+                        <Input
+                            readOnly
+                            value={horasp}
+                            label="horasp"
+                        />
+                    </Grid>
                         </Item>
                     </Grid>
                     <Grid item xs={6} md={1}></Grid>
