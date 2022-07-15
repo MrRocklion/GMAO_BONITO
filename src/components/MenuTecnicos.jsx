@@ -1,4 +1,4 @@
-import React ,{useState, useEffect} from 'react';
+import React ,{useEffect} from 'react';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
@@ -24,17 +24,13 @@ import BusinessCenterIcon from '@mui/icons-material/BusinessCenter';
 import BallotIcon from '@mui/icons-material/Ballot';
 import InventoryIcon from '@mui/icons-material/Inventory';
 import EngineeringIcon from '@mui/icons-material/Engineering';
-import SummarizeIcon from '@mui/icons-material/Summarize';
-import GroupIcon from '@mui/icons-material/Group';
-import PersonIcon from '@mui/icons-material/Person';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import { useNavigate } from 'react-router-dom';
 import { query, collection,onSnapshot } from "firebase/firestore";
 import { db } from '../firebase/firebase-config';
+import SummarizeIcon from '@mui/icons-material/Summarize';
 
-
-
-export default function MenuApp2(props) {
+export default function MenuTecnicos(props) {
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [state, setState] = React.useState({
         left: false,
@@ -182,7 +178,6 @@ export default function MenuApp2(props) {
                         </ListSubheader>
                     }
                 >
-               
                      <ListItemButton onClick={() =>Changeview('OTS')}>
                         <ListItemIcon>
                             <BallotIcon />
@@ -304,7 +299,7 @@ export default function MenuApp2(props) {
                     {/* Fin Boton Gestion de Mantenimiento  */}
 
                     {/* Boton Gestion de Reportes */}
-                    <ListItemButton onClick={handleClick2}>
+                        <ListItemButton onClick={handleClick2}>
                         <ListItemIcon>
                             <SummarizeIcon />
                         </ListItemIcon>
@@ -328,57 +323,8 @@ export default function MenuApp2(props) {
                                 <ListItemText primary="Estátus R. Externos" />
                             </ListItemButton>
 
-
-                        </List>
+                            </List>
                     </Collapse>
-                    <ListItemButton onClick={handleClick3}>
-                        <ListItemIcon>
-                            <GroupIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Gestion de Tercerizados" />
-                        {open3 ? <ExpandLess /> : <ExpandMore />}
-                    </ListItemButton>
-                    <Collapse in={open3} timeout="auto" unmountOnExit>
-                        <List component="div" disablePadding>
-
-                            <ListItemButton onClick={() =>Changeview('tercerizacion')} sx={{ pl: 4 }}>
-                                <ListItemIcon>
-                                    <StarBorder />
-                                </ListItemIcon>
-                                <ListItemText primary="Reporte de Mantenimiento" />
-                            </ListItemButton>
-                        </List>
-                    </Collapse>
-                    {/* Fin Boton Gestion de Tercerizados  */}
-
-
-                    {/* Boton Gestion de Personal */}
-                    <ListItemButton onClick={handleClick4}>
-                        <ListItemIcon>
-                            <PersonIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Gestion de Personal" />
-                        {open4 ? <ExpandLess /> : <ExpandMore />}
-                    </ListItemButton>
-                    <Collapse in={open4} timeout="auto" unmountOnExit>
-                        <List component="div" disablePadding>
-
-                            <ListItemButton onClick={() =>Changeview('personal/datospersonal')} sx={{ pl: 4 }}>
-                                <ListItemIcon>
-                                    <StarBorder />
-                                </ListItemIcon>
-                                <ListItemText primary="Datos Personales" />
-                            </ListItemButton>
-
-                            <ListItemButton onClick={() =>Changeview('personal/historicos')} sx={{ pl: 4 }}>
-                                <ListItemIcon>
-                                    <StarBorder />
-                                </ListItemIcon>
-                                <ListItemText primary="Historicos" />
-                            </ListItemButton>
-                        </List>
-                    </Collapse>
-                    {/* Fin Boton Gestion de Personal  */}
 
                     <ListItemButton onClick={() =>Changeview('/')}>
                         <ListItemIcon>

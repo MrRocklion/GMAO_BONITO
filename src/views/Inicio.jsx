@@ -11,13 +11,15 @@ import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom'
 import {signInWithEmailAndPassword} from "firebase/auth";
-import {auth} from "../firebase/firebase-config"
+import { updateDoc,doc } from 'firebase/firestore';
+import {auth } from "../firebase/firebase-config"
+import { db } from '../firebase/firebase-config';
+import { async } from '@firebase/util';
 const theme = createTheme();
 
 export default function Homepage() {
-  const [uid,setuid] = React.useState();
   const navigate = useNavigate();
-  const handleSubmit = (event) => {
+  const handleSubmit = async(event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     console.log({
@@ -28,17 +30,42 @@ export default function Homepage() {
   .then((userCredential) => {
     // Signed in
     const user = userCredential.user;
-    setuid(user.uid);
     console.log(user);
-    navigate('/home')
+    if(user.uid === "akD6lbAK3ngeChavoYU6Kg7GKNI3"){
+      navigate('/externos/home')
+    }
+    if(user.uid === 'kEjcItjveTZKOPCTHVzUAXUNoyR2'){
+      navigate('/inventario/home')
+    }
+    if(user.uid === 'TS3QouZOApgtdoTiSc3giotXDmr1'){
+      navigate('/compras/home')
+    }
+    if(user.uid === 'd6E6U8EmGoO59w6NigHhrZx3vTw2' ){
+      navigate('/compras/home')
+    }
+    if(user.uid === 'qyA0iGnJYCeaW2z7NVwNtkKpaMb2'){
+      navigate('/orden/home')
+    }
+    if(user.uid === 'LJdzQIBTv5cQhkxUWuj2Lhq1rz72'){
+      navigate('/personal/home')
+    }
+    
+
+    cambiarUsuario(user.uid,user.email)
   })
   .catch((error) => {
     const errorMessage = error.message;
     console.log(errorMessage);
   });
-    
+  cambiarUsuario();
   };
-
+  const cambiarUsuario = async(uid,correo) =>{
+    const ref = doc(db,"usuario","wPw8WgcqpGfe7LIWloJL");
+    await updateDoc(ref, {
+      uid: uid,
+      correo: correo
+  });
+  }
   return (
     <ThemeProvider theme={theme}>
       <Container component="main" maxWidth="xs">

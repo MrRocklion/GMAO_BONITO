@@ -17,7 +17,10 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
-
+import TextField from '@mui/material/TextField';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -58,10 +61,11 @@ export default function Tablav2() {
     const [data, setData] = useState([]);
     const [modalActualizar, setModalactualizar] = useState(false);
     const [modalInsertar, setModalinsertar] = useState(false);
-
+    const [fechainicio, setFechainicio] = React.useState(new Date('2022-08-01T21:11:54'));
     const [file, setFile] = useState(null);
     const [url, setUrl] = useState("");
     const [form, setForm] = useState({
+        finicio: "",
         codigo: "",
         nombres: "",
         apellidos: "",
@@ -128,6 +132,7 @@ export default function Tablav2() {
                 correo: informacion.correo,
                 niveledu: informacion.niveledu,
                 titulacion: informacion.titulacion,
+                finicio: fechainicio.toDateString(),
                 cargo: informacion.cargo,
                 horario: informacion.horario,
                 capacitacioni: informacion.capacitacioni,
@@ -135,6 +140,7 @@ export default function Tablav2() {
                 nameImg: 'SP.PNG',
                 indice: val,
                 id: uuidv4(),
+                
             };
             sendFirestore(newperson);
         } else {
@@ -154,6 +160,7 @@ export default function Tablav2() {
                 puesto: informacion.puesto,
                 nameImg: file.name,
                 indice: val,
+                finicio: fechainicio.toDateString(),
                 id: uuidv4(),
             };
             sendFirestore(newperson);
@@ -204,6 +211,7 @@ export default function Tablav2() {
         const database = doc(db, "dpersonales", dato.id);
         arreglo.map((registro) => {
             if (dato.id === registro.id) {
+                registro.finicio = dato.finicio;
                 registro.codigo = dato.codigo;
                 registro.nombres = dato.nombres;
                 registro.apellidos = dato.apellidos;
@@ -225,6 +233,7 @@ export default function Tablav2() {
         setData(arreglo);
         await updateDoc(database, {
             codigo: dato.codigo,
+            finicio: dato.finicio,
             nombres: dato.nombres,
             apellidos: dato.apellidos,
             ruc: dato.ruc,
@@ -241,7 +250,9 @@ export default function Tablav2() {
 
         cerrarModalActualizar();
     };
-
+    const handleChange4 = (newValue) => {
+        setFechainicio(newValue);
+    };
     const eliminar = async (dato) => {
         var opcion = window.confirm("Estás Seguro que deseas Eliminar el elemento " + dato.id);
         if (opcion === true) {
@@ -515,6 +526,18 @@ export default function Tablav2() {
                     <ModalBody>
                         <FormGroup>
                             <Grid container spacing={4}>
+                            <Grid item xs={6}>
+                                <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                    <Stack spacing={3}>
+                                        <DateTimePicker
+                                            label="Fecha Inicio"
+                                            value={fechainicio}
+                                            onChange={handleChange4}
+                                            renderInput={(params) => <TextField {...params} />}
+                                        />
+                                    </Stack>
+                                </LocalizationProvider>
+                            </Grid>
                             <Grid item xs={6}>
                                     <label>
                                         Código Empleado:

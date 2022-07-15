@@ -1,8 +1,13 @@
 import './App.css';
 import Homepage from './views/Inicio';
 import { Routes, Route } from "react-router-dom";
-import Userview from './views/user';
+import UserviewExt from './views/UserExternos';
+import UserEnfermeras from './views/UserEnfermeros';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import UserCompras from './views/userCompras';
+import UserTecnicos from './views/UserTecnicos';
+import Userview from './views/UserJefe'
+
 
 function App() {
 
@@ -79,12 +84,14 @@ function App() {
       <div className="App">
         <Routes>
           <Route path="/" element={<Homepage />} />
-          <Route path="/home/*" element={<Userview />} />
+          <Route path="/externos/home*" element={<UserviewExt/>} />
+          <Route path="/orden/home*" element={<UserEnfermeras/>} />
+          <Route path="/compras/home*" element={<UserCompras/>} />
+          <Route path="/inventario/home*" element={<UserTecnicos/>} />
+          <Route path="/personal/home*" element={<Userview/>} />
         </Routes>
       </div>
     </ThemeProvider>
-
-
   );
 }
 

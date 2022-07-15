@@ -1,11 +1,9 @@
 import React from "react";
-import MenuApp2 from "../components/Menuapp";
+import MenuTecnicos from "../components/MenuTecnicos";
 import Mantenimientoview from "./Mantenimiento";
 import Activosview from "./Activos";
 import Inventarioview from "./Inventario";
 import Reportes from "./reportes";
-import Personal  from "./personal"
-import Tercerizacion from "./tercerizacion"
 import Ordentrabajoview from "./ordentrabajo";
 import Comprasview from "./Compras";
 import Informeview from "./Reporte";
@@ -13,9 +11,7 @@ import Contactosempresas from "./Empresacontactos";
 import Cuestionario from "./Empresas";
 import Formularioscompras from "./Iniciocompras";
 import Reportexterno from "./Tablarexternos";
-import Intervencionesview from "./Intervenciones";
 import Contratosview from "./Contratos";
-// import Formularioview from "./formulario";
 import { Routes, Route } from "react-router-dom";
 import Vistacontratos from "./Vistacontratos";
 import Planmantenimiento from "./Planmantenimiento";
@@ -25,13 +21,11 @@ import Inicio from "./Presentacion";
 import Indicadores from "./Indicadores";
 
 
-
-
-export default function Userview() {
+export default function UserTecnicos() {
 
 return(
     <>
-        <MenuApp2 />
+        <MenuTecnicos/>
         <Routes>
         <Route path="/" element={<Inicio/>}/>
         <Route path="/activos/equipos" element={<Activosview />} />
@@ -50,9 +44,6 @@ return(
         <Route path="/reportes/reportes" element={<Reportes />} />
         <Route path="/reportes/agregar" element={<Informeview/>}/>
         <Route path="/compras" element={<Comprasview/>}/>
-        <Route path="/tercerizacion" element={<Tercerizacion />} />
-        <Route path="/personal/datospersonal" element={<Personal />} />
-        <Route path="/personal/historicos" element={< Intervencionesview/>}/>
         <Route path="/reportes/externos" element={<Reportexterno/>}/>
         </Routes>
 

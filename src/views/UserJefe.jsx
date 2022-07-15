@@ -15,7 +15,6 @@ import Formularioscompras from "./Iniciocompras";
 import Reportexterno from "./Tablarexternos";
 import Intervencionesview from "./Intervenciones";
 import Contratosview from "./Contratos";
-// import Formularioview from "./formulario";
 import { Routes, Route } from "react-router-dom";
 import Vistacontratos from "./Vistacontratos";
 import Planmantenimiento from "./Planmantenimiento";
@@ -23,9 +22,6 @@ import Plan from "./Plan";
 import Manual from "./Manual";
 import Inicio from "./Presentacion";
 import Indicadores from "./Indicadores";
-
-
-
 
 export default function Userview() {
 
